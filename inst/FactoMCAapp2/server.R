@@ -179,23 +179,23 @@ shinyServer(
           vecquant<-"NULL"
         }  
       }
-      Call1=as.name(paste("res.MCA<-MCA(",nomData,"[,",vec,"],quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsuplem,")",sep=""))  
+      Call1=as.name(paste("res.MCA<-MCA(",nomData,"[,",vec,"],quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsuplem,",graph=FALSE)",sep=""))  
       return(Call1)
     }
     
     
     codeGraphVar<-function(){
-      Call2=paste("plot.MCA(res.MCA,choix='var',invisible=",Plot4()$invisible,",axes=c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"))",sep="")  
+      Call2=paste("plot.MCA(res.MCA,choix='var',invisible=",Plot4()$invisible,",title='",input$title2,"',axes=c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"))",sep="")  
       return(Call2)
     }
     
     codeGraphInd<-function(){
-      Call3=paste("plot.MCA(res.MCA,choix=",Plot1()$choix,",invisible=",Plot1()$inv,",axes=c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"),selectMod=",Plot1()$selm,",selec=",Plot1()$sel,",habillage=",Plot1()$hab,",col.quali='",Plot1()$colquali,"',col.ind.sup='",Plot1()$colindsup,"')",sep="")   
+      Call3=paste("plot.MCA(res.MCA,choix='ind',invisible=",Plot1()$inv,",axes=c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"),selectMod=",Plot1()$selm,",selec=",Plot1()$sel,",habillage=",Plot1()$hab,",title='",input$title1,"',col.quali='",Plot1()$colquali,"',col.ind.sup='",Plot1()$colindsup,"')",sep="")   
       return(Call3)
     }
     
     codeGraphQuanti<-function(){
-      Call4=paste("plot.MCA(res.MCA,axes=c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"),choix='quanti.sup')",sep="")
+      Call4=paste("plot.MCA(res.MCA,axes=c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"),choix='quanti.sup',title='",input$title3,"')",sep="")
       return(Call4)
     }
     
@@ -239,7 +239,7 @@ shinyServer(
       res$c=input$supvar#suplementary qualitative variables
       res$z=input$var_sup#1st graph multiple choice selected
       res$y=input$ind_var#2nd graph multiple choice selected
-      
+      res$lab=input$indvarpoint
       res$d=input$indsup#supplementary individuals selected
       
       res$e=input$nb1#axes selected
@@ -311,7 +311,10 @@ shinyServer(
     else{
       res$code4=NULL
     }
-  
+    res$title1=input$title1
+    res$title2=input$title2
+    res$title3=input$title3
+    res$anafact=values()$res.MCA
     return(res)
     }
     
@@ -345,10 +348,34 @@ shinyServer(
         choix=c(choix,"Supplementary modalities"="Modsup")
         selec=c(selec,"Modsup")
       }
-      div(align="center",checkboxGroupInput("ind_var",p("Graph of individuals and modalities"), choices=choix,
+      div(align="center",checkboxGroupInput("ind_var","", choices=choix,
                                                    selected = indvar))
     })
     
+    output$pointlabel=renderUI({
+      validate(
+        need(!is.null(input$ind_var),""))
+      choix=list()
+      selec=c()
+      reponse=input$ind_var
+      if("Ind"%in% reponse){
+        choix=c(choix,"Individuals"="Ind")
+        selec=c(selec,"Ind")
+      }
+      if("Mod" %in% reponse){
+        choix=c(choix,"Modalities"="Mod")
+        selec=c(selec,"Mod")
+      }
+      if("Indsup" %in% reponse){
+        choix=c(choix,"Supplementary individuals"="Indsup")
+        selec=c(selec,"Indusp")
+      }
+      if("Modsup"%in% reponse){
+        choix=c(choix,"Supplementary modalities"="Modsup")
+        selec=c(selec,"Modsup")
+      }
+      div(align="center",checkboxGroupInput("indvarpoint","",choices=choix,selected=labvar))
+    })
     
     output$out22=renderUI({
       choix=list("Summary of MCA"="MCA","Eigenvalues"="eig","Results of the variables"="resvar","Results of the individuals"="resind")
@@ -440,6 +467,35 @@ shinyServer(
       list(inv=(inv),vecinv=(vecinv))
     }
     
+    #getlab=function(){
+     # labels=input$indvarpoint
+    #  if(!is.null(labels)){
+     #   ok=TRUE
+    #  }
+     # else{
+    #    ok=FALSE
+     # }
+    #  hide=c("ind","var","ind.sup","var.sup")
+    #  if(!"Ind"%in%labels){
+     #   hide=hide[-which(hide=="ind")]
+      #}
+      #if(!"Mod"%in% labels){
+       # hide=hide[-which(hide=="var")]
+      #}
+      #if(!"Indsup"%in%labels){
+      #  hide=hide[-which(hide=="ind.sup")]
+      #}
+    #  if(!"Modsup"%in%labels){
+     #   hide=hide[-which(hide=="var.sup")]
+    #  }
+     # if(length(hide)==0&& ok==FALSE){
+    #    hide=c("ind","var")
+    #  }
+     # if(length(hide)==0&& ok==TRUE){
+    #    hide="none"
+    #  }
+     # return(hide)
+    #}
     
     #GRAPHIQUE 3: Variables
     
@@ -452,7 +508,7 @@ shinyServer(
       )
       inv=getinv2()$inv
       invtext=getinv2()$vecinv
-      list(PLOT4=(plot.MCA(values()$res.MCA,choix="var",invisible=inv,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)))),invisible=(invtext))    
+      list(PLOT4=(plot.MCA(values()$res.MCA,choix="var",invisible=inv,title=input$title2,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)))),invisible=(invtext))    
     })
     
     output$map4 <- renderPlot({
@@ -485,12 +541,17 @@ shinyServer(
         selecindivText=createVec(selecindiv)
       }
       else if(input$select=="cos2"){
-        selecindiv=paste("cos2",input$slider1)
-        selecindivText=paste("'cos2",paste(input$slider1,"'",sep=""),sep=" ")
+        if(input$slider1!=1){
+          selecindiv=paste("cos2",input$slider1)
+        }
+        else{
+          selecindiv="cos2 0.999"
+        }
+        selecindivText=paste0("'",selecindiv,"'")
       }
       else if(input$select=="Contrib"){
         selecindiv=paste("contrib ",input$sliderContrib) 
-        selecindivText=paste("'contrib",paste(input$input$sliderContrib,"'",sep=""),sep=" ")
+        selecindivText=paste0("'",selecindiv,"'")
       }
       else if(input$select=="NONE"){
         selecindiv=NULL
@@ -500,12 +561,17 @@ shinyServer(
       #Selection des modalites
       
       if(input$selectMod=="cos2"){
-        selecMod=paste("cos2",input$sliderCosMod)
-        selecModText=paste("'cos2",paste(input$sliderCosMod,"'",sep=""),sep=" ")
+        if(input$sliderCosMod!=1){
+          selecMod=paste("cos2",input$sliderCosMod)
+        }
+        else{
+          selecMod="cos2 0.999"
+        }
+        selecModText=paste0("'",selecMod,"'")
       }
       else if(input$selectMod=="Contrib"){
         selecMod=paste("contrib ",input$slider4)
-        selecModText=paste("'contrib",paste(input$slider4,"'",sep=""),sep=" ")
+        selecModText=paste0("'",selecMod,"'")
       }
       else if(input$selectMod=="NONE"){
         selecMod=NULL
@@ -519,7 +585,7 @@ shinyServer(
         colquali="magenta"
       }
       
-      if(length(input$supvar)>1){
+      if(length(quali)>1){
         if(length(input$habiller)==0){
           hab="none"
           habText<-"'none'"
@@ -557,15 +623,14 @@ shinyServer(
       validate(
         need(length(input$ind_var)!="","Please select which object you would like to print")
       )
-      
-      choix=NULL
       choixText="NULL"
       inv<-getinv()$inv
       invText<-getinv()$vecinv
       sel<-selecindiv
       selm<-selecMod
       colindsup<-"green"
-      list(PLOT1=(plot.MCA(values()$res.MCA,choix=choix,invisible=inv,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectMod=selm,selec=sel,habillage=hab,col.quali=colquali,col.ind.sup=colindsup)),choix=(choixText),inv=(invText),selm=(selecModText),sel=(selecindivText),hab=(habText),colquali=(colquali),colindsup=(colindsup))  
+     # hide=getlab()
+      list(PLOT1=(plot.MCA(values()$res.MCA,choix="ind",invisible=inv,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectMod=selm,selec=sel,habillage=hab,col.quali=colquali,col.ind.sup=colindsup,title=input$title1)),choix=(choixText),inv=(invText),selm=(selecModText),sel=(selecindivText),hab=(habText),colquali=(colquali),colindsup=(colindsup))  
     })
     
     output$map <- renderPlot({
@@ -575,7 +640,7 @@ shinyServer(
     #GRAPHIQUE 2
     
     Plot2=function(){
-      plot.MCA(values()$res.MCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="quanti.sup") 
+      plot.MCA(values()$res.MCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="quanti.sup",title=input$title3) 
     }
     
     output$map2 <- renderPlot({
@@ -599,20 +664,33 @@ shinyServer(
     })
     ####
     
-    output$habillage2=renderUI({
-      if(length(input$supvar)==0){
-        return(p("No supplementary categorical variable"))
-      }
-      if(length(input$supvar)>1){
-        if(is.null(habillageind)){
-        num=c(1:length(input$supvar))
-        return(selectInput("habiller","Select 1 or 2 variables", choices=list(num=input$supvar),multiple=TRUE))
+    
+    output$choixchange=renderUI({
+      if(length(values()$choixquant)==0){
+        return(radioButtons("MCAgraph",h6("Which graph do you want to modify ?"),
+                            choices=list("Individual and categories"="ind","Variables"="var"),inline=TRUE))
       }
       else{
-        num=c(1:length(input$supvar))
-        return(selectInput("habiller","Select 1 or 2 variables", choices=list(num=input$supvar),multiple=TRUE,selected=habillageind))
+        return(radioButtons("MCAgraph",h6("Which graph do you want to modify ?"),
+                            choices=list("Individual and categories"="ind","Variables"="var","Quantitative variables"="quant"),inline=TRUE))
       }
+    })
+    
+    
+    output$habillage2=renderUI({
+      #if(length(input$supvar)==0){
+       # return(p("No supplementary categorical variable"))
+      #}
+      #if(length(input$supvar)>1){
+        if(is.null(habillageind)){
+        num=c(1:length(quali))
+        return(selectInput("habiller","Select 1 or 2 variables", choices=list(num=quali),multiple=TRUE))
       }
+      else{
+        num=c(1:length(quali))
+        return(selectInput("habiller","Select 1 or 2 variables", choices=list(num=quali),multiple=TRUE,selected=habillageind))
+      }
+      #}
     }) 
     
     #CALCUL DE LA CONTRIBUTION DES MODALITES
@@ -624,10 +702,10 @@ shinyServer(
       maxvar=dim(values()$res.MCA$var$coord)[1]
 
       if(selection3=="Contrib"){return(sliderInput("slider4",label="Contribution",
-                                                   min=0,max=maxvar,value=as.numeric(selection4),step=1)) }
+                                                   min=1,max=maxvar,value=as.numeric(selection4),step=1)) }
       else{
         return(sliderInput("slider4",label="Contribution",
-                           min=0,max=maxvar,value=maxvar,step=1))
+                           min=1,max=maxvar,value=maxvar,step=1))
       }
     })
     
@@ -1055,7 +1133,12 @@ shinyServer(
       selecindiv=c(input$indiv) 
     }
     else if(input$select=="cos2"){
-      selecindiv=paste("cos2",input$slider1)
+      if(input$slider1!=1){
+        selecindiv=paste("cos2",input$slider1)
+      }
+      else{
+        selecindiv="cos2 0.999"
+      }
     }
     else if(input$select=="Contrib"){
       selecindiv=paste("contrib ",input$sliderContrib) 
@@ -1065,7 +1148,12 @@ shinyServer(
     }
     
     if(input$selectMod=="cos2"){
-      selecMod=paste("cos2",input$sliderCosMod)
+      if(input$sliderCosMod!=1){
+        selecMod=paste("cos2",input$sliderCosMod)
+      }
+      else{
+       selecMod="cos2 0.999" 
+      }
     }
     else if(input$selectMod=="Contrib"){
       selecMod=paste("contrib ",input$slider4)
@@ -1113,16 +1201,15 @@ shinyServer(
         colquali="magenta"
       }
     }
-    choix=NULL
     choixText="NULL"
     inv<-getinv()$inv
     invText<-getinv()$vecinv
     sel<-selecindiv
     selm<-selecMod
     colindsup<-"green"
-    plot.MCA(values()$res.MCA,choix=choix,invisible=inv,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectMod=selm,selec=sel,habillage=hab,col.quali=colquali,col.ind.sup=colindsup)}
+    plot.MCA(values()$res.MCA,choix="ind",title=input$title1,invisible=inv,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectMod=selm,selec=sel,habillage=hab,col.quali=colquali,col.ind.sup=colindsup)}
     Plot44=function(){inv=getinv2()$inv
-                      plot.MCA(values()$res.MCA,choix="var",invisible=inv,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)))}
+                      plot.MCA(values()$res.MCA,choix="var",title=input$title2,invisible=inv,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)))}
     
   }
 )

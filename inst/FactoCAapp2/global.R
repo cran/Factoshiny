@@ -13,6 +13,7 @@ if(inherits(x, "data.frame")){
   valueselec1=NULL
   valueselec2=NULL
   size=1
+  title1="CA factor map"
 }
 
 if(inherits(x, "CAshiny")){
@@ -29,6 +30,7 @@ selec2=x$type2
 valueselec1=x$selec1
 valueselec2=x$selec2
 size=x$taille
+title1=x$title1
 }
 
 if(inherits(x, "CA")){
@@ -46,6 +48,7 @@ if(inherits(x, "CA")){
   valueselec1=NULL
   valueselec2=NULL
   size=1
+  title1="CA factor map"
 }
 
 withna=c()

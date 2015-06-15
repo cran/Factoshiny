@@ -6,7 +6,8 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       tags$head(
-        tags$style("body {background-color: #F0E6E6; }")
+        tags$style("body {background-color: #F0E6E6; }"),
+        tags$style(type='text/css', "#title1 { height: 25px; }")
       ),
       wellPanel(
       div(align="center",checkboxInput("caparam","Show CA parameters",FALSE)),
@@ -64,36 +65,37 @@ shinyUI(fluidPage(
         fluidRow(
           column(5,uiOutput("NB1")),
           column(5,uiOutput("NB2"))),
-        br(),
+        hr(),
+        textInput("title1",h6("Title of the graph : "),title1),
         if(is.null(Invisible)){
-          selectInput("invis","Invisible points",choices=list("Rows"="row","Columns"="col","Supplementary rows"="row.sup","Supplementary columns"="col.sup","Supplementary qualitative variable"="quali.sup"),multiple=TRUE)}
+          selectInput("invis",h6("Invisible points"),choices=list("Rows"="row","Columns"="col","Supplementary rows"="row.sup","Supplementary columns"="col.sup","Supplementary qualitative variable"="quali.sup"),multiple=TRUE)}
         else{
-          selectInput("invis","Invisible points",choices=list("Rows"="row","Columns"="col","Supplementary rows"="row.sup","Supplementary columns"="col.sup","Supplementary qualitative variable"="quali.sup"),multiple=TRUE,selected=Invisible)
+          selectInput("invis",h6("Invisible points"),choices=list("Rows"="row","Columns"="col","Supplementary rows"="row.sup","Supplementary columns"="col.sup","Supplementary qualitative variable"="quali.sup"),multiple=TRUE,selected=Invisible)
         },
         br(),
-        sliderInput("cex","Size of labels",min=0.5,max=1.5,value=size,step=0.05),
+        sliderInput("cex",h6("Size of labels"),min=0.5,max=1.5,value=size,step=0.05),
         br(),
-        radioButtons("seleccol","Draw columns according to :", choices=list("No selection"="no","Cos2"="cos2","Contribution"="contrib"),selected=selec1,inline=TRUE),
+        radioButtons("seleccol",h6("Draw columns according to :"), choices=list("No selection"="no","Cos2"="cos2","Contribution"="contrib"),selected=selec1,inline=TRUE),
         conditionalPanel(
           condition="input.seleccol=='cos2'",
           if(selec1=="cos2"){
-            sliderInput("slider3",label="Select colums that have a cos2 greater than :",
+            sliderInput("slider3",label=h6("Select colums that have a cos2 greater than :"),
                         min=0,max=1,value=valueselec1,step=0.05)
           }
           else{
-            sliderInput("slider3",label="Select colums that have a cos2 greater than :",
+            sliderInput("slider3",label=h6("Select colums that have a cos2 greater than :"),
                         min=0,max=1,value=0,step=0.05) 
           }),
         conditionalPanel(
           condition="input.seleccol=='contrib'",
           uiOutput("contribcol")),
         br(),
-        radioButtons("selecrow","Draw rows according to :", choices=list("No selection"="no","Cos2"="cos2","Contribution"="contrib"),selected=selec2,inline=TRUE),
+        radioButtons("selecrow",h6("Draw rows according to :"), choices=list("No selection"="no","Cos2"="cos2","Contribution"="contrib"),selected=selec2,inline=TRUE),
         conditionalPanel(
           condition="input.selecrow=='cos2'",
-          if(selec2=="cos2"){sliderInput("slider4",label="Select rows that have a cos2 greater than :",
+          if(selec2=="cos2"){sliderInput("slider4",label=h6("Select rows that have a cos2 greater than :"),
                                          min=0,max=1,value=valueselec2,step=0.05)}
-          else{sliderInput("slider4",label="Select rows that have a cos2 greater than :",
+          else{sliderInput("slider4",label=h6("Select rows that have a cos2 greater than :"),
                            min=0,max=1,value=0,step=0.05)}),
         conditionalPanel(
           condition="input.selecrow=='contrib'",

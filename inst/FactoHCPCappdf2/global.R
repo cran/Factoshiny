@@ -1,5 +1,4 @@
 #global script for HCPC for dataframe2
-
 if(is.data.frame(x)==TRUE){
   quanti=c()
   quali=c()
@@ -29,6 +28,9 @@ if(is.data.frame(x)==TRUE){
   numdf=60
   nb1df=1
   nb2df=2
+  title1="Hierarchical clustering on the factor map"
+  title2="Factor map"
+  title3="Hierarchical Clustering"
 }
 
 if(is.data.frame(x)==FALSE){
@@ -45,6 +47,9 @@ if(inherits(x, "HCPCshiny")){
   nb1df=x$nb1
   nb2df=x$nb2
   x=x$data
+  title1=x$title1
+  title2=x$title2
+  title3=x$title3
 }
 
 if(inherits(x, "HCPC")){
@@ -63,6 +68,9 @@ if(inherits(x, "HCPC")){
   numdf=60
   nb1df=1
   nb2df=2
+  title1="Hierarchical clustering on the factor map"
+  title2="Factor map"
+  title3="Hierarchical Clustering"
 }
 
 

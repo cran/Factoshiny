@@ -7,7 +7,10 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       tags$head(
-        tags$style("body {background-color: #D2FAE5; }")
+        tags$style("body {background-color: #D2FAE5; }"),
+        tags$style(type='text/css', "#title1 { height: 25px; }"),
+        tags$style(type='text/css', "#title2 { height: 25px; }"),
+        tags$style(type='text/css', "#title3 { height: 25px; }")
       ),
       wellPanel(
         div(align="center",checkboxInput("hcpcparam","Show HCPC parameters",FALSE)),
@@ -30,10 +33,11 @@ shinyUI(fluidPage(
                              choices = list("1" = 1, "2" = 2,"3" = 3,"4"= 4,"5" =5), selected = nb2df,width='80%'))),
       hr(),
       radioButtons("HCPCgraph",h6("Which graph do you want to modify ?"),
-                   choices=list("Individual map"="ind","3D map"="3D"),inline=TRUE),
+                   choices=list("Individual map"="ind","3D map"="3D","Tree map"="tree"),inline=TRUE),
       hr(),
       conditionalPanel(
         condition="input.HCPCgraph=='3D'",
+        textInput("title1",h6("Title of the graph : "), title1),
         checkboxInput("nom3D","Names on 3D map",df),
         checkboxInput("center","Draw centers of clusters",centerdf),
         hr(),
@@ -41,8 +45,12 @@ shinyUI(fluidPage(
         ),
       conditionalPanel(
         condition="input.HCPCgraph=='ind'",
+        textInput("title2",h6("Title of the graph : "), title2),
         checkboxInput("drawtree","Draw tree",drawdf)
-        )
+        ),
+      conditionalPanel(
+        condition="input.HCPCgraph=='tree'",
+        textInput("title3",h6("Title of the graph : "), title3))
       )),
       wellPanel(
         h5("Save graphs as : ",align="center"),

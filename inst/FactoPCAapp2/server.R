@@ -79,7 +79,12 @@ shinyServer(
         need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
       )
       if(input$select0=="cos2"){
-        selecindiv=paste("cos2 ",input$slider00)
+        if(input$slider00!=1){
+          selecindiv=paste("cos2 ",input$slider00)
+        }
+        else{
+          selecindiv="cos2 0.999"
+        }
         selecindivText=paste("'",selecindiv,"'",sep="")
       }
       if(input$select0=="NONE"){
@@ -90,7 +95,7 @@ shinyServer(
         selecindiv=paste("contrib ",input$slider4)
         selecindivText=paste("'",selecindiv,"'",sep="")
       }
-      list(PLOT=(plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="var",select=selecindiv,unselect=0,col.quanti.sup="blue",cex=input$cex2,cex.main=input$cex2,cex.axis=input$cex2)),SELECTION=(selecindiv),selecindivText=(selecindivText))
+      list(PLOT=(plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="var",select=selecindiv,unselect=0,col.quanti.sup="blue",cex=input$cex2,cex.main=input$cex2,cex.axis=input$cex2,title=input$title2)),SELECTION=(selecindiv),selecindivText=(selecindivText))
     })
     
     output$map <- renderPlot({
@@ -108,7 +113,12 @@ shinyServer(
         need(input$habiller == TRUE || input$habiller == FALSE || length(input$habiller)<=2,"Please select maximum 2 variables as habillage")
       )
       if(input$select=="cos2"){
-        selecindiv=paste("cos2 ",input$slider1)
+        if(input$slider1!=1){
+          selecindiv=paste("cos2 ",input$slider1)
+        }
+        else{
+          selecindiv="cos2 0.999"
+        }
         selecindivtext=paste0("'",selecindiv,"'")
       }
       if(input$select=="NONE"){
@@ -178,7 +188,7 @@ shinyServer(
           selecindivtext=paste0("'",c(input$indiv),"'")
         }
       }
-      list(PLOT=(plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="ind",cex=input$cex,cex.main=input$cex,cex.axis=input$cex,select=selecindiv,habillage=hab,col.quali=colquali,col.ind.sup="blue")),SELECTION2=(selecindiv),SELECTION3=(selecindivtext),HABILLAGE=(hab),colquali=(colquali))
+      list(PLOT=(plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="ind",cex=input$cex,cex.main=input$cex,cex.axis=input$cex,select=selecindiv,habillage=hab,col.quali=colquali,col.ind.sup="blue",title=input$title1)),SELECTION2=(selecindiv),SELECTION3=(selecindivtext),HABILLAGE=(hab),colquali=(colquali))
       
     })
    
@@ -272,6 +282,9 @@ shinyServer(
       res$code1=code()
       res$code2=codeGraphVar()
       res$code3=codeGraphInd()
+      res$title1=input$title1
+      res$title2=input$title2
+      res$anafact=values()$res.PCA
       class(res) <- "PCAshiny"
       return(res)
     }
@@ -397,7 +410,7 @@ shinyServer(
       else{
         selection=Plot1()$selecindivText
       }
-      Call1=paste("plot.PCA(res.PCA,axes=c(",input$nb1,",",input$nb2,"),choix='var',select=",selection,",cex=",input$cex2,",cex.main=",input$cex2,",cex.axis=",input$cex2,",unselect=0,col.quanti.sup='red')",sep="")
+      Call1=paste("plot.PCA(res.PCA,axes=c(",input$nb1,",",input$nb2,"),choix='var',select=",selection,",cex=",input$cex2,",cex.main=",input$cex2,",cex.axis=",input$cex2,",title='",input$title2,"',unselect=0,col.quanti.sup='red')",sep="")
       return(Call1)
     }
     
@@ -409,7 +422,7 @@ shinyServer(
         hab=Plot2()$HABILLAGE
       }
       
-      Call2=paste("plot.PCA(res.PCA,","axes=c(",input$nb1,",",input$nb2,"),choix='ind',select=",Plot2()$SELECTION3,",habillage=",hab,",cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex,",col.quali='",Plot2()$colquali,"',col.ind.sup='blue')",sep="")
+      Call2=paste("plot.PCA(res.PCA,","axes=c(",input$nb1,",",input$nb2,"),choix='ind',select=",Plot2()$SELECTION3,",habillage=",hab,",title='",input$title1,"',cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex,",col.quali='",Plot2()$colquali,"',col.ind.sup='blue')",sep="")
       return(Call2)
     }
     
@@ -676,11 +689,11 @@ shinyServer(
       }
       if(selection3=="contrib"){
         return(div(align="center",sliderInput("slider4",label="Number of the most contributive variables",
-                                              min=0,max=maxvar,value=selection4,step=1)))  
+                                              min=1,max=maxvar,value=selection4,step=1)))  
       }
       else{
       return(div(align="center",sliderInput("slider4",label="Number of the most contributive variables",
-                  min=0,max=maxvar,value=maxvar,step=1)))}
+                  min=1,max=maxvar,value=maxvar,step=1)))}
     })
 
     
@@ -776,7 +789,12 @@ shinyServer(
     
     Plot11=function(){
       if(input$select0=="cos2"){
-        selecindiv=paste("cos2 ",input$slider00)
+        if(input$slider00!=1){
+          selecindiv=paste("cos2 ",input$slider00)
+        }
+        else{
+          selecindiv="cos2 0.999"
+        }
       }
       if(input$select0=="NONE"){
         selecindiv=NULL
@@ -784,11 +802,16 @@ shinyServer(
       if(input$select0=="contrib"){
         selecindiv=paste("contrib ",input$slider4)
       }
-      plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="var",select=selecindiv,unselect=0,col.quanti.sup="blue",cex=input$cex2,cex.main=input$cex2,cex.axis=input$cex2)
+      plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="var",select=selecindiv,unselect=0,col.quanti.sup="blue",cex=input$cex2,cex.main=input$cex2,cex.axis=input$cex2,title=input$title2)
     }
     Plot22=function(){
       if(input$select=="cos2"){
-        selecindiv=paste("cos2 ",input$slider1)
+        if(input$slider1!=1){
+          selecindiv=paste("cos2 ",input$slider1)
+        }
+        else{
+          selecindiv="cos2 0.999"
+        }
       }
       if(input$select=="NONE"){
         selecindiv=NULL
@@ -837,7 +860,7 @@ shinyServer(
           colquali="blue"
         }
       }
-      plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="ind",cex=input$cex,cex.main=input$cex,cex.axis=input$cex,select=selecindiv,habillage=hab,col.quali=colquali,col.ind.sup="blue")
+      plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="ind",cex=input$cex,cex.main=input$cex,cex.axis=input$cex,select=selecindiv,habillage=hab,col.quali=colquali,col.ind.sup="blue",title=input$title1)
     }
   }
 )

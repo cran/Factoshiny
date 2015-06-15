@@ -2,11 +2,11 @@
 if(is.data.frame(x)==TRUE){
   newdata=x
   nomData=nomData
-
   axe1=1
   axe2=2
   varsup=c("suplquali","suplquanti")
   indvar=c("Ind","Mod","Modsup","Indsup")
+  labvar=c()
   habillageind=NULL
   selection="NONE"
   selection2=NULL
@@ -19,7 +19,11 @@ if(is.data.frame(x)==TRUE){
   quantiS=NULL
   varsup=c("act")
   indvar=c("Ind","Mod","Indsup","Modsup")
+  labvar=c("Ind","Mod","Indsup","Modsup")
   indsupl=NULL
+  title1="MCA factor map"
+  title2=""
+  title3="Supplementary variables on the MCA factor map"
   
 }
 if(inherits(x, "MCA")||inherits(x, "MCAshiny")){
@@ -40,6 +44,9 @@ if(inherits(x, "MCAshiny")){
   selection2=x$i
   selection3=x$j
   selection4=x$k
+  title1=x$title1
+  title2=x$title2
+  title3=x$title3
 }
 if(inherits(x, "MCA")){
   nomData=as.character(x$call$call[2])
@@ -52,11 +59,15 @@ if(inherits(x, "MCA")){
   axe2=2
   varsup=c("suplquali","suplquanti")
   indvar=c("Ind","Mod","Modsup","Indsup")
+  labvar=c("Ind","Mod","Indsup","Modsup")
   habillageind=NULL
   selection="NONE"
   selection2=NULL
   selection3="NONE"
   selection4=NULL
+  title1="MCA factor map"
+  title2=""
+  title3="Supplementary variables on the MCA factor map"
 }  }
 
 

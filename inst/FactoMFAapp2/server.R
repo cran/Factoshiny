@@ -50,7 +50,7 @@ shinyServer(
         invi=c("ind","quali")
       }
       if(!(is.null(habi))){
-      plot.MFA(code,choix="ind",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),partial=part,lab.ind=input$meanind, lab.par=lapbar,lab.var=input$qualind, habillage=habi,invisible=invi)
+      plot.MFA(code,choix="ind",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),title=input$title2,partial=part,lab.ind=input$meanind, lab.par=lapbar,lab.var=input$qualind, habillage=habi,invisible=invi)
       }
     }
     
@@ -72,10 +72,15 @@ shinyServer(
         selec=paste("contrib ",input$slider2)
       }
       if(input$selection=="cos2"){
-        selec=paste("cos2 ",input$slider3)
+        if(input$slider3!=1){
+          selec=paste("cos2 ",input$slider3)
+        }
+        else{
+          selec="cos2 0.999"
+        }
       }
       invi="none"
-      plot.MFA(code,choix="var",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),habillage=habi,select=selec,invisible=invi)
+      plot.MFA(code,choix="var",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),habillage=habi,title=input$title3,select=selec,invisible=invi)
     }
     
     output$map2 <- renderPlot({
@@ -93,7 +98,7 @@ shinyServer(
       validate(
         need(input$nb1 != input$nb2, "Please select two different dimensions")
       )
-      plot.MFA(code,choix="group",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)))
+      plot.MFA(code,choix="group",title=input$title1,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)))
     }
     
     output$map5 <- renderPlot({
@@ -110,7 +115,7 @@ shinyServer(
       else{
         habi="none"
       }
-      plot.MFA(code,choix="axes",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),habillage=habi)
+      plot.MFA(code,choix="axes",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),habillage=habi,title=input$title4)
     }
     
     output$map4 <- renderPlot({
@@ -124,7 +129,7 @@ shinyServer(
       if(input$affichcol==FALSE){
         col=FALSE
       }
-      plot.MFA(code,choix="freq",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),lab.col=col)
+      plot.MFA(code,choix="freq",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),lab.col=col,title=input$title5)
     })
     
     output$map66=renderUI({
@@ -211,6 +216,11 @@ shinyServer(
       res$code3=codeGraph3()
       res$code4=codeGraph4()
       res$code5=codeGraph5()
+      title1=input$title1
+      title2=input$title2
+      title3=input$title3
+      title4=input$title4
+      title5=input$title5
       class(res)="MFAshiny"
       return(res)
     }
@@ -230,7 +240,7 @@ shinyServer(
       if(inherits(x,"MFA")){
       maxlength=dim(code$quanti.var$coord)[1]
       if(input$selection=="contrib"){
-        return(sliderInput("slider2",h6("Number of the most contributive variables"),min=0, max=maxlength, value=maxlength, step=1))
+        return(sliderInput("slider2",h6("Number of the most contributive variables"),min=1, max=maxlength, value=maxlength, step=1))
       }
       if(input$selection=="cos2"){
         return(sliderInput("slider3",h6("Number of variables with highest cos2"),min=0, max=1, value=1, step=0.01))
@@ -240,10 +250,10 @@ shinyServer(
         maxlength=dim(code$quanti.var$coord)[1]
         if(input$selection=="contrib"){
           if(selectvar=="contrib"){
-          return(sliderInput("slider2",h6("Number of the most contributive variables"),min=0, max=maxlength, value=selectvar2, step=1))
+          return(sliderInput("slider2",h6("Number of the most contributive variables"),min=1, max=maxlength, value=selectvar2, step=1))
           }
           else{
-            return(sliderInput("slider2",h6("Number of the most contributive variables"),min=0, max=maxlength, value=maxlength, step=1))  
+            return(sliderInput("slider2",h6("Number of the most contributive variables"),min=1, max=maxlength, value=maxlength, step=1))  
           }
           }
         if(input$selection=="cos2"){
@@ -690,7 +700,7 @@ shinyServer(
       if (input$qualind1==FALSE && input$meanind1==FALSE){
         invi=c("ind","quali")
       }
-        Call1=as.name(paste("plot.MFA(res,choix='ind',axes=c(",input$nb1,",",input$nb2,"),partial=",part,",lab.ind=",input$meanind,",lab.par=",lapbar,",lab.var=",input$qualind, ",habillage='",habi,"',invisible='",invi,"')",sep=""))
+        Call1=as.name(paste("plot.MFA(res,choix='ind',axes=c(",input$nb1,",",input$nb2,"),partial=",part,",title='",input$title2,"',lab.ind=",input$meanind,",lab.par=",lapbar,",lab.var=",input$qualind, ",habillage='",habi,"',invisible='",invi,"')",sep=""))
       return(Call1)
     }
     
@@ -708,15 +718,20 @@ shinyServer(
         selec=paste("contrib ",input$slider2)
       }
       if(input$selection=="cos2"){
-        selec=paste("cos2 ",input$slider3)
+        if(input$slider3!=1){
+          selec=paste("cos2 ",input$slider3)
+        }
+        else{
+          selec="cos2 0.999"
+        }
       }
       invi="none"
-      Call2=paste("plot.MFA(res,choix='var',axes=c(",input$nb1,",",input$nb2,"),habillage='",habi,"',select=",selec,",invisible='",invi,"')",sep="")
+      Call2=paste("plot.MFA(res,choix='var',axes=c(",input$nb1,",",input$nb2,"),habillage='",habi,"',select=",selec,",title='",input$title3,"',invisible='",invi,"')",sep="")
       return(Call2)
     }
     
     codeGraph3<-function(){
-      Call3=paste("plot.MFA(res,choix='group',axes=c(",input$nb1,",",input$nb2,"))",sep="")
+      Call3=paste("plot.MFA(res,choix='group',title='",input$title1,"',axes=c(",input$nb1,",",input$nb2,"))",sep="")
       return(Call3)
     }
     
@@ -727,7 +742,7 @@ shinyServer(
       else{
         habi="none"
       }
-      Call4=paste("plot.MFA(res,choix='axes',axes=c(",input$nb1,",",input$nb2,"),habillage='",habi,"')",sep="")
+      Call4=paste("plot.MFA(res,choix='axes',title='",input$title4,"',axes=c(",input$nb1,",",input$nb2,"),habillage='",habi,"')",sep="")
       return(Call4)
     }
 
@@ -738,7 +753,7 @@ shinyServer(
       if(input$affichcol==FALSE){
         col=FALSE
       }
-      Call5=paste("plot.MFA(res,choix='freq',axes=c(",input$nb1,",",input$nb2,"),lab.col=",col,")",sep="")
+      Call5=paste("plot.MFA(res,choix='freq',title='",input$title5,"',axes=c(",input$nb1,",",input$nb2,"),lab.col=",col,")",sep="")
       return(Call5)
 }
 

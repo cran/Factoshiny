@@ -7,22 +7,28 @@ if(inherits(x, "data.frame")){
   indsupl=NULL
   axe1=1
   axe2=2
+  labind=TRUE
+  labvar=TRUE
   habillageind=NULL
   selection="NONE"
   selection2=NULL
   selection3="NONE"
   selection4=NULL
+  selection5="NONE"
+  selection6=NULL
   size=1
   size2=1
-  titre1="Individuals factor map (PCA)"
-  titre2="Variables factor map (PCA)"
+  size3=1
+  title1="Individual factor map"
+  title2="Variables representation"
+  title3="Correlation circle"
 }
 
-if(inherits(x, "PCAshiny")){
+if(inherits(x, "FAMDshiny")){
   nomData=x$nomData
   newdata=x$data
-  quantisup=x$c
-  qualisup=x$b
+  quantisup=x$b
+  qualisup=x$c
   indsupl=x$d
   axe1=x$e
   axe2=x$f
@@ -31,15 +37,19 @@ if(inherits(x, "PCAshiny")){
   selection2=x$i
   selection3=x$j
   selection4=x$k
+  selection5=x$o
+  selection6=x$p
   size=x$l
   size2=x$m
-  titre1=x$title1
-  titre2=x$title2
+  size3=x$n
+  title1=x$title1
+  title2=x$title2
+  title3=x$title3
+  labind=x$labind
+  labvar=x$labvar
 }
-if(inherits(x, "PCA")){
+if(inherits(x, "FAMD")){
   nomData=as.character(x$call$call[2])
-  #nomData=gsub( " .*", "", nomData )
-#  nomData=unlist(strsplit(nomData, split='[', fixed=TRUE))[1]
   newdata=x$call$X
   quantisup=colnames(x$call$quanti.sup)
   qualisup=colnames(x$call$quali.sup$quali.sup)
@@ -51,12 +61,18 @@ if(inherits(x, "PCA")){
   selection2=NULL
   selection3="NONE"
   selection4=NULL
+  selection5="NONE"
+  selection6=NULL
   size=1
   size2=1
-  titre1="Individuals factor map (PCA)"
-  titre2="Variables factor map (PCA)"
+  size3=1
+  title1="Individual factor map"
+  title2="Variables representation"
+  title3="Correlation circle"
+  labind=TRUE
+  labvar=TRUE
 }  
-
+all=colnames(newdata)
 quanti=names(which(sapply(newdata,is.numeric)))
 quali=names(which(!(sapply(newdata,is.numeric))))
 VariableChoices=quanti
@@ -65,3 +81,4 @@ num=c(1:length(nom))
 QualiChoice=quali
 IdChoices=c(1:length(VariableChoices))
 Idqualisup=c(1:length(QualiChoice))
+Idall=c(1:length(all))

@@ -153,6 +153,8 @@ shinyServer(
       res$taille=input$cex
       res$code1=Code()
       res$code2=CodeGraph()
+      res$title1=input$title1
+      res$anafact=values()$res.CA
       class(res) <- "CAshiny"
       return(res)
     }
@@ -243,7 +245,31 @@ shinyServer(
     }
     
     CodeGraph=function(){
-      Call2=paste("plot.CA(res.CA,axes=c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"),selectCol='",paste("cos2 ",input$slider3),"',selectRow='",paste("cos2 ",input$slider4),"',unselect=0,col.sup='darkred',cex=",input$cex,",invisible='",Plot1()$invisiText,"')",sep="")
+      sel="NULL"
+      if(input$seleccol=="cos2"){
+        if(input$slider3!=1){
+          sel=paste("cos2 ",input$slider3)
+        }
+        else{
+          sel="cos2 0.999"
+        }
+      }
+      if(input$seleccol=="contrib"){
+        sel=paste("contrib ",input$contrib1)
+      }
+      sel2="NULL"
+      if(input$selecrow=="cos2"){
+        if(input$slider4!=1){
+          sel2=paste("cos2 ",input$slider4)
+        }
+        else{
+          sel2="cos2 0.999"
+        }
+      }
+      if(input$selecrow=="contrib"){
+        sel2=paste("contrib ",input$contrib2)
+      }
+      Call2=paste("plot.CA(res.CA,axes=c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"),selectCol='",sel,"',selectRow='",sel2,"',unselect=0,col.sup='darkred',cex=",input$cex,",title='",input$title1,"',invisible='",Plot1()$invisiText,"')",sep="")
       return(Call2)
     }
     
@@ -264,19 +290,29 @@ shinyServer(
       }
       sel=NULL
       if(input$seleccol=="cos2"){
-        sel=paste("cos2 ",input$slider3)
+        if(input$slider3!=1){
+          sel=paste("cos2 ",input$slider3)
+        }
+        else{
+          sel="cos2 0.999"
+        }
       }
       if(input$seleccol=="contrib"){
         sel=paste("contrib ",input$contrib1)
       }
       sel2=NULL
       if(input$selecrow=="cos2"){
-        sel2=paste("cos2 ",input$slider4)
+        if(input$slider4!=1){
+          sel2=paste("cos2 ",input$slider4)
+        }
+        else{
+          sel2="cos2 0.999"
+        }
       }
       if(input$selecrow=="contrib"){
         sel2=paste("contrib ",input$contrib2)
       }
-      list(PLOT1=(plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,unselect=0,col.col.sup="darkred",invisible=invisi)),invisiText=(invisiText))
+      list(PLOT1=(plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,title=input$title1,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,unselect=0,col.col.sup="darkred",invisible=invisi)),invisiText=(invisiText))
     })
     
     output$map <- renderPlot({
@@ -305,10 +341,10 @@ shinyServer(
     output$contribcol=renderUI({
       maxx=dim(values()$res.CA$col$coord)[1]
       if(selec1=="contrib"){
-        return(sliderInput("contrib1","Number of the most contributive active columns",min=0,max=maxx,value=valueselec2,step=1))
+        return(sliderInput("contrib1",h6("Number of the most contributive active columns"),min=1,max=maxx,value=valueselec2,step=1))
       }
       else{
-        return(sliderInput("contrib1","Number of the most contributive active columns",min=0,max=maxx,value=maxx,step=1))
+        return(sliderInput("contrib1",h6("Number of the most contributive active columns"),min=1,max=maxx,value=maxx,step=1))
       }
       
     })
@@ -316,10 +352,10 @@ shinyServer(
     output$contribrow=renderUI({
       maxx=dim(values()$res.CA$row$coord)[1]
       if(selec2=="contrib"){
-        return(sliderInput("contrib2","Number of the most contributive active rows",min=0,max=maxx,value=valueselec2,step=1))
+        return(sliderInput("contrib2",h6("Number of the most contributive active rows"),min=1,max=maxx,value=valueselec2,step=1))
       }
       else{
-        return(sliderInput("contrib2","Number of the most contributive active rows",min=0,max=maxx,value=maxx,step=1))
+        return(sliderInput("contrib2",h6("Number of the most contributive active rows"),min=1,max=maxx,value=maxx,step=1))
       }
     })
     
@@ -518,19 +554,29 @@ shinyServer(
       }
       sel=NULL
       if(input$seleccol=="cos2"){
-        sel=paste("cos2 ",input$slider3)
+        if(input$slider3!=1){
+          sel=paste("cos2 ",input$slider3)
+        }
+        else{
+          sel="cos2 0.999"
+        }
       }
       if(input$seleccol=="contrib"){
         sel=paste("contrib ",input$contrib1)
       }
       sel2=NULL
       if(input$selecrow=="cos2"){
-        sel2=paste("cos2 ",input$slider4)
+        if(input$slider4!=1){
+          sel2=paste("cos2 ",input$slider4)
+        }
+        else{
+          sel2="cos2 0.999"
+        }
       }
       if(input$seleccol=="contrib"){
         sel2=paste("contrib ",input$contrib2)
       }
-      plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,unselect=0,col.col.sup="darkred",invisible=invisi)
+      plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,title=input$title1,unselect=0,col.col.sup="darkred",invisible=invisi)
     }
     
   }

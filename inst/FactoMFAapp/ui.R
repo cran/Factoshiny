@@ -28,7 +28,12 @@ shinyUI(fluidPage(
           tags$style(type='text/css', "#nameG10 { max-width: 100px; }"),
           tags$style(type='text/css', "#nb1 { height:50px; }"),
           tags$style(type='text/css', "#nb2 { height:50px; }"),
-          tags$style(type='text/css', "#listvarG10 { max-width: 170px; }")
+          tags$style(type='text/css', "#listvarG10 { max-width: 170px; }"),
+          tags$style(type='text/css', "#title1 { height: 25px; }"),
+          tags$style(type='text/css', "#title2 { height: 25px; }"),
+          tags$style(type='text/css', "#title3 { height: 25px; }"),
+          tags$style(type='text/css', "#title4 { height: 25px; }"),
+          tags$style(type='text/css', "#title5 { height: 25px; }")
         ),
         wellPanel(
         div(align="center",checkboxInput("graph","Show graphs options",FALSE)),
@@ -38,6 +43,7 @@ shinyUI(fluidPage(
         hr(),
         conditionalPanel(
           condition="input.choixgraph=='ind'",
+          textInput("title2",h6("Title of the graph : "), title2),
           checkboxInput("meanind1","Draw points for the mean individuals",TRUE),
           checkboxInput("meanind","Draw labels for the mean individuals",TRUE),
           checkboxInput("qualind1","Draw points for the categories",TRUE),
@@ -61,6 +67,7 @@ shinyUI(fluidPage(
           ),
         conditionalPanel(
           condition="input.choixgraph=='quant'",
+          textInput("title3",h6("Title of the graph : "), title3),
           radioButtons("selection","Select from",choices=list("No selection"="no","Contribution"="contrib","Cos2"="cos2"),selected="no"),
           uiOutput("slider1"),
           hr(),
@@ -69,12 +76,18 @@ shinyUI(fluidPage(
         ),
         conditionalPanel(
           condition="input.choixgraph=='freq'",
+          textInput("title5",h6("Title of the graph : "), title5),
           checkboxInput("affichind","Draw labels for the mean individuals",TRUE),
           checkboxInput("affichcol","Draw labels for the columns",TRUE)
         ),
         conditionalPanel(
           condition="input.choixgraph=='axes'",
+          textInput("title4",h6("Title of the graph : "), title4),
           checkboxInput("coloraxe","Color the partial axe by group",TRUE)
+        ),
+        conditionalPanel(
+          condition="input.choixgraph=='group'",
+          textInput("title1",h6("Title of the graph : "), title1)
         ),
         fluidRow(
           column(5,selectInput("nb1", label = h6("  x axis"), 

@@ -6,7 +6,10 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       tags$head(
-        tags$style("body {background-color: #FBEFEF; }")
+        tags$style("body {background-color: #FBEFEF; }"),
+        tags$style(type='text/css', "#title1 { height: 25px; }"),
+        tags$style(type='text/css', "#title2 { height: 25px; }"),
+        tags$style(type='text/css', "#title3 { height: 25px; }")
       ),
       wellPanel(
         div(align="center",checkboxInput("mcaparam","Show MCA parameters",FALSE)),
@@ -71,15 +74,20 @@ shinyUI(fluidPage(
           fluidRow(
             column(5,uiOutput("NB1")),
             column(5,uiOutput("NB2"))),
-          
-          
-          br(),
-          p("---------------------------------",align="center"),
-          uiOutput("choixindvar"),
-          br(),
-          div(align="center",radioButtons("modind",h6("Select elements to modify",align="center"),choices=list("Individuals"="Ind","Modalities"="Mod"),selected="Mod",inline=TRUE)),
-          br(),
+          hr(),
+          uiOutput("choixchange"),
+          hr(),
           conditionalPanel(
+            condition="input.MCAgraph=='ind'",
+            p("Graph of individuals and modalities",align="center"),
+            uiOutput("choixindvar"),
+            br(),
+           # p("Draw labels for :",align="center"),
+          #  uiOutput("pointlabel"),
+            textInput("title1",h6("Title of the graph : "), title1),
+            div(align="center",radioButtons("modind",h6("Select elements to modify",align="center"),choices=list("Individuals"="Ind","Modalities"="Mod"),selected="Mod",inline=TRUE)),
+            br(),
+            conditionalPanel(
             condition="input.modind=='Ind'",
             if(selection=="NONE"){
               selectInput("select",label=h6("Select individuals from "),
@@ -114,11 +122,11 @@ shinyUI(fluidPage(
               condition="input.select=='Contrib'",
               if(selection=="Contrib"){
                 sliderInput("sliderContrib",label="Nombre d'individus les plus contributifs",
-                            min=0,max=length(nom),value=selection2,step=1)  
+                            min=1,max=length(nom),value=selection2,step=1)  
               }
               else{
                 sliderInput("sliderContrib",label="Nombre d'individus les plus contributifs",
-                            min=0,max=length(nom),value=length(nom),step=1)
+                            min=1,max=length(nom),value=length(nom),step=1)
               }),
               
             
@@ -158,13 +166,17 @@ shinyUI(fluidPage(
               condition="input.selectMod=='Contrib'",
               uiOutput("slider3")
             )
-          ),
-          br(),
-          p("---------------------------------",align="center"),
-          
-          div(align="center",h6("Graph of Variables")),
+          )),
+          conditionalPanel(
+            condition="input.MCAgraph=='var'",
+            p("Graph of variables",align="center"),
+            textInput("title2",h6("Title of the graph : "), title2),
           div(align="center",checkboxGroupInput("var_sup",h6(""),choices=list("Supplementary qualitative variables"="suplquali","Supplementary quantitative variables"="suplquanti","Active qualitative variables"="act"),selected=varsup))
-        )
+        ),
+        conditionalPanel(
+          condition="input.MCAgraph=='quant'",
+          p("Graph of the supplementary quantitative variables",align="center"),
+          textInput("title3",h6("Title of the graph : "), title3)))
       ),
       
       

@@ -14,6 +14,9 @@ if((inherits(x, "PCA") | inherits(x, "MCA") | inherits(x, "CA")| inherits(x, "MF
   numdf=60
   nb1df=1
   nb2df=2
+  title1="Hierarchical clustering on the factor map"
+  title2="Factor map"
+  title3="Hierarchical Clustering"
 }
 
 if(!((inherits(x, "PCA") | inherits(x, "MCA") | inherits(x, "CA")| inherits(x, "MFA")))){
@@ -30,6 +33,29 @@ numdf=x$num
 nb1df=x$nb1
 nb2df=x$nb2
 results=x$data
+title1=x$title1
+title2=x$title2
+title3=x$title3
+}
+
+if(inherits(x, "PCAshiny") | inherits(x, "CAshiny") | inherits(x, "MCAshiny")){
+  results=x$anafact
+  anafact=x$code1
+  baba=HCPC(results,nb.clust=-1,graph=FALSE)$call$t$nb.clust
+  nbindiv=dim(results$ind$coord)[1]
+  nomData=nomData
+  clustdf=baba
+  consolidf=FALSE
+  metricdf="euc"
+  drawdf=FALSE
+  df=FALSE
+  centerdf=FALSE
+  numdf=60
+  nb1df=1
+  nb2df=2
+  title1="Hierarchical clustering on the factor map"
+  title2="Factor map"
+  title3="Hierarchical Clustering"
 }
 
 if(inherits(x, "HCPC")){
@@ -48,6 +74,9 @@ if(inherits(x, "HCPC")){
   numdf=60
   nb1df=1
   nb2df=2
+  title1="Hierarchical clustering on the factor map"
+  title2="Factor map"
+  title3="Hierarchical Clustering"
 }
 
 baba=HCPC(results,nb.clust=-1,graph=FALSE)$call$t$nb.clust

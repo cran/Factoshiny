@@ -21,6 +21,11 @@ if(inherits(x,"MFAshiny")){
   freq1=x$freq1#
   freq2=x$freq2#
   partaxe=x$partaxe#
+  title1=x$title1
+  title2=x$title2
+  title3=x$title3
+  title4=x$title4
+  title5=x$title5
 }
 if(inherits(x,"MFA")){
   ligne=x$call$call
@@ -43,6 +48,11 @@ if(inherits(x,"MFA")){
   freq1=TRUE
   freq2=TRUE
   partaxe=TRUE
+  title1="Groups representation"
+  title2="Individual factor map"
+  title3="Correlation circle"
+  title4="Partial axes"
+  title5="Frequencies"
 }
 nameJDD=nomData
 nom=rownames(code$ind$coord)

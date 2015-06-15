@@ -37,6 +37,9 @@ shinyServer(
       res$code4=Plot3Code()
       res$nb1=input$nb1
       res$nb2=input$nb2
+      res$title1=input$title1
+      res$title2=input$title2
+      res$title3=input$title3
       return(res)
     }
     
@@ -60,17 +63,17 @@ shinyServer(
     }
     
     Plot1Code <- function(){
-      Call2=paste("plot.HCPC(res.HCPC,choice='map',draw.tree=",input$drawtree,",c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"))",sep="") 
+      Call2=paste("plot.HCPC(res.HCPC,choice='map',draw.tree=",input$drawtree,",title='",input$title2,"',axes=c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"))",sep="") 
       return(Call2)
     }
     
     Plot2Code <- function(){
-      Call3=paste("plot.HCPC(res.HCPC,choice='3D.map',ind.names=",input$nom3D,",centers.plot=",input$center,",angle=",input$num,",c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"))",sep="") 
+      Call3=paste("plot.HCPC(res.HCPC,choice='3D.map',ind.names=",input$nom3D,",centers.plot=",input$center,",angle=",input$num,",title='",input$title1,"',axes=c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"))",sep="") 
       return(Call3)
     }
     
     Plot3Code <- function(){
-      Call4="plot.HCPC(res.HCPC,choice='tree')"
+      Call4=paste("plot.HCPC(res.HCPC,choice='tree',title='",input$title3,"')",sep="")
       return(Call4)
     }
     
@@ -81,7 +84,7 @@ shinyServer(
         return()
       }
       else{
-      return(plot.HCPC(res.HCPC(),choice="map",draw.tree=input$drawtree,axes=c(as.numeric(input$nb1),as.numeric(input$nb2))))
+      return(plot.HCPC(res.HCPC(),choice="map",draw.tree=input$drawtree,title=input$title2,axes=c(as.numeric(input$nb1),as.numeric(input$nb2))))
       }
       }
     
@@ -94,7 +97,7 @@ shinyServer(
         return()
       }
       else{
-      plot.HCPC(res.HCPC(),choice="3D.map",ind.names=input$nom3D,centers.plot=input$center,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),angle=input$num)
+      plot.HCPC(res.HCPC(),choice="3D.map",ind.names=input$nom3D,title=input$title1,centers.plot=input$center,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),angle=input$num)
       }
       }
     output$map2 <- renderPlot({
@@ -106,7 +109,7 @@ shinyServer(
         return()
       }
       else{
-        plot.HCPC(res.HCPC(),choice="tree")
+        plot.HCPC(res.HCPC(),choice="tree",title=input$title3)
       }
     }
     

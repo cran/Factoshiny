@@ -7,7 +7,7 @@ function(res){
   nameJDD=nom[2]
   #    gassign("nomData",nameJDD)
   assign("nomData",nameJDD, envir=G)
-  if (!(inherits(res, "PCA") | inherits(res,"HCPCshiny") | inherits(res, "MCA") | inherits(res, "CA") | inherits(res, "MFA")| inherits(res, "data.frame"))){
+  if (!(inherits(res, "PCA") | inherits(res,"HCPCshiny") | inherits(res, "MCA") | inherits(res, "CA") | inherits(res, "MFA")| inherits(res, "data.frame") | inherits(res, "MCAshiny") | inherits(res, "PCAshiny") | inherits(res, "CAshiny"))){
     stop('df is not the result of a factorial analysis or a dataframe')
   }
   if(inherits(res,"data.frame")||(class(res)=="HCPCshiny")&&(res$classx=="data.frame")){
