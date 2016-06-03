@@ -21,16 +21,16 @@ if(is.data.frame(x)==TRUE){
   
   nomData=nomData
   consolidf=FALSE
-  metricdf="euc"
+  metricdf=gettext("Euclidean")
   drawdf=FALSE
   df=FALSE
   centerdf=FALSE
   numdf=60
   nb1df=1
   nb2df=2
-  title1="Hierarchical clustering on the factor map"
-  title2="Factor map"
-  title3="Hierarchical Clustering"
+  title1=gettext("Hierarchical tree on the factor map")
+  title2=gettext("Factor map")
+  title3=gettext("Hierarchical tree")
 }
 
 if(is.data.frame(x)==FALSE){
@@ -56,11 +56,11 @@ if(inherits(x, "HCPC")){
   nomData=x$call$call[2]
   clustdf=x$call$t$nb.clust
   consolidf=FALSE
-  if(x$call$t$tree[7]=="euclidean"){
-    metricdf="euc"
+  if(x$call$t$tree["dist.method"]=="euclidean"){
+    metricdf=gettext("Euclidean")
   }
-  if(x$call$t$tree[7]=="manhattan"){
-    metricdf="manh"
+  if(x$call$t$tree["dist.method"]=="manhattan"){
+    metricdf="Manhattan"
   }
   drawdf=FALSE
   df=FALSE
@@ -68,9 +68,9 @@ if(inherits(x, "HCPC")){
   numdf=60
   nb1df=1
   nb2df=2
-  title1="Hierarchical clustering on the factor map"
-  title2="Factor map"
-  title3="Hierarchical Clustering"
+  title1=gettext("Hierarchical tree on the factor map")
+  title2=gettext("Factor map")
+  title3=gettext("Hierarchical tree")
 }
 
 
@@ -94,3 +94,4 @@ QualiChoice=quali
 IdChoices=c(1:length(VariableChoices))
 Idqualisup=c(1:length(QualiChoice))
 }
+nomData=unlist(strsplit(as.character(nomData),"\\["))[1]

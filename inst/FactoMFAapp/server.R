@@ -12,28 +12,28 @@ shinyServer(
     dataselec=x[,input$variables1]
     groupe=length(input$variables1)
     nbgroupe=1
-    if(input$typeG1=="quant"){
+    if(input$typeG1==gettext("Quantitative")){
       nbquanti=nbquanti+1
-      if(input$typeG12=="sup"){
+      if(input$typeG12==gettext("Supplementary")){
         quantisup=quantisup+1
       }
-      if(input$scale1=="sc"){
+      if(input$scale1==gettext("Scaled")){
         typ="s"
       }
-      if(input$scale1=="un"){
+      if(input$scale1==gettext("Unscaled")){
         typ="c"
       }
     }
-    else if(input$typeG1=="qual"){
+    else if(input$typeG1==gettext("Qualitative")){
       typ="n"
       nbquali=nbquali+1
       listquali=c(listquali,input$variables1)
     }
-    else if(input$typeG1=="freq"){
+    else if(input$typeG1==gettext("Frequencies")){
       typ="f"
       nbfreq=nbfreq+1
     }
-    if(input$typeG12=="sup"){
+    if(input$typeG12==gettext("Supplementary")){
       gsup=c(gsup,1)
     }
     types=typ
@@ -45,28 +45,28 @@ shinyServer(
       }
       groupe=c(groupe,length(input$variables2))
       nbgroupe=2
-      if(input$typeG2=="quant"){
+      if(input$typeG2==gettext("Quantitative")){
         nbquanti=nbquanti+1
-        if(input$typeG22=="sup"){
+        if(input$typeG22==gettext("Supplementary")){
           quantisup=quantisup+1
         }
-        if(input$scale2=="sc"){
+        if(input$scale2==gettext("Scaled")){
           typ="s"
         }
-        if(input$scale2=="un"){
+        if(input$scale2==gettext("Unscaled")){
           typ="c"
         }
       }
-      else if(input$typeG2=="qual"){
+      else if(input$typeG2==gettext("Qualitative")){
         typ="n"
         nbquali=nbquali+1
         listquali=c(listquali,input$variables2)
       }
-      else if(input$typeG2=="freq"){
+      else if(input$typeG2==gettext("Frequencies")){
         typ="f"
         nbfreq=nbfreq+1
       }
-      if(input$typeG22=="sup"){
+      if(input$typeG22==gettext("Supplementary")){
         gsup=c(gsup,2)
       }
       types=c(types,typ)
@@ -79,28 +79,28 @@ shinyServer(
         }
         groupe=c(groupe,as.numeric(length(input$variables3)))
         nbgroupe=3
-        if(input$typeG3=="quant"){
+        if(input$typeG3==gettext("Quantitative")){
           nbquanti=nbquanti+1
-          if(input$typeG32=="sup"){
+          if(input$typeG32==gettext("Supplementary")){
             quantisup=quantisup+1
           }
-          if(input$scale3=="sc"){
+          if(input$scale3==gettext("Scaled")){
             typ="s"
           }
-          if(input$scale3=="un"){
+          if(input$scale3==gettext("Unscaled")){
             typ="c"
           }
         }
-        else if(input$typeG3=="qual"){
+        else if(input$typeG3==gettext("Qualitative")){
           typ="n"
           nbquali=nbquali+1
           listquali=c(listquali,input$variables3)
         }
-        else if(input$typeG3=="freq"){
+        else if(input$typeG3==gettext("Frequencies")){
           typ="f"
           nbfreq=nbfreq+1
         }
-        if(input$typeG32=="sup"){
+        if(input$typeG32==gettext("Supplementary")){
           gsup=c(gsup,3)
         }
         types=c(types,typ)
@@ -113,28 +113,28 @@ shinyServer(
           }
           groupe=c(groupe,length(input$variables4))
           nbgroupe=4
-          if(input$typeG4=="quant"){
+          if(input$typeG4==gettext("Quantitative")){
             nbquanti=nbquanti+1
-            if(input$typeG42=="sup"){
+            if(input$typeG42==gettext("Supplementary")){
               quantisup=quantisup+1
             }
-            if(input$scale4=="sc"){
+            if(input$scale4==gettext("Scaled")){
               typ="s"
             }
-            if(input$scale4=="un"){
+            if(input$scale4==gettext("Unscaled")){
               typ="c"
             }
           }
-          else if(input$typeG4=="qual"){
+          else if(input$typeG4==gettext("Qualitative")){
             typ="n"
             nbquali=nbquali+1
             listquali=c(listquali,input$variables4)
           }
-          else if(input$typeG4=="freq"){
+          else if(input$typeG4==gettext("Frequencies")){
             typ="f"
             nbfreq=nbfreq+1
           }
-          if(input$typeG42=="sup"){
+          if(input$typeG42==gettext("Supplementary")){
             gsup=c(gsup,4)
           }
           types=c(types,typ)
@@ -147,28 +147,28 @@ shinyServer(
             }
             groupe=c(groupe,length(input$variables5))
             nbgroupe=5
-            if(input$typeG5=="quant"){
+            if(input$typeG5==gettext("Quantitative")){
               nbquanti=nbquanti+1
-              if(input$typeG52=="sup"){
+              if(input$typeG52==gettext("Supplementary")){
                 quantisup=quantisup+1
               }
-              if(input$scale5=="sc"){
+              if(input$scale5==gettext("Scaled")){
                 typ="s"
               }
-              if(input$scale5=="un"){
+              if(input$scale5==gettext("Unscaled")){
                 typ="c"
               }
             }
-            else if(input$typeG5=="qual"){
+            else if(input$typeG5==gettext("Qualitative")){
               typ="n"
               nbquali=nbquali+1
               listquali=c(listquali,input$variables5)
             }
-            else if(input$typeG5=="freq"){
+            else if(input$typeG5==gettext("Frequencies")){
               typ="f"
               nbfreq=nbfreq+1
             }
-            if(input$typeG52=="sup"){
+            if(input$typeG52==gettext("Supplementary")){
               gsup=c(gsup,5)
             }
             types=c(types,typ)
@@ -181,28 +181,28 @@ shinyServer(
               }
               groupe=c(groupe,length(input$variables6))
               nbgroupe=6
-              if(input$typeG6=="quant"){
+              if(input$typeG6==gettext("Quantitative")){
                 nbquanti=nbquanti+1
-                if(input$typeG62=="sup"){
+                if(input$typeG62==gettext("Supplementary")){
                   quantisup=quantisup+1
                 }
-                if(input$scale6=="sc"){
+                if(input$scale6==gettext("Scaled")){
                   typ="s"
                 }
-                if(input$scale6=="un"){
+                if(input$scale6==gettext("Unscaled")){
                   typ="c"
                 }
               }
-              else if(input$typeG6=="qual"){
+              else if(input$typeG6==gettext("Qualitative")){
                 typ="n"
                 nbquali=nbquali+1
                 listquali=c(listquali,input$variables6)
               }
-              else if(input$typeG6=="freq"){
+              else if(input$typeG6==gettext("Frequencies")){
                 typ="f"
                 nbfreq=nbfreq+1
               }
-              if(input$typeG62=="sup"){
+              if(input$typeG62==gettext("Supplementary")){
                 gsup=c(gsup,6)
               }
               types=c(types,typ)
@@ -215,28 +215,28 @@ shinyServer(
                 }
                 groupe=c(groupe,length(input$variables7))
                 nbgroupe=7
-                if(input$typeG7=="quant"){
+                if(input$typeG7==gettext("Quantitative")){
                   nbquanti=nbquanti+1
-                  if(input$typeG72=="sup"){
+                  if(input$typeG72==gettext("Supplementary")){
                     quantisup=quantisup+1
                   }
-                  if(input$scale7=="sc"){
+                  if(input$scale7==gettext("Scaled")){
                     typ="s"
                   }
-                  if(input$scale7=="un"){
+                  if(input$scale7==gettext("Unscaled")){
                     typ="c"
                   }
                 }
-                else if(input$typeG7=="qual"){
+                else if(input$typeG7==gettext("Qualitative")){
                   typ="n"
                   nbquali=nbquali+1
                   listquali=c(listquali,input$variables7)
                 }
-                else if(input$typeG7=="freq"){
+                else if(input$typeG7==gettext("Frequencies")){
                   typ="f"
                   nbfreq=nbfreq+1
                 }
-                if(input$typeG72=="sup"){
+                if(input$typeG72==gettext("Supplementary")){
                   gsup=c(gsup,7)
                 }
                 types=c(types,typ)
@@ -249,28 +249,28 @@ shinyServer(
                   }
                   groupe=c(groupe,length(input$variables8))
                   nbgroupe=8
-                  if(input$typeG8=="quant"){
+                  if(input$typeG8==gettext("Quantitative")){
                     nbquanti=nbquanti+1
-                    if(input$typeG82=="sup"){
+                    if(input$typeG82==gettext("Supplementary")){
                       quantisup=quantisup+1
                     }
-                    if(input$scale8=="sc"){
+                    if(input$scale8==gettext("Scaled")){
                       typ="s"
                     }
-                    if(input$scale8=="un"){
+                    if(input$scale8==gettext("Unscaled")){
                       typ="c"
                     }
                   }
-                  else if(input$typeG8=="qual"){
+                  else if(input$typeG8==gettext("Qualitative")){
                     typ="n"
                     nbquali=nbquali+1
                     listquali=c(listquali,input$variables8)
                   }
-                  else if(input$typeG8=="freq"){
+                  else if(input$typeG8==gettext("Frequencies")){
                     typ="f"
                     nbfreq=nbfreq+1
                   }
-                  if(input$typeG82=="sup"){
+                  if(input$typeG82==gettext("Supplementary")){
                     gsup=c(gsup,8)
                   }
                   types=c(types,typ)
@@ -283,28 +283,28 @@ shinyServer(
                     }
                     groupe=c(groupe,length(input$variables9))
                     nbgroupe=9
-                    if(input$typeG9=="quant"){
+                    if(input$typeG9==gettext("Quantitative")){
                       nbquanti=nbquanti+1
-                      if(input$typeG92=="sup"){
+                      if(input$typeG92==gettext("Supplementary")){
                         quantisup=quantisup+1
                       }
-                      if(input$scale9=="sc"){
+                      if(input$scale9==gettext("Scaled")){
                         typ="s"
                       }
-                      if(input$scale9=="un"){
+                      if(input$scale9==gettext("Unscaled")){
                         typ="c"
                       }
                     }
-                    else if(input$typeG9=="qual"){
+                    else if(input$typeG9==gettext("Qualitative")){
                       typ="n"
                       nbquali=nbquali+1
                       listquali=c(listquali,input$variables9)
                     }
-                    else if(input$typeG9=="freq"){
+                    else if(input$typeG9==gettext("Frequencies")){
                       typ="f"
                       nbfreq=nbfreq+1
                     }
-                    if(input$typeG92=="sup"){
+                    if(input$typeG92==gettext("Supplementary")){
                       gsup=c(gsup,9)
                     }
                     types=c(types,typ)
@@ -317,28 +317,28 @@ shinyServer(
                       }
                       groupe=c(groupe,length(input$variables10))
                       nbgroupe=10
-                      if(input$typeG10=="quant"){
+                      if(input$typeG10==gettext("Quantitative")){
                         nbquanti=nbquanti+1
-                        if(input$typeG102=="sup"){
+                        if(input$typeG102==gettext("Supplementary")){
                           quantisup=quantisup+1
                         }
-                        if(input$scale10=="sc"){
+                        if(input$scale10==gettext("Scaled")){
                           typ="s"
                         }
-                        if(input$scale10=="un"){
+                        if(input$scale10==gettext("Unscaled")){
                           typ="c"
                         }
                       }
-                      else if(input$typeG10=="qual"){
+                      else if(input$typeG10==gettext("Qualitative")){
                         typ="n"
                         nbquali=nbquali+1
                         listquali=c(listquali,input$variables10)
                       }
-                      else if(input$typeG10=="freq"){
+                      else if(input$typeG10==gettext("Frequencies")){
                         typ="f"
                         nbfreq=nbfreq+1
                       }
-                      if(input$typeG102=="sup"){
+                      if(input$typeG102==gettext("Supplementary")){
                         gsup=c(gsup,10)
                       }
                       types=c(types,typ)
@@ -375,37 +375,37 @@ shinyServer(
     Plot1 <- function(){
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )      
-      if(input$choixpartial==1){
+      if(input$choixpartial==gettext("None")){
         part=NULL
       }
-      if(input$choixpartial==2){
+      if(input$choixpartial==gettext("All")){
         part="all"
       }
-      if(input$choixpartial==3){
+      if(input$choixpartial==gettext("Choose")){
         part=input$indivpartiel
       }
       lapbar=TRUE
-      if(input$choixpartial!=1 && input$partind==FALSE){
+      if(input$choixpartial!=gettext("None") && input$partind==FALSE){
         lapbar=FALSE
       }
-      if(input$choixpartial==1 && input$drawind=="a"){
+      if(input$choixpartial==gettext("None") && input$drawind==gettext("No selection")){
         habi="group"
       }
-      else if(input$choixpartial==1 && input$drawind=="b"){
+      else if(input$choixpartial==gettext("None") && input$drawind==gettext("individual")){
         habi="ind"
       }
-      else if((input$choixpartial==2 || input$choixpartial==3) && input$drawind=="a"){
+      else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("individual")){
         habi="ind"
       }
-      else if((input$choixpartial==2 || input$choixpartial==3) && input$drawind=="b"){
+      else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("group")){
         habi="group"
       }
-      else if(input$drawind=="c"){
+      else if(input$drawind==gettext("categorical variable")){
         habi=input$habiquali
       }
       invi="none"
@@ -435,7 +435,7 @@ shinyServer(
       if(input$colorgroup==FALSE){
         habi="none"
       }
-      if(input$selection=="no"){
+      if(input$selection==gettext("No selection")){
         selec=NULL
       }
       if(input$selection=="contrib"){
@@ -449,23 +449,33 @@ shinyServer(
           selec="cos2 0.999"
         }
       }
-      invi="none"
+#      invi="none"
+      if(is.null(input$hides)){
+        invi="none"
+      }else{
+	    if (input$hides==gettext("Nothing")) invi="none"
+	    if (input$hides==gettext("Active variables")) invi="quanti"
+	    if (input$hides==gettext("Supplementary variables")) invi="quanti.sup"
+      }
+      # if(!is.null(input$hides)){
+        # validate(need(!(input$hides==gettext("Active variables")&&values()$QUANTISUP==1),"Impossible with only one supplementary group"))
+      # }
       plot.MFA(values()$res.MFA,choix="var",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),title=input$title3,habillage=habi,select=selec,invisible=invi)
     })
     
     output$map22=renderUI({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       validate(
-        need(values()$NBQUANTI!=0,"No quantitative group")
+        need(values()$NBQUANTI!=0,gettext("No quantitative group"))
       )
       if(values()$NBQUANTI==0){
-        return(p("No quantitative variable"))
+        return(p(gettext("No quantitative variable")))
       }
         else{
           plotOutput("map2", width = 500, height=500)
@@ -475,10 +485,10 @@ shinyServer(
     Plot5 <- function(){
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       plot.MFA(values()$res.MFA,choix="group",title=input$title1,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)))
     }
@@ -490,10 +500,10 @@ shinyServer(
     Plot4 <- function(){
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       if(input$coloraxe==TRUE){
         habi="group"
@@ -521,13 +531,13 @@ shinyServer(
     output$map66=renderUI({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       if(values()$NBFREQ ==0){
-        return(p("No group of frequencies"))
+        return(p(gettext("No groups of frequencies")))
       }
       else{
         return(plotOutput("map6", width = 500, height=500))
@@ -536,11 +546,13 @@ shinyServer(
 
     
     output$drawindiv=renderUI({
-      if(input$choixpartial==1){
-        return(radioButtons("drawind","Select drawing",choices=list("No selection"= "a","By individual"="b","By categorical variable"="c"),inline=TRUE))
+      if(input$choixpartial==gettext("None")){
+#        return(radioButtons("drawind",gettext("Drawing by"),choices=list("No selection"= "a","By individual"="b","By categorical variable"="c"),inline=TRUE))
+        return(radioButtons("drawind",gettext("Drawing by"),choices=list(gettext("No selection"),gettext("individual"),gettext("categorical variable")),inline=TRUE))
       }
       else{
-        return(radioButtons("drawind","Select drawing",choices=list("By individual"= "a","By group"="b","By categorical variable"="c"),inline=TRUE))
+#       return(radioButtons("drawind",gettext("Drawing by"),choices=list("By individual"= "a","By group"="b","By categorical variable"="c"),inline=TRUE))
+       return(radioButtons("drawind",gettext("Drawing by"),choices=list(gettext("individual"),gettext("group"),gettext("categorical variable")),inline=TRUE))
       }
     })
     
@@ -560,7 +572,7 @@ shinyServer(
         }
       }
       else{
-        p("No group of categorical variable")
+        p(gettext("No groups of categorical variables"))
       }
     })
     ###Recup codes
@@ -573,7 +585,7 @@ shinyServer(
           cat(codeGraph2(),sep="\n")
           cat(codeGraph3(),sep="\n")
           cat(codeGraph4(),sep="\n")
-          if(!is.null(code$freq)){
+          if(values()$NBFREQ !=0){
             cat(codeGraph5(),sep="\n")
           }
         })
@@ -581,13 +593,13 @@ shinyServer(
     })
     
     codeGraph1<-function(){
-      if(input$choixpartial==1){
+      if(input$choixpartial==gettext("None")){
         part="NULL"
       }
-      if(input$choixpartial==2){
+      if(input$choixpartial==gettext("All")){
         part="all"
       }
-      if(input$choixpartial==3){
+      if(input$choixpartial==gettext("Choose")){
         part1=input$indivpartiel
         if(length(input$indivpartiel)==1){
           part=paste("'",part1,"'")
@@ -602,24 +614,24 @@ shinyServer(
         }
       }
       lapbar=TRUE
-      if(input$choixpartial!=1 && input$partind==FALSE){
+      if(input$choixpartial!=gettext("None") && input$partind==FALSE){
         lapbar=FALSE
       }
       habi="none"
       if(!(is.null(input$drawind))){
-        if(input$choixpartial==1 && input$drawind=="a"){
+        if(input$choixpartial==gettext("None") && input$drawind==gettext("No selection")){
           habi="group"
         }
-        else if(input$choixpartial==1 && input$drawind=="b"){
+        else if(input$choixpartial==gettext("None") && input$drawind==gettext("individual")){
           habi="ind"
         }
-        else if((input$choixpartial==2 || input$choixpartial==3) && input$drawind=="a"){
+        else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("individual")){
           habi="ind"
         }
-        else if((input$choixpartial==2 || input$choixpartial==3) && input$drawind=="b"){
+        else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("group")){
           habi="group"
         }
-        else if(input$drawind=="c"){
+        else if(input$drawind==gettext("categorical variable")){
           habi=input$habiquali
         }
       }
@@ -644,7 +656,7 @@ shinyServer(
       if(input$colorgroup==FALSE){
         habi="none"
       }
-      if(input$selection=="no"){
+      if(input$selection==gettext("No selection")){
         selec="NULL"
       }
       if(input$selection=="contrib"){
@@ -658,7 +670,14 @@ shinyServer(
           selec="cos2 0.999"
         }
       }
-      invi="none"
+#      invi="none"
+      if(is.null(input$hides)){
+        invi="none"
+      }else{
+	  if (input$hides==gettext("Nothing")) invi="none"
+	  if (input$hides==gettext("Active variables")) invi="quanti"
+	  if (input$hides==gettext("Supplementary variables")) invi="quanti.sup"
+      }
       Call2=paste("plot.MFA(res,choix='var',axes=c(",input$nb1,",",input$nb2,"),habillage='",habi,"',title='",input$title3,"',select=",selec,",invisible='",invi,"')",sep="")
       return(Call2)
     }
@@ -752,10 +771,10 @@ shinyServer(
       )
       maxlength=dim(values()$res.MFA$quanti.var$coord)[1]
       if(input$selection=="contrib"){
-        return(sliderInput("slider2","Number of the most contributive variables",min=1, max=maxlength, value=maxlength, step=1))
+        return(sliderInput("slider2",gettext("Number of the most contributive variables"),min=1, max=maxlength, value=maxlength, step=1))
       }
       if(input$selection=="cos2"){
-        return(sliderInput("slider3","Number of variables with highest cos2",min=0, max=maxlength, value=maxlength, step=1))
+        return(sliderInput("slider3",gettext("Number of variables with highest cos2"),min=0, max=maxlength, value=maxlength, step=1))
       }
     })
     
@@ -765,14 +784,14 @@ shinyServer(
         need(etat2!="not"," ")
       )
       if(values()$QUANTISUP!=0){
-        return(radioButtons("hides","Hide :",choices=list("Nothing"="non","Active variables"="act","Supplementary variables"="sup"),selected="non"))
+        return(radioButtons("hides",gettext("Hide:"),choices=list(gettext("Nothing"),gettext("Active variables"),gettext("Supplementary variables")),selected=gettext("Nothing")))
       }
     })
     
     output$sorties=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$eig))
     })
@@ -780,7 +799,7 @@ shinyServer(
     output$map3=renderPlot({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(barplot(values()$res.MFA$eig[,1],names.arg=rownames(values()$res.MFA$eig),las=2))
     })
@@ -839,7 +858,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData3","Download as png"))
+        return(downloadButton("downloadData3",gettext("Download as png")))
       }
     })
     
@@ -931,7 +950,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData19","Download as png"))
+        return(downloadButton("downloadData19",gettext("Download as png")))
       }
     })
     
@@ -955,7 +974,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData20","Download as jpg"))
+        return(downloadButton("downloadData20",gettext("Download as jpg")))
       }
     })
     
@@ -979,7 +998,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData21","Download as pdf"))
+        return(downloadButton("downloadData21",gettext("Download as pdf")))
       }
     })
     
@@ -1036,7 +1055,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData4","Download as jpg"))
+        return(downloadButton("downloadData4",gettext("Download as jpg")))
       }
     })
     
@@ -1060,7 +1079,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData5","Download as pdf"))
+        return(downloadButton("downloadData5",gettext("Download as pdf")))
       }
     })
     
@@ -1091,7 +1110,7 @@ shinyServer(
     output$sorties1=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$ind$coord))
     })
@@ -1099,7 +1118,7 @@ shinyServer(
     output$sorties2=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$ind$contrib))
     })
@@ -1107,7 +1126,7 @@ shinyServer(
     output$sorties3=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$ind$cos2))
     })
@@ -1115,7 +1134,7 @@ shinyServer(
     output$sorties4=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$ind$within.inertia))
     })
@@ -1123,7 +1142,7 @@ shinyServer(
     output$sorties5=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$ind$coord.partiel))
     })
@@ -1131,7 +1150,7 @@ shinyServer(
     output$sorties6=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$ind$within.partial.inertia))
     })
@@ -1139,7 +1158,7 @@ shinyServer(
     output$sorties11=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$quanti.var$coord))
     })
@@ -1147,7 +1166,7 @@ shinyServer(
     output$sorties22=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$quanti.var$contrib))
     })
@@ -1155,7 +1174,7 @@ shinyServer(
     output$sorties33=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$quanti.var$cos2))
     })
@@ -1163,7 +1182,7 @@ shinyServer(
     output$sorties44=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$quanti.var$cor))
     })
@@ -1171,7 +1190,7 @@ shinyServer(
     output$sorties12=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$partial.axes$coord))
     })
@@ -1179,7 +1198,7 @@ shinyServer(
     output$sorties23=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$partial.axes$cor))
     })
@@ -1187,7 +1206,7 @@ shinyServer(
     output$sorties34=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$partial.axes$contrib))
     })
@@ -1195,7 +1214,7 @@ shinyServer(
     output$sorties45=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$partial.axes$cor.between))
     })
@@ -1205,7 +1224,7 @@ shinyServer(
     output$sortiegroup=renderTable({
       etat2=error()
       validate(
-        need(etat2!="not","Please select at least 2 groups")
+        need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       write.infile(X=values()$res.MFA$group,file=paste(getwd(),"fichgroup.csv"),sep=";",nb.dec=5)
       baba=read.csv(paste(getwd(),"fichgroup.csv"),sep=";",header=FALSE)
@@ -1219,7 +1238,7 @@ shinyServer(
    ### Fonction permettant d'afficher la liste des variables disponibles, en fonction du type 
     
     output$listvarG1=renderUI({
-      if(input$typeG1=="quant" || input$typeG1=="freq"){
+      if(input$typeG1==gettext("Quantitative") || input$typeG1==gettext("Frequencies")){
         if(length(quanti)>1){
           choix=list(IdChoices=VariableChoices)
         }
@@ -1227,7 +1246,7 @@ shinyServer(
           choix=quanti
         }
       }
-      if(input$typeG1=="qual"){
+      if(input$typeG1==gettext("Qualitative")){
         if(length(quali)>1){
           choix=list(Idqualisup=QualiChoice)
         }
@@ -1235,12 +1254,12 @@ shinyServer(
           choix=quali
         }
       }
-      return(selectInput("variables1",label="Choose variables",
+      return(selectInput("variables1",label=gettext("Choose variables"),
                          choices=choix,multiple=TRUE,selectize=TRUE))
     })
     
     output$listvarG2=renderUI({
-      if(input$typeG2=="quant" || input$typeG2=="freq"){
+      if(input$typeG2==gettext("Quantitative") || input$typeG2==gettext("Frequencies")){
         if(length(quanti)>1){
           choix=list(IdChoices=VariableChoices)
         }
@@ -1248,7 +1267,7 @@ shinyServer(
           choix=quanti
         }
       }
-      if(input$typeG2=="qual"){
+      if(input$typeG2==gettext("Qualitative")){
         if(length(quali)>1){
           choix=list(Idqualisup=QualiChoice)
         }
@@ -1256,12 +1275,12 @@ shinyServer(
           choix=quali
         }
       }
-      return(selectInput("variables2",label="Choose variables",
+      return(selectInput("variables2",label=gettext("Choose variables"),
                          choices=choix,multiple=TRUE,selectize=TRUE))
     })
     
     output$listvarG3=renderUI({
-      if(input$typeG3=="quant" || input$typeG3=="freq"){
+      if(input$typeG3==gettext("Quantitative") || input$typeG3==gettext("Frequencies")){
         if(length(quanti)>1){
           choix=list(IdChoices=VariableChoices)
         }
@@ -1269,7 +1288,7 @@ shinyServer(
           choix=quanti
         }
       }
-      if(input$typeG3=="qual"){
+      if(input$typeG3==gettext("Qualitative")){
         if(length(quali)>1){
           choix=list(Idqualisup=QualiChoice)
         }
@@ -1277,12 +1296,12 @@ shinyServer(
           choix=quali
         }
       }
-      return(selectInput("variables3",label="Choose variables",
+      return(selectInput("variables3",label=gettext("Choose variables"),
                          choices=choix,multiple=TRUE,selectize=TRUE))
     })
     
     output$listvarG4=renderUI({
-      if(input$typeG4=="quant" || input$typeG4=="freq"){
+      if(input$typeG4==gettext("Quantitative") || input$typeG4==gettext("Frequencies")){
         if(length(quanti)>1){
           choix=list(IdChoices=VariableChoices)
         }
@@ -1290,7 +1309,7 @@ shinyServer(
           choix=quanti
         }
       }
-      if(input$typeG4=="qual"){
+      if(input$typeG4==gettext("Qualitative")){
         if(length(quali)>1){
           choix=list(Idqualisup=QualiChoice)
         }
@@ -1298,12 +1317,12 @@ shinyServer(
           choix=quali
         }
       }
-      return(selectInput("variables4",label="Choose variables",
+      return(selectInput("variables4",label=gettext("Choose variables"),
                          choices=choix,multiple=TRUE,selectize=TRUE))
     })
     
     output$listvarG5=renderUI({
-      if(input$typeG5=="quant" || input$typeG5=="freq"){
+      if(input$typeG5==gettext("Quantitative") || input$typeG5==gettext("Frequencies")){
         if(length(quanti)>1){
           choix=list(IdChoices=VariableChoices)
         }
@@ -1311,7 +1330,7 @@ shinyServer(
           choix=quanti
         }
       }
-      if(input$typeG5=="qual"){
+      if(input$typeG5==gettext("Qualitative")){
         if(length(quali)>1){
           choix=list(Idqualisup=QualiChoice)
         }
@@ -1319,12 +1338,12 @@ shinyServer(
           choix=quali
         }
       }
-      return(selectInput("variables5",label="Choose variables",
+      return(selectInput("variables5",label=gettext("Choose variables"),
                          choices=choix,multiple=TRUE,selectize=TRUE))
     })
     
     output$listvarG6=renderUI({
-      if(input$typeG6=="quant" || input$typeG6=="freq"){
+      if(input$typeG6==gettext("Quantitative") || input$typeG6==gettext("Frequencies")){
         if(length(quanti)>1){
           choix=list(IdChoices=VariableChoices)
         }
@@ -1332,7 +1351,7 @@ shinyServer(
           choix=quanti
         }
       }
-      if(input$typeG6=="qual"){
+      if(input$typeG6==gettext("Qualitative")){
         if(length(quali)>1){
           choix=list(Idqualisup=QualiChoice)
         }
@@ -1340,12 +1359,12 @@ shinyServer(
           choix=quali
         }
       }
-      return(selectInput("variables6",label="Choose variables",
+      return(selectInput("variables6",label=gettext("Choose variables"),
                          choices=choix,multiple=TRUE,selectize=TRUE))
     })
     
     output$listvarG7=renderUI({
-      if(input$typeG7=="quant" || input$typeG7=="freq"){
+      if(input$typeG7==gettext("Quantitative") || input$typeG7==gettext("Frequencies")){
         if(length(quanti)>1){
           choix=list(IdChoices=VariableChoices)
         }
@@ -1353,7 +1372,7 @@ shinyServer(
           choix=quanti
         }
       }
-      if(input$typeG7=="qual"){
+      if(input$typeG7==gettext("Qualitative")){
         if(length(quali)>1){
           choix=list(Idqualisup=QualiChoice)
         }
@@ -1361,12 +1380,12 @@ shinyServer(
           choix=quali
         }
       }
-      return(selectInput("variables7",label="Choose variables",
+      return(selectInput("variables7",label=gettext("Choose variables"),
                          choices=choix,multiple=TRUE,selectize=TRUE))
     })
     
     output$listvarG8=renderUI({
-      if(input$typeG8=="quant" || input$typeG8=="freq"){
+      if(input$typeG8==gettext("Quantitative") || input$typeG8==gettext("Frequencies")){
         if(length(quanti)>1){
           choix=list(IdChoices=VariableChoices)
         }
@@ -1374,7 +1393,7 @@ shinyServer(
           choix=quanti
         }
       }
-      if(input$typeG8=="qual"){
+      if(input$typeG8==gettext("Qualitative")){
         if(length(quali)>1){
           choix=list(Idqualisup=QualiChoice)
         }
@@ -1382,12 +1401,12 @@ shinyServer(
           choix=quali
         }
       }
-      return(selectInput("variables8",label="Choose variables",
+      return(selectInput("variables8",label=gettext("Choose variables"),
                          choices=choix,multiple=TRUE,selectize=TRUE))
     })
     
     output$listvarG9=renderUI({
-      if(input$typeG9=="quant" || input$typeG9=="freq"){
+      if(input$typeG9==gettext("Quantitative") || input$typeG9==gettext("Frequencies")){
         if(length(quanti)>1){
           choix=list(IdChoices=VariableChoices)
         }
@@ -1395,7 +1414,7 @@ shinyServer(
           choix=quanti
         }
       }
-      if(input$typeG9=="qual"){
+      if(input$typeG9==gettext("Qualitative")){
         if(length(quali)>1){
           choix=list(Idqualisup=QualiChoice)
         }
@@ -1403,12 +1422,12 @@ shinyServer(
           choix=quali
         }
       }
-      return(selectInput("variables9",label="Choose variables",
+      return(selectInput("variables9",label=gettext("Choose variables"),
                          choices=choix,multiple=TRUE,selectize=TRUE))
     })
     
     output$listvarG10=renderUI({
-      if(input$typeG10=="quant" || input$typeG10=="freq"){
+      if(input$typeG10==gettext("Quantitative") || input$typeG10==gettext("Frequencies")){
         if(length(quanti)>1){
           choix=list(IdChoices=VariableChoices)
         }
@@ -1416,7 +1435,7 @@ shinyServer(
           choix=quanti
         }
       }
-      if(input$typeG10=="qual"){
+      if(input$typeG10==gettext("Qualitative")){
         if(length(quali)>1){
           choix=list(Idqualisup=QualiChoice)
         }
@@ -1424,7 +1443,7 @@ shinyServer(
           choix=quali
         }
       }
-      return(selectInput("variables10",label="Choose variables",
+      return(selectInput("variables10",label=gettext("Choose variables"),
                          choices=choix,multiple=TRUE,selectize=TRUE))
     })
 

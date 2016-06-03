@@ -1,7 +1,7 @@
 # ui.R AFM2
 
 shinyUI(fluidPage(
-  titlePanel(div(paste("MFA on the ",nameJDD," dataset"),style="color:#6E6E6E",align="center")),
+  titlePanel(div(paste(gettext("MFA on the dataset "),nameJDD),style="color:#6E6E6E",align="center"),windowTitle="MFAshiny"),
   sidebarLayout(
       sidebarPanel(
         tags$head(
@@ -13,125 +13,148 @@ shinyUI(fluidPage(
           tags$style(type='text/css', "#title5 { height: 25px; }")
         ),
         wellPanel(
-        div(align="center",checkboxInput("graph","Show graphs options",FALSE)),
+        div(align="center",checkboxInput("graph",gettext("Show graphs options"),FALSE)),
         conditionalPanel(
           condition="input.graph==true",
-        div(align="center",selectInput("choixgraph",h6("Which graph would you like to modify ?"), choices=list("Groups"="group","Individuals"="ind","Quantitative variables"="quant","Frequences"="freq","Partial axes"="axes"),selected="group")),
+        div(align="center",selectInput("choixgraph",h6(gettext("Which graph would you like to modify?")), choices=list(gettext("Groups"),gettext("Individuals"),gettext("Quantitative variables"),gettext("Frequencies"),gettext("Partial axes")),selected=gettext("Groups"))),
         hr(),
         conditionalPanel(
-          condition="input.choixgraph=='ind'",
-          textInput("title2",h6("Title of the graph : "), title2),
-          checkboxInput("meanind1","Draw points for the mean individuals",ind1),
-          checkboxInput("meanind","Draw labels for the mean individuals",ind2),
-          checkboxInput("qualind1","Draw points for the qualitative individuals",ind3),
-          checkboxInput("qualind","Draw labels for the qualitative individuals",ind4),
+          condition=paste("input.choixgraph=='",gettext("Individuals"),"'",sep=''),
+#          condition="input.choixgraph=='ind'",
+          textInput("title2",h6(gettext("Title of the graph: ")), title2),
+          checkboxInput("meanind1",gettext("Plot points for the mean individuals"),ind1),
+          checkboxInput("meanind",gettext("Draw labels for the mean individuals"),ind2),
+          checkboxInput("qualind1",gettext("Plot points for the categories"),ind3),
+          checkboxInput("qualind",gettext("Draw labels for the categories"),ind4),
           hr(),
           uiOutput("drawindiv"),
           conditionalPanel(
-            condition="input.drawind=='c'",
+            condition=paste("input.drawind=='",gettext("categorical variable"),"'",sep=''),
+#            condition="input.drawind=='c'",
             uiOutput("habillagequali")
             ),
           hr(),
-          radioButtons("choixpartial",h6("Partial points are drawn"),choices=list("None"=1,"All"=2,"Choose"=3),selected=partial,inline=TRUE),
+          radioButtons("choixpartial",h6(gettext("Partial points to draw")),choices=list(gettext("None"),gettext("All"),gettext("Choose")),selected=partial,inline=TRUE),
           conditionalPanel(
-            condition="input.choixpartial==3",
+#            condition="input.choixpartial==3",
+            condition=paste("input.choixpartial=='",gettext("Choose"),"'",sep=''),
             uiOutput("indivpartiel2")),
           hr(),
           conditionalPanel(
-            condition="input.choixpartial!=1",
-            checkboxInput("partind","Draw labels for the partial individuals",partial3))
+#            condition="input.choixpartial!=1",
+            condition=paste("input.choixpartial!='",gettext("None"),"'",sep=''),
+            checkboxInput("partind",gettext("Draw labels for the partial individuals"),partial3))
           ),
         conditionalPanel(
-          textInput("title3",h6("Title of the graph : "), title3),
-          condition="input.choixgraph=='quant'",
-          radioButtons("selection",h6("Select from"),choices=list("No selection"="no","Contribution"="contrib","Cos2"="cos2"),selected=selectvar),
+          textInput("title3",h6(gettext("Title of the graph: ")), title3),
+          condition=paste("input.choixgraph=='",gettext("Quantitative variables"),"'",sep=''),
+#          condition="input.choixgraph=='quant'",
+          radioButtons("selection",h6(gettext("Draw variables according to:")),choices=list(gettext("No selection"),"Contribution"="contrib","Cos2"="cos2"),selected=gettext("No selection")),
           uiOutput("slider1"),
           hr(),
           uiOutput("hide2"),
-          checkboxInput("colorgroup","Color the variables by group",colorvar) 
+          checkboxInput("colorgroup",gettext("Color the variables by group"),colorvar) 
         ),
         conditionalPanel(
-          condition="input.choixgraph=='freq'",
-          textInput("title5",h6("Title of the graph : "), title5),
-          checkboxInput("affichind","Draw labels for the mean individuals",freq1),
-          checkboxInput("affichcol","Draw labels for the columns",freq2)
+          condition=paste("input.choixgraph=='",gettext("Frequencies"),"'",sep=''),
+#          condition="input.choixgraph=='freq'",
+          textInput("title5",h6(gettext("Title of the graph: ")), title5),
+          checkboxInput("affichind",gettext("Draw labels for the mean individuals"),freq1),
+          checkboxInput("affichcol",gettext("Draw labels for the columns"),freq2)
         ),
         conditionalPanel(
-          condition="input.choixgraph=='axes'",
-          textInput("title4",h6("Title of the graph : "), title4),
-          checkboxInput("coloraxe","Color the partial axe by group",partaxe)
+          condition=paste("input.choixgraph=='",gettext("Partial axes"),"'",sep=''),
+#          condition="input.choixgraph=='axes'",
+          textInput("title4",h6(gettext("Title of the graph: ")), title4),
+          checkboxInput("coloraxe",gettext("Color the partial axe by group"),partaxe)
         ),
         conditionalPanel(
-          condition="input.choixgraph=='group'",
-          textInput("title1",h6("Title of the graph : "), title1)
+          condition=paste("input.choixgraph=='",gettext("Groups"),"'",sep=''),
+#          condition="input.choixgraph=='group'",
+          textInput("title1",h6(gettext("Title of the graph: ")), title1)
         ),
         fluidRow(
-          column(5,selectInput("nb1", label = h6("  x axis"), 
+          column(5,selectInput("nb1", label = h6(gettext("x axis")), 
                                choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe1,width='80%')),
-          column(5,selectInput("nb2", label =h6("   y axis"), 
+          column(5,selectInput("nb2", label =h6(gettext("y axis")), 
                                choices = list("1" = 1, "2" = 2,"3" = 3,"4"= 4,"5" =5), selected = axe2,width='80%')))
         )),
         wellPanel(
-          h5("Save graphs as",align="center"),
+          h5(gettext("Save graphs as"),align="center"),
           radioButtons("paramdown","",
                       choices=list("PNG"="png","JPG"="jpg","PDF"="pdf"),selected="png")
         ),
-        div(align="center",actionButton("HCPCcode", "Get the MFA code")),
+        div(align="center",actionButton("HCPCcode", gettext("Get the MFA code"))),
         br(),
-        div(align="center",actionButton("Quit", "Quit the app"))
-        ),
+        div(align="center",actionButton("Quit", gettext("Quit the app")))
+        ,width=3),
       
       mainPanel(
         tabsetPanel(id = "graph_sort",
-                    tabPanel("Graphs",
-                             br(),
-                             div(align = "center",plotOutput("map5", width = 500, height=500)),
-                             br(),
-                             conditionalPanel(
-                               condition="input.paramdown=='png'",
-                               p(downloadButton("downloadData11","Download as png"),align="center")),
-                             conditionalPanel(
-                               condition="input.paramdown=='jpg'",
-                               p(downloadButton("downloadData12","Download as jpg"),align="center")),
-                             conditionalPanel(
-                               condition="input.paramdown=='pdf'",
-                               p(downloadButton("downloadData13","Download as pdf"),align="center")),
-                             div(align = "center",plotOutput("map", width = 500, height=500)),
-                             br(),
-                             conditionalPanel(
-                               condition="input.paramdown=='jpg'",
-                               p(downloadButton("downloadData1","Download as jpg"),align="center")),
-                             conditionalPanel(
-                               condition="input.paramdown=='png'",
-                               p(downloadButton("downloadData","Download as png"),align="center")),
-                             conditionalPanel(
-                               condition="input.paramdown=='pdf'",
-                               p(downloadButton("downloadData2","Download as pdf"),align="center")),
-                             br(),
-                             div(align = "center",uiOutput("map22")),
-                             br(),
-                             conditionalPanel(
-                               condition="input.paramdown=='jpg'",
-                               div(uiOutput("download4"),align="center")),
-                             conditionalPanel(
-                               condition="input.paramdown=='png'",
-                               div(uiOutput("download3"),align="center")),
-                             conditionalPanel(
-                               condition="input.paramdown=='pdf'",
-                               div(uiOutput("download5"),align="center")),
-                             br(),
-                             div(align = "center",plotOutput("map4", width = 500, height=500)),
+                    tabPanel(gettext("Graphs"),
+     fluidRow(
+                 br(),
+                 column(width = 6,plotOutput("map5", width = "500", height="500"),
+#                             div(align = "center",plotOutput("map5", width = 500, height=500)),
                              br(),
                              conditionalPanel(
                                condition="input.paramdown=='png'",
-                               p(downloadButton("downloadData15","Download as png"),align="center")),
+                               p(downloadButton("downloadData11",gettext("Download as png")),align="center")),
                              conditionalPanel(
                                condition="input.paramdown=='jpg'",
-                               p(downloadButton("downloadData16","Download as jpg"),align="center")),
+                               p(downloadButton("downloadData12",gettext("Download as jpg")),align="center")),
                              conditionalPanel(
                                condition="input.paramdown=='pdf'",
-                               p(downloadButton("downloadData17","Download as pdf"),align="center")),
-                             div(align = "center",uiOutput("map66")),
+                               p(downloadButton("downloadData13",gettext("Download as pdf")),align="center")),
+							 align="center"),
+                 column(width = 6,plotOutput("map", width = "500", height="500"),
+#                             div(align = "center",plotOutput("map", width = 500, height=500)),
+                             br(),
+                             conditionalPanel(
+                               condition="input.paramdown=='jpg'",
+                               p(downloadButton("downloadData1",gettext("Download as jpg")),align="center")),
+                             conditionalPanel(
+                               condition="input.paramdown=='png'",
+                               p(downloadButton("downloadData",gettext("Download as png")),align="center")),
+                             conditionalPanel(
+                               condition="input.paramdown=='pdf'",
+                               p(downloadButton("downloadData2",gettext("Download as pdf")),align="center")),
+                             conditionalPanel(
+                               condition="input.paramdown=='emf'",
+                               p(downloadButton("downloadData7",gettext("Download as emf")),align="center")),
+							 align="center")),
+ fluidRow(
+                             br(),
+                 column(width = 6,uiOutput("map22", width = "500", height="500"),
+#                             div(align = "center",uiOutput("map22")),
+                             br(),
+                             conditionalPanel(
+                               condition="input.paramdown=='jpg'",
+                               p(downloadButton("download4",gettext("Download as jpg")),align="center")),
+                             conditionalPanel(
+                               condition="input.paramdown=='png'",
+                               p(downloadButton("download3",gettext("Download as png")),align="center")),
+                             conditionalPanel(
+                               condition="input.paramdown=='pdf'",
+                               p(downloadButton("download5",gettext("Download as pdf")),align="center")),
+							 align="center"),
+                 column(width = 6,plotOutput("map4", width = "500", height="500"),
+#                             div(align = "center",plotOutput("map4", width = 500, height=500)),
+                             br(),
+                             conditionalPanel(
+                               condition="input.paramdown=='png'",
+                               p(downloadButton("downloadData15",gettext("Download as png")),align="center")),
+                             conditionalPanel(
+                               condition="input.paramdown=='jpg'",
+                               p(downloadButton("downloadData16",gettext("Download as jpg")),align="center")),
+                             conditionalPanel(
+                               condition="input.paramdown=='pdf'",
+                               p(downloadButton("downloadData17",gettext("Download as pdf")),align="center")),
+							 align="center")),
+ fluidRow(
+                             br(),
+                 column(width = 6,plotOutput("map66", width = "500", height="500"),
+#                             div(align = "center",uiOutput("map66")),
                              br(),
                              conditionalPanel(
                                condition="input.paramdown=='png'",
@@ -142,91 +165,105 @@ shinyUI(fluidPage(
                              conditionalPanel(
                                condition="input.paramdown=='pdf'",
                                div(uiOutput("download21"),align="center"))
-                             ),
+                             ,align="center"))),
 
-                    tabPanel("Values",
+                    tabPanel(gettext("Values"),
                              br(),
-                             radioButtons("out","Which value would you like to see ?",
-                                          choices=list("Summary of MFA"="MFA","Eigenvalues"="eig","Results for the individuals"="ind",
-                                                       "Results for the quantitative variables"="quantvar","Results for the groups"="group","Results for the partial axes"="partaxe"),selected="MFA",inline=TRUE),
+                             radioButtons("out",gettext("Which outputs do you want?"),
+                                          choices=list(gettext("Summary of outputs"),gettext("Eigenvalues"),gettext("Results for the individuals"),
+                                                       gettext("Results for the quantitative variables"),gettext("Results for the groups"),gettext("Results for the partial axes")),inline=TRUE),
                              conditionalPanel(
-                               condition="input.out=='eig'",
-                               tableOutput("sorties"),
-                               plotOutput("map3")),
-                             conditionalPanel(
-                               condition="input.out=='MFA'",
+#                               condition="input.out=='MFA'",
+                               condition=paste("input.out=='",gettext("Summary of outputs"),"'",sep=''),
                                verbatimTextOutput("summaryMFA")
                                ),
                              conditionalPanel(
-                               condition="input.out=='ind'",
-                               radioButtons("out2","What type of results ?",choices=list("Coordinates"="coord","Contributions"="contrib","CosÂ²"="cos2","Within inertia"="witi",
-                                                                                         "Partial Coordinates"="partco","Within partial inertia"="wpi"),selected="coord",inline=TRUE),
+#                               condition="input.out=='eig'",
+                               condition=paste("input.out=='",gettext("Eigenvalues"),"'",sep=''),
+                               tableOutput("sorties"),
+                               plotOutput("map3", width = "700", height="500")),
+                             conditionalPanel(
+                               condition=paste("input.out=='",gettext("Results for the individuals"),"'",sep=''),
+#                               condition="input.out=='ind'",
+                               radioButtons("out2",gettext("What type of results?"),choices=list(gettext("Coordinates"),gettext("Contributions"),gettext("Cos2"),gettext("Within inertia"),
+                                                                                         gettext("Partial coordinates"),gettext("Within partial inertia")),selected=gettext("Coordinates"),inline=TRUE),
                                conditionalPanel(
-                                 condition="input.out2=='coord'",
+                               condition=paste("input.out2=='",gettext("Coordinates"),"'",sep=''),
+#                                 condition="input.out2=='coord'",
                                  div(align="center",tableOutput("sorties1"))),
                                conditionalPanel(
-                                 condition="input.out2=='contrib'",
+                               condition=paste("input.out2=='",gettext("Contributions"),"'",sep=''),
+#                                 condition="input.out2=='contrib'",
                                  div(align="center",tableOutput("sorties2"))),
                                conditionalPanel(
-                                 condition="input.out2=='cos2'",
+                               condition=paste("input.out2=='",gettext("Cos2"),"'",sep=''),
+#                                 condition="input.out2=='cos2'",
                                  div(align="center",tableOutput("sorties3"))),
                                conditionalPanel(
-                                 condition="input.out2=='witi'",
+#                                 condition="input.out2=='witi'",
+                               condition=paste("input.out2=='",gettext("Within inertia"),"'",sep=''),
                                  div(align="center",tableOutput("sorties4"))),
                                conditionalPanel(
-                                 condition="input.out2=='partco'",
+#                                 condition="input.out2=='partco'",
+                               condition=paste("input.out2=='",gettext("Partial coordinates"),"'",sep=''),
                                  div(align="center",tableOutput("sorties5"))),
                                conditionalPanel(
-                                 condition="input.out2=='wpi'",
+                               condition=paste("input.out2=='",gettext("Within partial inertia"),"'",sep=''),
+#                                 condition="input.out2=='wpi'",
                                  div(align="center",tableOutput("sorties6")))
                                ),
                              conditionalPanel(
-                               condition="input.out=='quantvar'",
-                               radioButtons("out3","What type of results ?",choices=list("Coordinates"="coord","Contributions"="contrib","CosÂ²"="cos2","Correlations"="cor"),selected="coord",inline=TRUE),
+                               condition=paste("input.out=='",gettext("Results for the quantitative variables"),"'",sep=''),
+#                               condition="input.out=='quantvar'",
+                               radioButtons("out3","What type of results?",choices=list(gettext("Coordinates"),gettext("Contributions"),gettext("Cos2"),gettext("Correlations")),selected=gettext("Coordinates"),inline=TRUE),
                                conditionalPanel(
-                                 condition="input.out3=='coord'",
+                               condition=paste("input.out3=='",gettext("Coordinates"),"'",sep=''),
+#                                 condition="input.out3=='coord'",
                                  div(align="center",tableOutput("sorties11"))),
                                conditionalPanel(
-                                 condition="input.out3=='contrib'",
+                               condition=paste("input.out3=='",gettext("Contributions"),"'",sep=''),
                                  div(align="center",tableOutput("sorties22"))),
                                conditionalPanel(
-                                 condition="input.out3=='cos2'",
+                               condition=paste("input.out3=='",gettext("Cos2"),"'",sep=''),
                                  div(align="center",tableOutput("sorties33"))),
                                conditionalPanel(
-                                 condition="input.out3=='cor'",
+                               condition=paste("input.out3=='",gettext("Correlations"),"'",sep=''),
                                  div(align="center",tableOutput("sorties44")))
                              ),
                              conditionalPanel(
-                               condition="input.out=='group'",
+                               condition=paste("input.out=='",gettext("Results for the groups"),"'",sep=''),
+#                               condition="input.out=='group'",
                                div(align="center",tableOutput("sortiegroup"))
                                ),
                              conditionalPanel(
-                               condition="input.out=='partaxe'",
-                               radioButtons("out4","What type of results ?",choices=list("Coordinates"="coord","Correlations"="cor","Contribution"="contrib","Correlations between"="cor.btw"),selected="coord",inline=TRUE),
+#                               condition="input.out=='partaxe'",
+                               condition=paste("input.out=='",gettext("Results for the partial axes"),"'",sep=''),
+                               radioButtons("out4",gettext("What type of results?"),choices=list(gettext("Coordinates"),gettext("Correlations"),gettext("Contribution"),gettext("Correlations between")),selected=gettext("Coordinates"),inline=TRUE),
                                conditionalPanel(
-                                 condition="input.out4=='coord'",
+                               condition=paste("input.out4=='",gettext("Coordinates"),"'",sep=''),
+#                                 condition="input.out4=='coord'",
                                  div(align="center",tableOutput("sorties12"))),
                                conditionalPanel(
-                                 condition="input.out4=='cor'",
+                               condition=paste("input.out4=='",gettext("Correlations"),"'",sep=''),
                                  div(align="center",tableOutput("sorties23"))),
+                               # conditionalPanel(
+                               # condition=paste("input.out4=='",gettext("Contributions"),"'",sep=''),
+                                 # div(align="center",tableOutput("sorties34"))),
                                conditionalPanel(
-                                 condition="input.out4=='contrib'",
-                                 div(align="center",tableOutput("sorties34"))),
-                               conditionalPanel(
-                                 condition="input.out4=='cor.btw'",
+                               condition=paste("input.out4=='",gettext("Correlations between"),"'",sep=''),
                                  div(align="center",tableOutput("sorties45")))
                                )
                              
                              ),
-                    tabPanel("Summary of dataset",
+                    tabPanel(gettext("Summary of dataset"),
                              br(),
                              verbatimTextOutput("summary")),
                     
-                    tabPanel("Data",
+                    tabPanel(gettext("Data"),
                              br(),
                              dataTableOutput("JDD")
                              )
         )
-      )
+      ,width=9)
     )
 ))

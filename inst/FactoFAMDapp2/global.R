@@ -1,4 +1,4 @@
-#global script for PCA2
+#global script for FAMD
 if(inherits(x, "data.frame")){
   nomData=nomData
   newdata=x
@@ -19,9 +19,9 @@ if(inherits(x, "data.frame")){
   size=1
   size2=1
   size3=1
-  title1="Individual factor map"
-  title2="Variables representation"
-  title3="Correlation circle"
+  title1=gettext("Graph of individuals and categories")
+  title2=gettext("Graph of the variables")
+  title3=gettext("Correlation circle")
 }
 
 if(inherits(x, "FAMDshiny")){
@@ -51,8 +51,9 @@ if(inherits(x, "FAMDshiny")){
 if(inherits(x, "FAMD")){
   nomData=as.character(x$call$call[2])
   newdata=x$call$X
-  quantisup=colnames(x$call$quanti.sup)
-  qualisup=colnames(x$call$quali.sup$quali.sup)
+  quantisup=qualisup=NULL
+  if (sum(x$call$nature.var=="quanti.sup")>0) quantisup=which(x$call$nature.var=="quanti.sup")
+  if (sum(x$call$nature.var=="quali.sup")>0) qualisup=which(x$call$nature.var=="quali.sup")
   indsupl=rownames(x$ind.sup$coord)
   axe1=1
   axe2=2
@@ -66,9 +67,9 @@ if(inherits(x, "FAMD")){
   size=1
   size2=1
   size3=1
-  title1="Individual factor map"
-  title2="Variables representation"
-  title3="Correlation circle"
+  title1=gettext("Graph of individuals and categories")
+  title2=gettext("Graph of the variables")
+  title3=gettext("Correlation circle")
   labind=TRUE
   labvar=TRUE
 }  
@@ -82,3 +83,4 @@ QualiChoice=quali
 IdChoices=c(1:length(VariableChoices))
 Idqualisup=c(1:length(QualiChoice))
 Idall=c(1:length(all))
+nomData=unlist(strsplit(as.character(nomData),"\\["))[1]

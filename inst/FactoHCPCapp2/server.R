@@ -1,8 +1,12 @@
 # server script for HCPC
 shinyServer(
   function(input, output) {
-    res.HCPC=reactive({
-    (HCPC(results,nb.clust=input$clust,consol=input$consoli,graph=FALSE,metric=input$metric))
+    # res.HCPC=reactive({
+    # (HCPC(results,nb.clust=input$clust,consol=input$consoli,graph=FALSE,metric=input$metric))
+    # })
+	res.HCPC=reactive({
+    (if (input$metric=="Manhattan") HCPC(results,nb.clust=input$clust,consol=input$consoli,graph=FALSE,metric="manhattan")
+    else HCPC(results,nb.clust=input$clust,consol=input$consoli,graph=FALSE,metric="euclidean"))
     })
     
     ### Recuperation des parametres
@@ -58,8 +62,10 @@ shinyServer(
     })
     
     Code <- function(){
-      Call1=as.name(paste("res.HCPC<-HCPC(",nomData,",nb.clust=",input$clust,",consol=",input$consoli,",graph=FALSE,metric='",input$metric,"')",sep="")) 
-      return(Call1)
+#      Call1=as.name(paste("res.HCPC<-HCPC(",nomData,",nb.clust=",input$clust,",consol=",input$consoli,",graph=FALSE,metric='",input$metric,"')",sep="")) 
+	  if (input$metric==gettext("Euclidean")) Call1=as.name(paste("res.HCPC<-HCPC(",nomData,",nb.clust=",input$clust,",consol=",input$consoli,",graph=FALSE,metric='euclidean')",sep="")) 
+      if (input$metric=="Manhattan") Call1=as.name(paste("res.HCPC<-HCPC(",nomData,",nb.clust=",input$clust,",consol=",input$consoli,",graph=FALSE,metric='manhattan')",sep=""))
+	  return(Call1)
     }
     
     Plot1Code <- function(){
@@ -113,8 +119,8 @@ shinyServer(
       }
     }
     
-    output$map4=renderPlot({
-      p=Plot4()
+    output$map4 <- renderPlot({
+      p <- Plot4()
     })
     
     output$sorties=renderTable({
@@ -125,24 +131,23 @@ shinyServer(
         return(as.data.frame(res.HCPC()$ind.desc))
       }
     })
-    
 
     output$clusters=renderUI({
       choix=baba
       if((inherits(x, "PCA") | inherits(x, "MCA") | inherits(x, "CA"))){
         if(nbindiv<=11){
-          return(sliderInput("clust","Number of clusters",min=2,max=(nbindiv-1),value=baba,step=1))
+          return(sliderInput("clust",gettext("Number of clusters"),min=2,max=(nbindiv-1),value=baba,step=1))
         }
         else{
-          return(sliderInput("clust","Number of clusters",min=2,max=10,value=baba,step=1))
+          return(sliderInput("clust",gettext("Number of clusters"),min=2,max=10,value=baba,step=1))
         }
       }
       else{
       if(nbindiv<=11){
-        return(sliderInput("clust","Number of clusters",min=2,max=(nbindiv-1),value=clustdf,step=1))
+        return(sliderInput("clust",gettext("Number of clusters"),min=2,max=(nbindiv-1),value=clustdf,step=1))
       }
       else{
-        return(sliderInput("clust","Number of clusters",min=2,max=10,value=clustdf,step=1))
+        return(sliderInput("clust",gettext("Number of clusters"),min=2,max=10,value=clustdf,step=1))
       }
       }
     })
@@ -152,8 +157,6 @@ shinyServer(
       options = list(    "orderClasses" = TRUE,
                          "responsive" = TRUE,
                          "pageLength" = 10))
-
-
     
     output$downloadData = downloadHandler(
       filename = function() { 
@@ -253,10 +256,7 @@ shinyServer(
         dev.off()
       },
       contentType=NA)
-    
-
-
-    
+        
     ### Fonction permettant d'afficher la description des classes par les variables
     output$descript=renderTable({
       write.infile(X=res.HCPC()$desc.var$quanti,file=paste(getwd(),"essai.csv"),sep=";")
@@ -290,10 +290,6 @@ shinyServer(
       file.remove(paste(getwd(),"essai2.csv"))
       baba
     },
-    include.rownames=FALSE)
-    
-    
+    include.rownames=FALSE)    
   }
 )
-      
-

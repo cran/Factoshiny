@@ -17,8 +17,12 @@ shinyServer(
       (HCPC(values()$res.PCA,nb.clust=-1,graph=FALSE)$call$t$nb.clust)
     })
     
-    res.HCPC=reactive({
-    (HCPC(values()$res.PCA,nb.clust=input$clust,consol=input$consoli,graph=FALSE,metric=input$metric))
+    # res.HCPC=reactive({
+    # (HCPC(values()$res.PCA,nb.clust=input$clust,consol=input$consoli,graph=FALSE,metric=input$metric))
+    # })
+	res.HCPC=reactive({
+    (if (input$metric=="Manhattan") HCPC(values()$res.PCA,nb.clust=input$clust,consol=input$consoli,graph=FALSE,metric="manhattan")
+    else HCPC(values()$res.PCA,nb.clust=input$clust,consol=input$consoli,graph=FALSE,metric="euclidean"))
     })
     
     ### Recuperation des parametres
@@ -71,7 +75,9 @@ shinyServer(
     })
     
     Code <- function(){
-      Call1=as.name(paste("res.HCPC<-HCPC(",nomData,",nb.clust=",input$clust,",consol=",input$consoli,",graph=FALSE,metric='",input$metric,"')",sep="")) 
+#      Call1=as.name(paste("res.HCPC<-HCPC(",nomData,",nb.clust=",input$clust,",consol=",input$consoli,",graph=FALSE,metric='",input$metric,"')",sep="")) 
+	  if (input$metric==gettext("Euclidean")) Call1<-as.name(paste("res.HCPC<-HCPC(",nomData,",nb.clust=",input$clust,",consol=",input$consoli,",graph=FALSE,metric='euclidean')",sep="")) 
+      if (input$metric=="Manhattan") Call1<-as.name(paste("res.HCPC<-HCPC(",nomData,",nb.clust=",input$clust,",consol=",input$consoli,",graph=FALSE,metric='manhattan')",sep=""))
       return(Call1)
     }
     
@@ -134,13 +140,17 @@ shinyServer(
       p <- Plot2()
     })
     
-    output$map4=renderPlot({
+    Plot4=function(){
       if(is.null(input$clust)){
         return()
       }
       else{
-      return(plot.HCPC(res.HCPC(),choice="tree",title=input$title3))
+        return(plot.HCPC(res.HCPC(),choice="tree",title=input$title3))
       }
+    }
+    
+    output$map4=renderPlot({
+      p=Plot4()
     })
     
     output$sorties=renderTable({

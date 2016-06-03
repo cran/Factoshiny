@@ -8,12 +8,17 @@ if(inherits(x, "data.frame")){
   axe1=1
   axe2=2
   Invisible=NULL
-  selec1="no"
-  selec2="no"
+  selec1=gettext("No selection")
+  selec2=gettext("No selection")
   valueselec1=NULL
   valueselec2=NULL
   size=1
-  title1="CA factor map"
+  title1=gettext("CA factor map")
+  col1="blue"
+  col2="red"
+  col3="darkblue"
+  col4="darkred"
+  ellipses=NULL
 }
 
 if(inherits(x, "CAshiny")){
@@ -31,6 +36,11 @@ valueselec1=x$selec1
 valueselec2=x$selec2
 size=x$taille
 title1=x$title1
+col1=x$col1
+col2=x$col2
+col3=x$col3
+col4=x$col4
+ellipses=x$ellip
 }
 
 if(inherits(x, "CA")){
@@ -43,12 +53,17 @@ if(inherits(x, "CA")){
   axe1=1
   axe2=2
   Invisible=NULL
-  selec1="no"
-  selec2="no"
+  selec1=gettext("No selection")
+  selec2=gettext("No selection")
   valueselec1=NULL
   valueselec2=NULL
   size=1
-  title1="CA factor map"
+  title1=gettext("CA factor map")
+  col1="blue"
+  col2="red"
+  col3="darkblue"
+  col4="darkred"
+  ellipses=NULL
 }
 
 withna=c()
@@ -103,3 +118,4 @@ if(is.null(sup2)){
   nom=noms
 }
 num=c(1:length(nom))
+nomData=unlist(strsplit(as.character(nomData),"\\["))[1]

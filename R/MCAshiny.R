@@ -9,7 +9,7 @@ MCAshiny <-
     assign("nomData", nameJDD, envir=G)
     
     if((is.data.frame(X)==FALSE)&&(class(X)!="MCAshiny")&&!(inherits(X, "MCA")))
-      stop('X is not a dataframe or a result from a MCA analysis')
+      stop(gettext('X is not a dataframe or a result from a MCA analysis'))
     
    
     
@@ -18,7 +18,7 @@ MCAshiny <-
       if(is.data.frame(X)==TRUE){
         quali=names(which(!(sapply(X,is.numeric))))
       if(length(quali)<=2)
-        stop('not enought qualitative variables in your dataset') 
+        stop(gettext('not enough qualitative variables in your dataset'))
       }
       ###
       a=shiny::runApp(system.file("FactoMCAapp2",package="Factoshiny"),launch.browser = TRUE)

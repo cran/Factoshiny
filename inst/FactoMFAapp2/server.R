@@ -6,36 +6,36 @@ shinyServer(
     ### fonctions graphiques
     Plot1 <- function(){
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )      
-      if(input$choixpartial==1){
+      if(input$choixpartial==gettext("None")){
         part=NULL
       }
-      if(input$choixpartial==2){
+      if(input$choixpartial==gettext("All")){
         part="all"
       }
-      if(input$choixpartial==3){
+      if(input$choixpartial==gettext("Choose")){
         part=input$indivpartiel
       }
       lapbar=TRUE
-      if(input$choixpartial!=1 && input$partind==FALSE){
+      if(input$choixpartial!=gettext("None") && input$partind==FALSE){
         lapbar=FALSE
       }
       habi="none"
       if(!(is.null(input$drawind))){
-      if(input$choixpartial==1 && input$drawind=="a"){
-        habi="group"
+      if(input$choixpartial==gettext("None") && input$drawind==gettext("No selection")){
+        habi="none"
       }
-      else if(input$choixpartial==1 && input$drawind=="b"){
+      else if(input$choixpartial==gettext("None") && input$drawind==gettext("individual")){
         habi="ind"
       }
-      else if((input$choixpartial==2 || input$choixpartial==3) && input$drawind=="a"){
+      else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("individual")){
         habi="ind"
       }
-      else if((input$choixpartial==2 || input$choixpartial==3) && input$drawind=="b"){
+      else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("group")){
         habi="group"
       }
-      else if(input$drawind=="c"){
+      else if(input$drawind==gettext("categorical variable")){
         habi=input$habiquali
       }
       }
@@ -65,7 +65,7 @@ shinyServer(
       if(input$colorgroup==FALSE){
         habi="none"
       }
-      if(input$selection=="no"){
+      if(input$selection==gettext("No selection")){
         selec=NULL
       }
       if(input$selection=="contrib"){
@@ -79,7 +79,14 @@ shinyServer(
           selec="cos2 0.999"
         }
       }
-      invi="none"
+#      invi="none"
+      #if (hide=="non") invi="none"
+      if(is.null(input$hides)){
+        invi="none"}else{
+	  if (input$hides==gettext("Nothing")) invi="none"
+	  if (input$hides==gettext("Active variables")) invi="quanti"
+	  if (input$hides==gettext("Supplementary variables")) invi="quanti.sup"
+        }
       plot.MFA(code,choix="var",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),habillage=habi,title=input$title3,select=selec,invisible=invi)
     }
     
@@ -89,14 +96,14 @@ shinyServer(
     
     output$map22=renderUI({
       validate(
-        need(!(is.null(code$quanti.var)),"No quantitative group")
+        need(!(is.null(code$quanti.var)),gettext("No quantitative group"))
       )
       plotOutput("map2", width = 500, height=500)
     })
     
     Plot5 <- function(){
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       plot.MFA(code,choix="group",title=input$title1,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)))
     }
@@ -107,7 +114,7 @@ shinyServer(
     
     Plot4 <- function(){
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       if(input$coloraxe==TRUE){
         habi="group"
@@ -134,10 +141,10 @@ shinyServer(
     
     output$map66=renderUI({
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       if(is.null(code$freq)){
-        return(p("No group of frequencies"))
+        return(p(gettext("No groups of frequencies")))
       }
       else{
         return(plotOutput("map6", width = 500, height=500))
@@ -146,11 +153,11 @@ shinyServer(
 
     
     output$drawindiv=renderUI({
-      if(input$choixpartial==1){
-        return(radioButtons("drawind",h6("Select drawing"),choices=list("No selection"= "a","By individual"="b","By categorical variable"="c"),selected=drawing,inline=TRUE))
+      if(input$choixpartial==gettext("None")){
+        return(radioButtons("drawind",h6(gettext("Drawing by")),choices=list(gettext("No selection"),gettext("individual"),gettext("categorical variable")),selected=drawing,inline=TRUE))
       }
       else{
-        return(radioButtons("drawind",h6("Select drawing"),choices=list("By individual"= "a","By group"="b","By categorical variable"="c"),selected=drawing,inline=TRUE))
+        return(radioButtons("drawind",h6(gettext("Drawing by")),choices=list(gettext("individual"),gettext("group"),gettext("categorical variable")),selected=drawing,inline=TRUE))
       }
     })
     
@@ -166,7 +173,7 @@ shinyServer(
           }
         }
       else{
-        p("No group of categorical variable")
+        p(gettext("No groups of categorical variable"))
       }
     })
     
@@ -216,22 +223,22 @@ shinyServer(
       res$code3=codeGraph3()
       res$code4=codeGraph4()
       res$code5=codeGraph5()
-      title1=input$title1
-      title2=input$title2
-      title3=input$title3
-      title4=input$title4
-      title5=input$title5
+      res$title1=input$title1
+      res$title2=input$title2
+      res$title3=input$title3
+      res$title4=input$title4
+      res$title5=input$title5
       class(res)="MFAshiny"
       return(res)
     }
     
     output$indivpartiel2=renderUI({
       if(is.null(partial2)){
-        return(selectInput("indivpartiel",label=h6("Select the individuals :"),
+        return(selectInput("indivpartiel",label=h6(gettext("Select individuals")),
                            choices=list(num=nom),multiple=TRUE))
       }
       else{
-        return(selectInput("indivpartiel",label=h6("Select the individuals :"),
+        return(selectInput("indivpartiel",label=h6(gettext("Select individuals")),
                            choices=list(num=nom),multiple=TRUE,selected=partial2))
       }
     })
@@ -240,28 +247,28 @@ shinyServer(
       if(inherits(x,"MFA")){
       maxlength=dim(code$quanti.var$coord)[1]
       if(input$selection=="contrib"){
-        return(sliderInput("slider2",h6("Number of the most contributive variables"),min=1, max=maxlength, value=maxlength, step=1))
+        return(sliderInput("slider2",h6(gettext("Number of the most contributive variables")),min=1, max=maxlength, value=maxlength, step=1))
       }
       if(input$selection=="cos2"){
-        return(sliderInput("slider3",h6("Number of variables with highest cos2"),min=0, max=1, value=1, step=0.01))
+        return(sliderInput("slider3",h6(gettext("Number of variables with highest cos2")),min=0, max=1, value=1, step=0.01))
       }
       }
       if(inherits(x,"MFAshiny")){
         maxlength=dim(code$quanti.var$coord)[1]
         if(input$selection=="contrib"){
           if(selectvar=="contrib"){
-          return(sliderInput("slider2",h6("Number of the most contributive variables"),min=1, max=maxlength, value=selectvar2, step=1))
+          return(sliderInput("slider2",h6(gettext("Number of the most contributive variables")),min=1, max=maxlength, value=selectvar2, step=1))
           }
           else{
-            return(sliderInput("slider2",h6("Number of the most contributive variables"),min=1, max=maxlength, value=maxlength, step=1))  
+            return(sliderInput("slider2",h6(gettext("Number of the most contributive variables")),min=1, max=maxlength, value=maxlength, step=1))  
           }
           }
         if(input$selection=="cos2"){
           if(selectvar=="cos2"){
-          return(sliderInput("slider3",h6("Number of variables with highest cos2"),min=0, max=1, value=selectvar2, step=0.01))
+          return(sliderInput("slider3",h6(gettext("Number of variables with highest cos2")),min=0, max=1, value=selectvar2, step=0.01))
           }
           else{
-            return(sliderInput("slider3",h6("Number of variables with highest cos2"),min=0, max=1, value=1, step=0.01))  
+            return(sliderInput("slider3",h6(gettext("Number of variables with highest cos2")),min=0, max=1, value=1, step=0.01))  
           }
           }  
       }
@@ -269,7 +276,11 @@ shinyServer(
     
     output$hide2=renderUI({
       if(!(is.null(code$quanti.var.sup))){
-        return(radioButtons("hides",h6("Hide :"),choices=list("Nothing"="non","Active variables"="act","Supplementary variables"="sup"),selected=hide))
+        if(!is.null(hide)){
+        return(radioButtons("hides",h6(gettext("Hide:")),choices=list(gettext("Nothing"),gettext("Active variables"),gettext("Supplementary variables")),selected=hide))
+        }else{
+          return(radioButtons("hides",h6(gettext("Hide:")),choices=list(gettext("Nothing"),gettext("Active variables"),gettext("Supplementary variables")),selected=gettext("Nothing")))
+        }
       }
     })
     
@@ -333,7 +344,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData3","Download as png"))
+        return(downloadButton("downloadData3",gettext("Download as png")))
       }
     })
     
@@ -421,7 +432,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData19","Download as png"))
+        return(downloadButton("downloadData19",gettext("Download as png")))
       }
     })
     
@@ -441,7 +452,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData20","Download as jpg"))
+        return(downloadButton("downloadData20",gettext("Download as jpg")))
       }
     })
     
@@ -461,7 +472,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData21","Download as pdf"))
+        return(downloadButton("downloadData21",gettext("Download as pdf")))
       }
     })
     
@@ -514,7 +525,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData4","Download as jpg"))
+        return(downloadButton("downloadData4",gettext("Download as jpg")))
       }
     })
     
@@ -534,7 +545,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData5","Download as pdf"))
+        return(downloadButton("downloadData5",gettext("Download as pdf")))
       }
     })
     
@@ -648,15 +659,15 @@ shinyServer(
     })
     
     codeGraph1<-function(){
-      if(input$choixpartial==1){
+      if(input$choixpartial==gettext("None")){
         part="NULL"
       }
-      if(input$choixpartial==2){
+      if(input$choixpartial==gettext("All")){
         part="all"
       }
-      if(input$choixpartial==3){
+      if(input$choixpartial==gettext("Choose")){
         part1=input$indivpartiel
-        if(length(input$indivpartiel)==1){
+        if(length(input$indivpartiel)==gettext("None")){
           part=paste("'",part1,"'")
         }
         if(length(input$indivpartiel)>1){
@@ -669,24 +680,24 @@ shinyServer(
         }
       }
       lapbar=TRUE
-      if(input$choixpartial!=1 && input$partind==FALSE){
+      if(input$choixpartial!=gettext("None") && input$partind==FALSE){
         lapbar=FALSE
       }
       habi="none"
       if(!(is.null(input$drawind))){
-        if(input$choixpartial==1 && input$drawind=="a"){
+        if(input$choixpartial==gettext("None") && input$drawind==gettext("No selection")){
           habi="group"
         }
-        else if(input$choixpartial==1 && input$drawind=="b"){
+        else if(input$choixpartial==gettext("None") && input$drawind==gettext("individual")){
           habi="ind"
         }
-        else if((input$choixpartial==2 || input$choixpartial==3) && input$drawind=="a"){
+        else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("individual")){
           habi="ind"
         }
-        else if((input$choixpartial==2 || input$choixpartial==3) && input$drawind=="b"){
+        else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("group")){
           habi="group"
         }
-        else if(input$drawind=="c"){
+        else if(input$drawind==gettext("categorical variable")){
           habi=input$habiquali
         }
       }
@@ -711,7 +722,7 @@ shinyServer(
       if(input$colorgroup==FALSE){
         habi="none"
       }
-      if(input$selection=="no"){
+      if(input$selection==gettext("No selection")){
         selec="NULL"
       }
       if(input$selection=="contrib"){
@@ -725,7 +736,15 @@ shinyServer(
           selec="cos2 0.999"
         }
       }
-      invi="none"
+#      invi="none"
+      #if (hide==gettext("Nothing")) invi="none"
+      if(is.null(input$hides)){
+        invi="none"
+      }else{
+	  if (input$hides==gettext("Nothing")) invi="none"
+	  if (input$hides==gettext("Active variables")) invi="quanti"
+	  if (input$hides==gettext("Supplementary variables")) invi="quanti.sup"
+      }
       Call2=paste("plot.MFA(res,choix='var',axes=c(",input$nb1,",",input$nb2,"),habillage='",habi,"',select=",selec,",title='",input$title3,"',invisible='",invi,"')",sep="")
       return(Call2)
     }
@@ -759,5 +778,3 @@ shinyServer(
 
   }
 )
-      
-

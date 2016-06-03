@@ -1,13 +1,13 @@
 # server script for PCA2
 shinyServer(
-  function(input, output) {
+  function(input, output,session) {
     values=reactive({
-    if (input$selecactive=="Toutes"){
+    if (input$selecactive==gettext("All")){
       data.selec=newdata[,VariableChoices]
     }
     else{
       validate(
-        need(length(input$supvar)>0, "Please select at least one supplementary variables")
+        need(length(input$supvar)>0, gettext("Please select at least one supplementary variable"))
       )
       data.selec=newdata[,c(getactive())]
     }
@@ -68,15 +68,15 @@ shinyServer(
         }
       }
     }
-    list(res.PCA=(PCA(data.selec,quali.sup=choixquali,quanti.sup=choixquanti,scale.unit=TRUE,graph=FALSE,ncp=5,ind.sup=suple)),DATA=(data.selec),choixquant=(choixquanti),choixqual=(choixquali),choixsuple=(suple))
+    list(res.PCA=(PCA(data.selec,quali.sup=choixquali,quanti.sup=choixquanti,scale.unit=input$nor,graph=FALSE,ncp=5,ind.sup=suple,row.w=poids1,col.w=poids2)),DATA=(data.selec),choixquant=(choixquanti),choixqual=(choixquali),choixsuple=(suple))
     })
     
     Plot1 <- reactive({
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       if(input$select0=="cos2"){
         if(input$slider00!=1){
@@ -87,7 +87,7 @@ shinyServer(
         }
         selecindivText=paste("'",selecindiv,"'",sep="")
       }
-      if(input$select0=="NONE"){
+      if(input$select0==gettext("No selection")){
         selecindiv=NULL
         selecindivText="NULL"
       }
@@ -95,23 +95,39 @@ shinyServer(
         selecindiv=paste("contrib ",input$slider4)
         selecindivText=paste("'",selecindiv,"'",sep="")
       }
-      list(PLOT=(plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="var",select=selecindiv,unselect=0,col.quanti.sup="blue",cex=input$cex2,cex.main=input$cex2,cex.axis=input$cex2,title=input$title2)),SELECTION=(selecindiv),selecindivText=(selecindivText))
+      if(is.null(input$colorsupvar)){
+        colo="blue"
+      }else{
+        colo=input$colorsupvar
+      }
+      list(PLOT=(plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="var",select=selecindiv,unselect=0,col.quanti.sup=colo,col.var=input$coloractvar,cex=input$cex2,cex.main=input$cex2,cex.axis=input$cex2,title=input$title2)),SELECTION=(selecindiv),selecindivText=(selecindivText))
     })
     
     output$map <- renderPlot({
       p <- Plot1()$PLOT
     })
     
+    observe({
+      if(input$habi==FALSE){
+      updateCheckboxInput(session, "elip", value = FALSE)
+      }
+    })
+    
     Plot2 <- reactive({
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       validate(
-        need(input$habiller == TRUE || input$habiller == FALSE || length(input$habiller)<=2,"Please select maximum 2 variables as habillage")
+        need(input$habiller == TRUE || input$habiller == FALSE || length(input$habiller)<=2,gettext("Please select maximum 2 variables as habillage"))
       )
+      if(!is.null(input$elip)){
+      validate(
+        need(!(input$habi==FALSE&&input$elip==TRUE),"")
+        )
+      }
       if(input$select=="cos2"){
         if(input$slider1!=1){
           selecindiv=paste("cos2 ",input$slider1)
@@ -121,7 +137,7 @@ shinyServer(
         }
         selecindivtext=paste0("'",selecindiv,"'")
       }
-      if(input$select=="NONE"){
+      if(input$select==gettext("No selection")){
         selecindiv=NULL
         selecindivtext="NULL"
       }
@@ -129,49 +145,49 @@ shinyServer(
         selecindiv=paste("contrib ",input$slider0)
         selecindivtext=paste0("'",selecindiv,"'")
       }
-      if(input$select=="Manuel"){
+      if(input$select==gettext("Manual")){
         selecindiv=c(input$indiv)
       }
       if(input$supquali==FALSE || length(QualiChoice)==0 || length(input$supquali)==0 || input$habi==FALSE){
         hab="none"
-        colquali="magenta"
+#        colquali="magenta"
       }
       else if(length(QualiChoice)==1 && input$supquali==TRUE){
         if(input$habi==TRUE){
           hab=QualiChoice
-          colquali="blue"
+#          colquali="blue"
         }
         else{
           hab="none"
-          colquali="magenta"
+#          colquali="magenta"
         }
       }
       else if (length(input$supquali)==1){
         if(input$habi==TRUE){
           hab=input$supquali
-          colquali="blue"
+#          colquali="blue"
         }
         else{
           hab="none"
-          colquali="magenta"
+#          colquali="magenta"
         }
       }
       if(length(input$supquali)>1){
         if(length(input$habiller)==0){
           hab="none"
-          colquali="magenta"
+#          colquali="magenta"
         }
         if (length(input$habiller)==1 & input$habi==TRUE){
           hab=as.character(input$habiller)
-          colquali="blue"
+#          colquali="blue"
         }
         if (length(input$habiller)==2 & input$habi==TRUE){
           hab=dim(values()$DATA)[2]
-          colquali="blue"
+#          colquali="blue"
         }
       }
       
-      if(input$select=="Manuel"){
+      if(input$select==gettext("Manual")){
         if(length(input$indiv)==0){
           selecindivtext="NULL"
         }
@@ -188,12 +204,57 @@ shinyServer(
           selecindivtext=paste0("'",c(input$indiv),"'")
         }
       }
-      list(PLOT=(plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="ind",cex=input$cex,cex.main=input$cex,cex.axis=input$cex,select=selecindiv,habillage=hab,col.quali=colquali,col.ind.sup="blue",title=input$title1)),SELECTION2=(selecindiv),SELECTION3=(selecindivtext),HABILLAGE=(hab),colquali=(colquali))
-      
+      if(!is.null(input$colorsup)){
+        colors=input$colorsup
+      }else{
+        colors="blue"
+      }
+      if(!is.null(input$colorquali)){
+        colorss=input$colorquali
+      }else{
+        colorss="magenta"
+      }
+      if(!is.null(input$elip)&&input$elip==TRUE){
+        if(!is.null(values()$res.PCA$call$ind.sup)){
+        aa=cbind.data.frame(values()$DATA[-c(values()$res.PCA$call$ind.sup),hab],values()$res.PCA$ind$coord)
+        }else{
+          aa=cbind.data.frame(values()$DATA[,hab],values()$res.PCA$ind$coord)
+        }
+        bb=coord.ellipse(aa,bar=TRUE)
+        formula=plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="ind",cex=input$cex,cex.main=input$cex,cex.axis=input$cex,select=selecindiv,habillage=hab,title=input$title1,ellipse=bb,col.ind=input$coloract,col.ind.sup=colors,col.quali=colorss)
+        
+      }else{
+        formula=plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="ind",cex=input$cex,cex.main=input$cex,cex.axis=input$cex,select=selecindiv,habillage=hab,title=input$title1,col.ind=input$coloract,col.ind.sup=colors,col.quali=colorss)
+      }
+      colquali=colorss
+      list(PLOT=(formula),SELECTION2=(selecindiv),SELECTION3=(selecindivtext),HABILLAGE=(hab),colquali=(colorss),colindsup=(colors), text="")      
     })
    
     output$map2 <- renderPlot({
-      p <- Plot2()$PLOT
+         p <- Plot2()$PLOT
+
+    })
+    
+    output$colourn2=renderUI({
+      sup=values()$choixsuple
+      if(!is.null(sup)){
+        if(!is.null(supind)){
+        return(shinyjs::colourInput("colorsup", h6(gettext("Choose colour for supplementary individuals")), supind))
+        }else{
+          return(shinyjs::colourInput("colorsup", h6(gettext("Choose colour for supplementary individuals")), "blue")) 
+        }
+      }
+    })
+    
+    output$colourn3=renderUI({
+      sup=values()$choixqual
+      if(!is.null(sup)){
+        if(!is.null(categ)){
+        return(shinyjs::colourInput("colorquali", h6(gettext("Choose colour for the categories")), categ))
+        }else{
+          return(shinyjs::colourInput("colorquali", h6(gettext("Choose colour for the categories")), "magenta"))
+        }
+      }
     })
     
     ### Boutton pour quitter l'application
@@ -257,13 +318,13 @@ shinyServer(
       if(input$select=="cos2"){
         selecindiv=input$slider1
       }
-      if(input$select=="NONE"){
+      if(input$select==gettext("No selection")){
         selecindiv=NULL
       }
       if(input$select=="contrib"){
         selecindiv=input$slider0
       }
-      if(input$select=="Manuel"){
+      if(input$select==gettext("Manual")){
         selecindiv=input$indiv
       }
       res$h=input$select
@@ -281,10 +342,24 @@ shinyServer(
       res$m=input$cex2
       res$code1=code()
       res$code2=codeGraphVar()
+      if(!is.null(input$elip)&&input$elip==TRUE){
+        res$codeellipse=codeellipses()
+        phrase2="bb=coord.ellipse(aa,bary=TRUE)"
+        res$codeellipse2=phrase2
+      }
       res$code3=codeGraphInd()
       res$title1=input$title1
       res$title2=input$title2
       res$anafact=values()$res.PCA
+      res$ellipses=input$elip
+      res$supin=input$colorsup
+      res$categ=input$colorquali
+      res$activeind=input$coloract
+      res$coloractvar=input$coloractvar
+      res$colorsupvar=input$colorsupvar
+      res$norme=input$nor
+      res$poids1=values()$res.PCA$call$row.W
+      res$poids2=values()$res.PCA$call$col.W
       class(res) <- "PCAshiny"
       return(res)
     }
@@ -301,6 +376,11 @@ shinyServer(
           }
           cat(code(),sep="\n")
           cat(codeGraphVar(),sep="\n")
+          if(!is.null(input$elip)&&input$elip==TRUE){
+            cat(codeellipses(),sep="\n")
+            phrase2="bb=coord.ellipse(aa,bary=TRUE)"
+            cat(phrase2,sep="\n")
+          }
           cat(codeGraphInd(),sep="\n")
         })
       }
@@ -312,7 +392,9 @@ shinyServer(
       choixqual<-values()$choixqual
       Datasel<-values()$DATA
       indsupl<-values()$choixsuple
-      
+      data1=newdata
+      data2=Datasel
+      test=identical(data1,data2)
       vec<-NULL
       for (i in 1:length(colnames(Datasel))){
         vec<-c(vec,colnames(Datasel)[i])
@@ -322,7 +404,11 @@ shinyServer(
       for (i in 2:(length(vec))){
         vec2<-paste(vec2,paste("'",vec[i],"'",sep=""),sep=",")
       }
+      if(test==FALSE){
       vecfinal<-paste(nomData,"[,c(",vec2,")","]",sep="")
+      }else{
+        vecfinal=nomData
+      }
       
       vec4<-NULL
       vec4<-paste(vec4,vecquant[1],sep="")
@@ -397,7 +483,21 @@ shinyServer(
       else if(length(QualiChoice)==0){
         vecqual<-"NULL"
       }
-      Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,",scale.unit=TRUE,graph=FALSE,ncp=5)",sep=""))
+      if(!is.null(poids1)){
+        prow=paste(",row.w=c(",paste(poids1,collapse=","),")",sep="")
+      }
+      if(!is.null(poids2)){
+        pcol=paste(",col.w=c(",paste(poids2,collapse=","),")",sep="")
+      }
+      if(!is.null(poids1)&&!is.null(poids2)){
+        Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,prow,pcol,",scale.unit=",input$nor,",graph=FALSE,ncp=5)",sep="")) 
+      }else if (!is.null(poids1)&&is.null(poids2)){
+        Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,prow,",scale.unit=",input$nor,",graph=FALSE,ncp=5)",sep="")) 
+      }else if (is.null(poids1)&&!is.null(poids1)){
+        Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,pcol,",scale.unit=",input$nor,",graph=FALSE,ncp=5)",sep="")) 
+      }else{
+      Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,",scale.unit=",input$nor,",graph=FALSE,ncp=5)",sep=""))
+      }
       return(Call1)
     }
     
@@ -410,10 +510,74 @@ shinyServer(
       else{
         selection=Plot1()$selecindivText
       }
-      Call1=paste("plot.PCA(res.PCA,axes=c(",input$nb1,",",input$nb2,"),choix='var',select=",selection,",cex=",input$cex2,",cex.main=",input$cex2,",cex.axis=",input$cex2,",title='",input$title2,"',unselect=0,col.quanti.sup='red')",sep="")
+      if(is.null(input$colorsupvar)){
+        colo="blue"
+      }else{
+        colo=input$colorsupvar
+      }
+      Call1=paste("plot.PCA(res.PCA,axes=c(",input$nb1,",",input$nb2,"),choix='var',select=",selection,",cex=",input$cex2,",cex.main=",input$cex2,",cex.axis=",input$cex2,",title='",input$title2,"',unselect=0,col.quanti.sup='",colo,"',col.var='",input$coloractvar,"')",sep="")
       return(Call1)
     }
     
+    codeellipses=function(){
+      Datasel<-values()$DATA
+      indsupl<-values()$choixsuple
+      
+      vec<-NULL
+      for (i in 1:length(colnames(Datasel))){
+        vec<-c(vec,colnames(Datasel)[i])
+      }
+      vec2<-NULL
+      vec2<-paste(vec2,"'",vec[1],"'",sep="")
+      for (i in 2:(length(vec))){
+        vec2<-paste(vec2,paste("'",vec[i],"'",sep=""),sep=",")
+      }
+      vecfinal<-paste(nomData,"[,c(",vec2,")","]",sep="")
+      vec=vecfinal
+      if(input$supquali==FALSE || length(QualiChoice)==0 || length(input$supquali)==0 || input$habi==FALSE){
+        hab="none"
+        colquali="magenta"
+      }
+      else if(length(QualiChoice)==1 && input$supquali==TRUE){
+        if(input$habi==TRUE){
+          hab=QualiChoice
+          colquali="blue"
+        }
+        else{
+          hab="none"
+          colquali="magenta"
+        }
+      }
+      else if (length(input$supquali)==1){
+        if(input$habi==TRUE){
+          hab=input$supquali
+          colquali="blue"
+        }
+        else{
+          hab="none"
+          colquali="magenta"
+        }
+      }
+      if(length(input$supquali)>1){
+        if(length(input$habiller)==0){
+          hab="none"
+          colquali="magenta"
+        }
+        if (length(input$habiller)==1 & input$habi==TRUE){
+          hab=as.character(input$habiller)
+          colquali="blue"
+        }
+        if (length(input$habiller)==2 & input$habi==TRUE){
+          hab=dim(values()$DATA)[2]
+          colquali="blue"
+        }
+      }
+      phrase1=paste("aa=cbind.data.frame(",vec,"[,'",hab,"'],res.PCA$ind$coord)",sep="")
+      #phrase2="bb=coord.ellipse(aa,bar=TRUE)"
+      #phrasefinal=paste(phrase1,phrase2,sep="\n")
+      return(phrase1)
+    }
+
     codeGraphInd<-function(){
       if (length(input$habiller)<=1 & input$habi==TRUE || input$habi==FALSE){
         hab=paste("'",Plot2()$HABILLAGE,"'",sep="")
@@ -421,8 +585,11 @@ shinyServer(
       else if (length(input$habiller)==2 & input$habi==TRUE){
         hab=Plot2()$HABILLAGE
       }
-      
-      Call2=paste("plot.PCA(res.PCA,","axes=c(",input$nb1,",",input$nb2,"),choix='ind',select=",Plot2()$SELECTION3,",habillage=",hab,",title='",input$title1,"',cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex,",col.quali='",Plot2()$colquali,"',col.ind.sup='blue')",sep="")
+      if(!is.null(input$elip)&&input$elip==TRUE){
+      Call2=paste("plot.PCA(res.PCA,","axes=c(",input$nb1,",",input$nb2,"),choix='ind',select=",Plot2()$SELECTION3,",habillage=",hab,",title='",input$title1,"',cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex,",col.ind='",input$coloract,"',col.ind.sup='",Plot2()$colindsup,"',col.quali='",Plot2()$colquali,"',ellipse=bb)",sep="")
+      }else{
+        Call2=paste("plot.PCA(res.PCA,","axes=c(",input$nb1,",",input$nb2,"),choix='ind',select=",Plot2()$SELECTION3,",habillage=",hab,",title='",input$title1,"',cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex,",col.ind='",input$coloract,"',col.ind.sup='",Plot2()$colindsup,"',col.quali='",Plot2()$colquali,"')",sep="")
+      }
       return(Call2)
     }
     
@@ -430,22 +597,27 @@ shinyServer(
     
     
     output$out22=renderUI({
-      choix=list("Summary of PCA"="ACP","Eigenvalues"="eig","Results of the variables"="resvar","Results of the individuals"="resind")
+#      choix=list("Summary of PCA"="ACP","Eigenvalues"="eig","Results of the variables"="resvar","Results of the individuals"="resind")
+      choix=list(gettext("Summary of outputs"),gettext("Eigenvalues"),gettext("Results of the variables"),gettext("Results of the individuals"))
       if(!is.null(values()$choixsuple)){
-        choix=c(choix,"Results of the supplementary individuals"="supind")
+#        choix=c(choix,"Results of the supplementary individuals"="supind")
+        choix=c(choix,gettext("Results of the supplementary individuals"))
       }
       if(!is.null(values()$choixquant)){
-        choix=c(choix,"Results of the supplementary variables"="varsup")
+#        choix=c(choix,"Results of the supplementary variables"="varsup")
+        choix=c(choix,gettext("Results of the supplementary variables"))
       }
       if(!is.null(values()$choixqual)){
-        choix=c(choix,"Results of the categorical variables"="qualico")
+#        choix=c(choix,"Results of the categorical variables"="qualico")
+        choix=c(choix,gettext("Results of the categorical variables"))
       }
-      radioButtons("out","Which outputs do you want ?",
-                   choices=choix,selected="ACP",inline=TRUE)
+      radioButtons("out",gettext("Which outputs do you want?"),
+#                   choices=choix,selected="ACP",inline=TRUE)
+                   choices=choix,selected=gettext("Summary of outputs"),inline=TRUE)
     })
     
     getactive=function(){
-      if(input$selecactive=="choix"){
+      if(input$selecactive==gettext("Choose")){
       sup=c()
       if(length(input$supvar)==0){
         activevar=VariableChoices
@@ -465,29 +637,29 @@ shinyServer(
     
     output$NB1=renderUI({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
-      if(input$selecactive=="Toutes" || length(getactive())>5){
-        return(selectInput("nb1", label = h6("x axis"), 
+      if(input$selecactive==gettext("All") || length(getactive())>5){
+        return(selectInput("nb1", label = h6(gettext("x axis")), 
                     choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe1,width='80%'))
       }
       else{
         baba=c(1:length(getactive()))
-        return(selectInput("nb1",label=h6("x axis"), choices=baba,selected=axe1,width='80%'))
+        return(selectInput("nb1",label=h6(gettext("x axis")), choices=baba,selected=axe1,width='80%'))
       }
     })
     
     output$NB2=renderUI({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
-      if(input$selecactive=="Toutes" || length(getactive())>5){
-        return(selectInput("nb2", label = h6("y axis"), 
+      if(input$selecactive==gettext("All") || length(getactive())>5){
+        return(selectInput("nb2", label = h6(gettext("y axis")), 
                            choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe2,width='80%'))
       }
       else{
         baba=c(1:length(getactive()))
-        return(selectInput("nb2",label=h6("y axis"), choices=baba,selected=axe2,width='80%'))
+        return(selectInput("nb2",label=h6(gettext("y axis")), choices=baba,selected=axe2,width='80%'))
       }
     })
     
@@ -497,74 +669,74 @@ shinyServer(
     
     output$sorties12=renderTable({
         validate(
-          need((length(input$supquali)>0 || input$supquali==TRUE), "No categorical variables selected")
+          need((length(input$supquali)>0 || input$supquali==TRUE), gettext("No categorical variables selected"))
         )
         validate(
-          need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+          need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
         )
         return(as.data.frame(values()$res.PCA$quali.sup$coord))
     })
     
     output$sorties13=renderTable({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       validate(
-        need((length(input$supquali)>0 || input$supquali==TRUE), "No categorical variables selected")
+        need((length(input$supquali)>0 || input$supquali==TRUE), gettext("No categorical variables selected"))
       )
       return(as.data.frame(values()$res.PCA$quali.sup$v.test))
     })
     
     output$sorties2=renderTable({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$var$coord))
     })
     
     output$sorties22=renderTable({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$ind$coord))
     })
     
     output$sorties23=renderTable({
       validate(
-        need(length(input$supvar)!=0, "No supplementary quantitative variables")
+        need(length(input$supvar)!=0, gettext("No supplementary quantitative variables"))
       )
       validate(
-        need(length(input$getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(input$getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$quanti.sup$coord))
     })
     
     output$sorties32=renderTable({
       validate(
-        need(length(input$supvar)!=0, "No supplementary quantitative variables")
+        need(length(input$supvar)!=0, gettext("No supplementary quantitative variables"))
       )
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$quanti.sup$cor))
     })
     
     output$sorties36=renderTable({
       validate(
-        need(length(input$indsup)!=0, "No supplementary individuals")
+        need(length(input$indsup)!=0, gettext("No supplementary individuals"))
       )
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       return(as.data.frame(values()$res.PCA$ind.sup$coord))
     })
     
     output$sorties37=renderTable({
       validate(
-        need(length(input$indsup)!=0, "No supplementary individuals")
+        need(length(input$indsup)!=0, gettext("No supplementary individuals"))
       )
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$ind.sup$cos2))
     })
@@ -572,43 +744,45 @@ shinyServer(
     
     output$sorties3=renderTable({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$var$contrib))
     })
     
     output$sorties33=renderTable({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$ind$contrib))
     })
     
     output$sorties4=renderTable({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$var$cos2))
     })
     
     output$sorties44=renderTable({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$ind$cos2))
     })
   
   output$sortieDimdesc3=renderTable({
     validate(
-      need(length(getactive())>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive())>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
+    validate(need(length(dimdesc(values()$res.PCA))>0,gettext("No quantitative variable describes axis 1")))
     return(as.data.frame(dimdesc(values()$res.PCA)[[1]]$quanti))
   })
   
   output$sortieDimdesc4=renderTable({
     validate(
-      need(length(getactive())>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive())>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
+    validate(need(length(dimdesc(values()$res.PCA))>0,gettext("No categorical variable describes axis 1")))
     return(as.data.frame(dimdesc(values()$res.PCA)[[1]]$quali))
   })
   
@@ -616,15 +790,17 @@ shinyServer(
   
   output$sortieDimdesc33=renderTable({
     validate(
-      need(length(getactive())>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive())>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
+    validate(need(length(dimdesc(values()$res.PCA))>1,gettext("No quantitative variable describes axis 2")))
     return(as.data.frame(dimdesc(values()$res.PCA)[[2]]$quanti))
   })
   
   output$sortieDimdesc44=renderTable({
     validate(
-      need(length(getactive())>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive())>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
+    validate(need(length(dimdesc(values()$res.PCA))>1,gettext("No categorical variable describes axis 2")))
     return(as.data.frame(dimdesc(values()$res.PCA)[[2]]$quali))
   })
   
@@ -632,15 +808,17 @@ shinyServer(
   
   output$sortieDimdesc333=renderTable({
     validate(
-      need(length(getactive())>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive())>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
+    validate(need(length(dimdesc(values()$res.PCA))>2,gettext("No quantitative variable describes axis 3")))
     return(as.data.frame(dimdesc(values()$res.PCA)[[3]]$quanti))
   })
   
   output$sortieDimdesc444=renderTable({
     validate(
-      need(length(getactive())>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive())>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
+    validate(need(length(dimdesc(values()$res.PCA))>2,"No categorical variable describes axis 3"))
     return(as.data.frame(dimdesc(values()$res.PCA)[[3]]$quali))
   })
     
@@ -661,7 +839,7 @@ shinyServer(
   
     output$summaryPCA=renderPrint({
       validate(
-        need(input$nbele!=0, "Please select at least one element")
+        need(input$nbele!=0, gettext("Please select at least one element"))
       )
       a<-values()$res.PCA
       a$call$call<-code()
@@ -679,40 +857,60 @@ shinyServer(
     
     output$slider3=renderUI({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
-      if(input$selecactive=="Toutes"){
+      if(input$selecactive==gettext("All")){
         maxvar=length(VariableChoices)
       }
-      if(input$selecactive=="choix"){
+      if(input$selecactive==gettext("Choose")){
         maxvar=length(getactive())
       }
       if(selection3=="contrib"){
-        return(div(align="center",sliderInput("slider4",label="Number of the most contributive variables",
+        return(div(align="center",sliderInput("slider4",label=gettext("Number of the most contributive variables"),
                                               min=1,max=maxvar,value=selection4,step=1)))  
       }
       else{
-      return(div(align="center",sliderInput("slider4",label="Number of the most contributive variables",
+      return(div(align="center",sliderInput("slider4",label=gettext("Number of the most contributive variables"),
                   min=1,max=maxvar,value=maxvar,step=1)))}
     })
 
     
     output$habillage2=renderUI({
       if(length(QualiChoice)==0 || input$supquali==FALSE || length(input$supquali)==0){
-        return(p("No categorical variable"))
+        return(p(gettext("No categorical variable")))
       }
       if(length(input$supquali)>1){
         if(is.null(habillageind)){
         num=c(1:length(input$supquali))
-        return(selectInput("habiller","Select 1 or 2 variables", choices=list(num=input$supquali),multiple=TRUE))
+        return(selectInput("habiller",gettext("Select 1 or 2 variables"), choices=list(num=input$supquali),multiple=TRUE))
         }
         else{
           num=c(1:length(input$supquali))
-          return(selectInput("habiller","Select 1 or 2 variables", choices=list(num=input$supquali),multiple=TRUE,selected=habillageind))
+          return(selectInput("habiller",gettext("Select 1 or 2 variables"), choices=list(num=input$supquali),multiple=TRUE,selected=habillageind))
         }
       }
     })
-      
+
+  output$ellipses=renderUI({
+    #validate(need(!is.null(input$habiller),""))
+    if(length(QualiChoice)==0 || input$supquali==FALSE || length(input$supquali)==0){
+      return(p(" "))
+    }else{
+    return(checkboxInput("elip",gettext("Draw the confidence ellipses around the categories"),ellipses))
+    }
+  })
+  
+  output$varsu=renderUI({
+    test=values()$choixquant
+    if(!is.null(test)){
+      if(!is.null(colorsupvar)){
+        return(shinyjs::colourInput("colorsupvar", h6(gettext("Choose colour for supplementary variables")), colorsupvar))
+      }else{
+      return(shinyjs::colourInput("colorsupvar", h6(gettext("Choose colour for supplementary variables")), "blue"))
+      }
+    }
+  })
+	
     output$histo=renderPlot({
       par(mfrow=c(1,2))
       boxplot(newdata[,input$bam])
@@ -796,13 +994,18 @@ shinyServer(
           selecindiv="cos2 0.999"
         }
       }
-      if(input$select0=="NONE"){
+      if(input$select0==gettext("No selection")){
         selecindiv=NULL
       }
       if(input$select0=="contrib"){
         selecindiv=paste("contrib ",input$slider4)
       }
-      plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="var",select=selecindiv,unselect=0,col.quanti.sup="blue",cex=input$cex2,cex.main=input$cex2,cex.axis=input$cex2,title=input$title2)
+      if(is.null(input$colorsupvar)){
+        colo="blue"
+      }else{
+        colo=input$colorsupvar
+      }
+      plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="var",select=selecindiv,unselect=0,col.quanti.sup=colo,cex=input$cex2,cex.main=input$cex2,cex.axis=input$cex2,title=input$title2,col.var=input$coloractvar)
     }
     Plot22=function(){
       if(input$select=="cos2"){
@@ -813,13 +1016,13 @@ shinyServer(
           selecindiv="cos2 0.999"
         }
       }
-      if(input$select=="NONE"){
+      if(input$select==gettext("No selection")){
         selecindiv=NULL
       }
       if(input$select=="contrib"){
         selecindiv=paste("contrib ",input$slider0)
       }
-      if(input$select=="Manuel"){
+      if(input$select==gettext("Manual")){
         selecindiv=c(input$indiv)
       }
       if(input$supquali==FALSE || length(QualiChoice)==0 || length(input$supquali)==0 || input$habi==FALSE){
@@ -860,8 +1063,27 @@ shinyServer(
           colquali="blue"
         }
       }
-      plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="ind",cex=input$cex,cex.main=input$cex,cex.axis=input$cex,select=selecindiv,habillage=hab,col.quali=colquali,col.ind.sup="blue",title=input$title1)
+      if(!is.null(input$colorsup)){
+        colors=input$colorsup
+      }else{
+        colors="blue"
+      }
+      if(!is.null(input$colorquali)){
+        colorss=input$colorquali
+      }else{
+        colorss="magenta"
+      }
+      if(!is.null(input$elip)&&input$elip==TRUE){
+        aa=cbind.data.frame(values()$DATA[,hab],values()$res.PCA$ind$coord)
+        bb=coord.ellipse(aa,bar=TRUE)
+        plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="ind",cex=input$cex,cex.main=input$cex,cex.axis=input$cex,select=selecindiv,habillage=hab,col.quali=colorss,col.ind.sup=colors,title=input$title1,ellipse=bb,col.ind = input$coloract)
+        
+      }else{
+        plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="ind",cex=input$cex,cex.main=input$cex,cex.axis=input$cex,select=selecindiv,habillage=hab,col.quali=colorss,col.ind.sup=colors,title=input$title1,col.ind = input$coloract)
+      }
+      #plot.PCA(values()$res.PCA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),choix="ind",cex=input$cex,cex.main=input$cex,cex.axis=input$cex,select=selecindiv,habillage=hab,col.quali=colquali,col.ind.sup="blue",title=input$title1)    
     }
+    
   }
 )
       

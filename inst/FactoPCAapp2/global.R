@@ -8,14 +8,23 @@ if(inherits(x, "data.frame")){
   axe1=1
   axe2=2
   habillageind=NULL
-  selection="NONE"
+  selection=gettext("No selection")
   selection2=NULL
-  selection3="NONE"
+  selection3=gettext("No selection")
   selection4=NULL
   size=1
   size2=1
-  titre1="Individuals factor map (PCA)"
-  titre2="Variables factor map (PCA)"
+  titre1=gettext("Individuals factor map (PCA)")
+  titre2=gettext("Variables factor map (PCA)")
+  ellipses=FALSE
+  activeind="black"
+  supind="blue"
+  categ="magenta"
+  coloractvar="black"
+  colorsupvar="blue"
+  norme=TRUE
+  poids1=NULL
+  poids2=NULL
 }
 
 if(inherits(x, "PCAshiny")){
@@ -35,6 +44,15 @@ if(inherits(x, "PCAshiny")){
   size2=x$m
   titre1=x$title1
   titre2=x$title2
+  ellipses=x$ellipses
+  activeind=x$activeind
+  supind=x$supin
+  categ=x$categ
+  coloractvar=x$coloractvar
+  colorsupvar=x$colorsupvar
+  norme=x$norme
+  poids1=x$poids1
+  poids2=x$poids2
 }
 if(inherits(x, "PCA")){
   nomData=as.character(x$call$call[2])
@@ -47,14 +65,29 @@ if(inherits(x, "PCA")){
   axe1=1
   axe2=2
   habillageind=NULL
-  selection="NONE"
+  selection=gettext("No selection")
   selection2=NULL
-  selection3="NONE"
+  selection3=gettext("No selection")
   selection4=NULL
   size=1
   size2=1
-  titre1="Individuals factor map (PCA)"
-  titre2="Variables factor map (PCA)"
+  titre1=gettext("Individuals factor map (PCA)")
+  titre2=gettext("Variables factor map (PCA)")
+  ellipses=FALSE
+  activeind="black"
+  supind="blue"
+  categ="magenta"
+  coloractvar="black"
+  colorsupvar="blue"
+  norme=x$call$scale.unit
+  poids1=x$call$row.w.init
+  if(!is.null(poids1)&&all(poids1)==poids1[1]){
+    poids1=NULL
+  }
+  poids2=x$call$col.w.init
+  if(!is.null(poids2)&&all(poids2)==poids2[1]){
+    poids2=NULL
+  }
 }  
 
 quanti=names(which(sapply(newdata,is.numeric)))
@@ -65,3 +98,4 @@ num=c(1:length(nom))
 QualiChoice=quali
 IdChoices=c(1:length(VariableChoices))
 Idqualisup=c(1:length(QualiChoice))
+nomData=unlist(strsplit(as.character(nomData),"\\["))[1]

@@ -1,15 +1,16 @@
 Package: Factoshiny
 Type: Package
-Title: Perform Factorial Analysis from FactoMineR with a Shiny
+Title: Perform Factorial Analysis from 'FactoMineR' with a Shiny
         Application
-Version: 1.0.2
-Date: 2015-06-15
+Version: 1.0.3
+Date: 2016-06-02
 Author: Pauline Vaissie, Astrid Monge, Francois Husson
 Maintainer: Francois Husson <husson@agrocampus-ouest.fr>
-Depends: FactoMineR,shiny(>= 0.11)
-Description: Perform factorial analysis with a menu and draw graphs interactively thanks to FactoMineR and a Shiny application.
+Depends: FactoMineR,shiny,shinyjs
+Description: Perform factorial analysis with a menu and draw graphs interactively thanks to 'FactoMineR' and a Shiny application.
 License: GPL (>= 2)
-Packaged: 2015-06-15 15:41:41 UTC; husson
+Encoding: latin1
 NeedsCompilation: no
+Packaged: 2016-06-03 18:07:42 UTC; husson
 Repository: CRAN
-Date/Publication: 2015-06-15 18:48:03
+Date/Publication: 2016-06-03 20:32:18

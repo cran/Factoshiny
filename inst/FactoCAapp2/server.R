@@ -3,12 +3,12 @@
 shinyServer(
   function(input, output) {
     values=reactive({
-      if (input$selecactive=="Toutes"){
+      if (input$selecactive==gettext("All")){
         data.selec=newdata[,VariableChoices]
       }
       else{
         validate(
-          need(length(getactive()!=0), "Please select at least one supplementary column")
+          need(length(getactive()!=0), gettext("Please select at least one supplementary column"))
         )
         data.selec=newdata[,c(getactive())]
       }
@@ -104,6 +104,44 @@ shinyServer(
       }
     })
     
+    output$col1=renderUI({
+      if(!is.null(values()$res.CA$row)){
+        return(shinyjs::colourInput("colrow",gettext("Colour of row points"),col1))
+      }
+    })
+    output$col2=renderUI({
+      if(!is.null(values()$res.CA$col)){
+        return(shinyjs::colourInput("colcol",gettext("Colour of column points"),col2))
+      }
+    })
+    output$col3=renderUI({
+      if(!is.null(values()$res.CA$row.sup)){
+        return(shinyjs::colourInput("colrowsup",gettext("Colour of supplementary row points"),col3))
+      }
+    })
+    output$col4=renderUI({
+      if(!is.null(values()$res.CA$col.sup)){
+        return(shinyjs::colourInput("colcolsup",gettext("Colour of supplementary column points"),col4))
+      }
+    })
+    
+    output$ellipses=renderUI({
+      values1=c()
+      if(!is.null(values()$res.CA$col)){
+        values1=c(values1,gettext("Columns"))
+      }
+      if(!is.null(values()$res.CA$row)){
+        values1=c(values1,gettext("Rows"))
+      }
+      if(length(values)!=0){
+        if(is.null(ellipses)){
+        return(checkboxGroupInput("ellip",h6(""),choices=values1,selected=NULL,inline=TRUE))
+        }else{
+          return(checkboxGroupInput("ellip",h6(""),choices=values1,selected=ellipses,inline=TRUE))
+        }
+      }
+    })
+    
     valeuretour=function(){
       res=list()
       res$data=newdata
@@ -131,7 +169,13 @@ shinyServer(
       # f : invisible points 
       invisi=NULL
       if(length(input$invis)!=0){
-        invisi=input$invis
+        invisi=NULL
+		if (gettext("Rows")%in%input$invis) invisi<-c(invisi,"row")
+		if (gettext("Columns")%in%input$invis) invisi<-c(invisi,"col")
+		if (gettext("Supplementary rows")%in%input$invis) invisi<-c(invisi,"row.sup")
+		if (gettext("Supplementary columns")%in%input$invis) invisi<-c(invisi,"col.sup")
+		if (gettext("Supplementary qualitative variables")%in%input$invis) invisi<-c(invisi,"quali.sup")
+#		invisi=input$invis
       }
       res$f=invisi
       res$type1=input$seleccol
@@ -155,6 +199,11 @@ shinyServer(
       res$code2=CodeGraph()
       res$title1=input$title1
       res$anafact=values()$res.CA
+      res$col1=input$colrow
+      res$col2=input$colcol
+      res$col3=input$colrowsup
+      res$col4=input$colcolsup
+      res$ellip=input$ellip
       class(res) <- "CAshiny"
       return(res)
     }
@@ -269,24 +318,64 @@ shinyServer(
       if(input$selecrow=="contrib"){
         sel2=paste("contrib ",input$contrib2)
       }
-      Call2=paste("plot.CA(res.CA,axes=c(",as.numeric(input$nb1),",",as.numeric(input$nb2),"),selectCol='",sel,"',selectRow='",sel2,"',unselect=0,col.sup='darkred',cex=",input$cex,",title='",input$title1,"',invisible='",Plot1()$invisiText,"')",sep="")
+      if(!is.null(input$colrow)){
+        col1="blue"
+      }else{
+        col1=input$colrow
+      }
+      if(!is.null(input$colcol)){
+        col2="red"
+      }else{
+        col2=input$colcol
+      }
+      if(!is.null(input$colrowsup)){
+        col3="darkblue"
+      }else{
+        col3=input$colrowsup
+      }
+      if(!is.null(input$colcolsup)){
+        col4="darkred"
+      }else{
+        col4=input$colcolsup
+      }
+      if(is.null(input$ellip)||length(input$ellip)==0){
+        Call2=paste('plot.CA(res.CA,axes=c(',as.numeric(input$nb1),',',as.numeric(input$nb2),'),selectCol="',sel,'",selectRow="',sel2,'",unselect=0,cex=',input$cex,',title="',input$title1,'",col.row="',col1,'",col.col="',col2,'",col.row.sup="',col3,'",col.col.sup="',col4,'",invisible=',Plot1()$invisiText,')',sep='')
+      }else{
+        vect=c()
+        if(gettext("Columns")%in%input$ellip){
+          vect=c(vect,"col")
+        }
+        if(gettext("Rows")%in%input$ellip){
+          vect=c(vect,"row")
+        }
+        myellip=paste(paste("'",vect,"'",sep=""),collapse=",")
+        Call2=paste('ellipseCA(res.CA,ellipse=c(',myellip,'),axes=c(',as.numeric(input$nb1),',',as.numeric(input$nb2),'),selectCol="',sel,'",selectRow="',sel2,'",unselect=0,cex=',input$cex,',title="',input$title1,'",col.row="',col1,'",col.col="',col2,'",col.row.sup="',col3,'",col.col.sup="',col4,'",invisible=',Plot1()$invisiText,')',sep='')
+      }
+      
       return(Call2)
     }
     
     Plot1=reactive({
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       validate(
-        need(length(getactive())>2 || input$selecactive=="Toutes","Please select more variable")
+        need(length(getactive())>2 || input$selecactive==gettext("All"),gettext("Please select more columns"))
       )
       if(length(input$invis)==0){
         invisi="none"
-        invisiText="'non'"
+        invisiText=paste("'","none","'",sep="")
       }
       if(length(input$invis)!=0){
-        invisi=input$invis
+        invisi=NULL
+		if (gettext("Rows")%in%input$invis) invisi<-c(invisi,"row")
+		if (gettext("Columns")%in%input$invis) invisi<-c(invisi,"col")
+		if (gettext("Supplementary rows")%in%input$invis) invisi<-c(invisi,"row.sup")
+		if (gettext("Supplementary columns")%in%input$invis) invisi<-c(invisi,"col.sup")
+		if (gettext("Supplementary qualitative variables")%in%input$invis) invisi<-c(invisi,"quali.sup")
+#        invisi=input$invis
         invisiText=invisi
+        invisiText=paste("c(",paste(paste("'",invisi,"'",sep=""),collapse = ","),")",sep="")
       }
       sel=NULL
       if(input$seleccol=="cos2"){
@@ -312,16 +401,30 @@ shinyServer(
       if(input$selecrow=="contrib"){
         sel2=paste("contrib ",input$contrib2)
       }
-      list(PLOT1=(plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,title=input$title1,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,unselect=0,col.col.sup="darkred",invisible=invisi)),invisiText=(invisiText))
+      values2=c()
+      if(!is.null(input$ellip)){
+      if(gettext("Columns")%in%input$ellip){
+        values2=c(values2,"col")
+      }
+        if(gettext("Rows")%in%input$ellip){
+          values2=c(values2,"row")
+        }
+      }
+      list(PLOT1=(plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,title=input$title1,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,unselect=0,invisible=invisi,col.row=input$colrow,col.col=input$colcol,col.row.sup=input$colrowsup,col.col.sup=input$colcolsup)),invisiText=(invisiText),
+           PLOT2=(ellipseCA(values()$res.CA,ellipse=values2,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,title=input$title1,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,unselect=0,invisible=invisi,col.row=input$colrow,col.col=input$colcol,col.row.sup=input$colrowsup,col.col.sup=input$colcolsup)))
     })
     
     output$map <- renderPlot({
+      if(is.null(input$ellip)||length(input$ellip)==0){
       p <- Plot1()$PLOT1
+      }else{
+      p=Plot1()$PLOT2
+      }
     })
     
     
     getactive=function(){
-      if(input$selecactive=="choix"){
+      if(input$selecactive==gettext("Choose")){
         sup=c()
         if(length(input$supvar)==0){
           activevar=VariableChoices
@@ -341,10 +444,10 @@ shinyServer(
     output$contribcol=renderUI({
       maxx=dim(values()$res.CA$col$coord)[1]
       if(selec1=="contrib"){
-        return(sliderInput("contrib1",h6("Number of the most contributive active columns"),min=1,max=maxx,value=valueselec2,step=1))
+        return(sliderInput("contrib1",h6(gettext("Number of the most contributive active columns")),min=1,max=maxx,value=valueselec2,step=1))
       }
       else{
-        return(sliderInput("contrib1",h6("Number of the most contributive active columns"),min=1,max=maxx,value=maxx,step=1))
+        return(sliderInput("contrib1",h6(gettext("Number of the most contributive active columns")),min=1,max=maxx,value=maxx,step=1))
       }
       
     })
@@ -352,43 +455,47 @@ shinyServer(
     output$contribrow=renderUI({
       maxx=dim(values()$res.CA$row$coord)[1]
       if(selec2=="contrib"){
-        return(sliderInput("contrib2",h6("Number of the most contributive active rows"),min=1,max=maxx,value=valueselec2,step=1))
+        return(sliderInput("contrib2",h6(gettext("Number of the most contributive active rows")),min=1,max=maxx,value=valueselec2,step=1))
       }
       else{
-        return(sliderInput("contrib2",h6("Number of the most contributive active rows"),min=1,max=maxx,value=maxx,step=1))
+        return(sliderInput("contrib2",h6(gettext("Number of the most contributive active rows")),min=1,max=maxx,value=maxx,step=1))
       }
     })
     
     output$out22=renderUI({
-      choix=list("Summary of CA"="CA","Eigenvalues"="eig","Coordinates for the columns"="var","Coordinates of the rows"="ind")
+#      choix=list("Summary of CA"="CA","Eigenvalues"="eig","Coordinates for the columns"="var","Coordinates of the rows"="ind")
+      choix=list(gettext("Summary of outputs"),gettext("Eigenvalues"),gettext("Results for the columns"),gettext("Results for the rows"))
       if(!is.null(values()$INDEXES)){
-        choix=c(choix,"Coordinates of the supplementary rows"="suprow")
+#        choix=c(choix,"Coordinates of the supplementary rows"="suprow")
+        choix=c(choix,gettext("Results for the supplementary rows"))
       }
       if(!is.null(values()$CHOIXQUANTI)){
-        choix=c(choix,"Coordinates of the supplementary columns"="supcol")
+#        choix=c(choix,"Coordinates of the supplementary columns"="supcol")
+        choix=c(choix,gettext("Results for the supplementary columns"))
       }
       if(!is.null(values()$CHOIXQUALI)){
-        choix=c(choix,"Coordinates of the categorical variables"="qualico")
+#        choix=c(choix,"Coordinates of the categorical variables"="qualico")
+        choix=c(choix,gettext("Results for the categorical variables"))
       }
-      radioButtons("out","Which outputs do you want ?",
-                   choices=choix,selected="CA",inline=TRUE)
+      radioButtons("out",gettext("Which outputs do you want?"),
+                   choices=choix,selected=gettext("Summary of outputs"),inline=TRUE)
     })
     
     output$warn=renderPrint({
       if(length(withna)!=0){
         baba=paste(withna,collapse=", ")
         bibi=paste(nomrow,collapse=", ")
-        a=paste0("Warning : ", baba, " have NA : they are considered as supplementary columns")
-        b=paste0("Warning : ", bibi, " have NA : they are considered as supplementary rows")
+        a=paste0(gettext("Warning: "), baba, gettext(" have NA : they are considered as supplementary columns"))
+        b=paste0(gettext("Warning: "), bibi, gettext(" have NA : they are considered as supplementary rows"))
         return(cat(a,b,sep="\n"))
       }
     })
     
     output$NB1=renderUI({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary column"))
       )
-      if(input$selecactive=="Toutes" || length(getactive())>5){
+      if(input$selecactive==gettext("All") || length(getactive())>5){
         return(selectInput("nb1", label = h6("x axis"), 
                            choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe1,width='80%'))
       }
@@ -400,9 +507,9 @@ shinyServer(
     
     output$NB2=renderUI({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary column"))
       )
-      if(input$selecactive=="Toutes" || length(getactive())>5){
+      if(input$selecactive==gettext("All") || length(getactive())>5){
         return(selectInput("nb2", label = h6("y axis"), 
                            choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe2,width='80%'))
       }
@@ -419,21 +526,21 @@ shinyServer(
     
     output$sorties1=renderTable({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Not enough active columns")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Not enough active columns"))
       )
       return(as.data.frame(values()$res.CA$col$coord))
     })
     
     output$sorties2=renderTable({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Not enough active columns")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Not enough active columns"))
       )
       return(as.data.frame(values()$res.CA$col$cos2))
     })
     
     output$sorties3=renderTable({
       validate(
-        need(length(getactive())>1 || input$selecactive=="Toutes","Not enough active columns")
+        need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Not enough active columns"))
       )
       return(as.data.frame(values()$res.CA$col$contrib))
     })
@@ -452,7 +559,7 @@ shinyServer(
     
     output$sorties7=renderTable({
       validate(
-        need((length(input$rowsupl)>0), "No supplementary rows selected")
+        need((length(input$rowsupl)>0), gettext("No supplementary rows selected"))
       )
       return(as.data.frame(values()$res.CA$row.sup$coord))
     })
@@ -471,7 +578,7 @@ shinyServer(
     
     output$sorties11=renderTable({
       validate(
-        need((length(input$supquali)>0 || input$supquali==TRUE), "No categorical variables selected")
+        need((length(input$supquali)>0 || input$supquali==TRUE), gettext("No categorical variables selected"))
       )
       return(as.data.frame(values()$res.CA$quali.sup))
     })
@@ -550,7 +657,13 @@ shinyServer(
         invisi="none"
       }
       if(length(input$invis)!=0){
-        invisi=input$invis
+        invisi=NULL
+		if (gettext("Rows")%in%input$invis) invisi<-c(invisi,"row")
+		if (gettext("Columns")%in%input$invis) invisi<-c(invisi,"col")
+		if (gettext("Supplementary rows")%in%input$invis) invisi<-c(invisi,"row.sup")
+		if (gettext("Supplementary columns")%in%input$invis) invisi<-c(invisi,"col.sup")
+		if (gettext("Supplementary qualitative variables")%in%input$invis) invisi<-c(invisi,"quali.sup")
+#        invisi=input$invis
       }
       sel=NULL
       if(input$seleccol=="cos2"){
@@ -576,7 +689,7 @@ shinyServer(
       if(input$seleccol=="contrib"){
         sel2=paste("contrib ",input$contrib2)
       }
-      plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,title=input$title1,unselect=0,col.col.sup="darkred",invisible=invisi)
+      plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,title=input$title1,unselect=0,invisible=invisi,col.row=input$colrow,col.col=input$colcol,col.row.sup=input$colrowsup,col.col.sup=input$colcolsup)
     }
     
   }

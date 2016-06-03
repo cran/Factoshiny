@@ -2,12 +2,12 @@
 shinyServer(
   function(input, output) {
     values=reactive({
-    if (input$selecactive=="Toutes"){
+    if (input$selecactive==gettext("All")){
       data.selec=newdata
     }
     else{
       validate(
-        need(length(input$supvar)>0 || length(input$supvar1)>0, "Please select at least one supplementary variables")
+        need(length(input$supvar)>0 || length(input$supvar1)>0, gettext("Please select at least one supplementary variable"))
       )
       data.selec=newdata
     }
@@ -28,10 +28,10 @@ shinyServer(
     
     Plot1 <- reactive({
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       if(input$select0=="cos2"){
         if(input$slider00!=1){
@@ -59,10 +59,10 @@ shinyServer(
     
     Plot2 <- reactive({
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       hab="none"
       if(length(QualiChoice)==0){
@@ -128,10 +128,10 @@ shinyServer(
     
     Plot4 <- reactive({
       validate(
-        need(input$nb1 != input$nb2, "Please select two different dimensions")
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
       )
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       if(input$selecti=="cos2"){
        if(input$slider000!=1){
@@ -256,37 +256,39 @@ shinyServer(
       else{
         selection=Plot1()$selecindivText
       }
-      Call1=paste("plot.FAMD(res.FAMD,axes=c(",input$nb1,",",input$nb2,"),choix='var',select=",selection,",cex=",input$cex2,",cex.main=",input$cex2,",cex.axis=",input$cex2,",unselect=0,col.quanti.sup='red')",sep="")
+      Call1=paste("plot.FAMD(res.FAMD,axes=c(",input$nb1,",",input$nb2,"),choix='var',select=",selection,",cex=",input$cex2,",cex.main=",input$cex2,",cex.axis=",input$cex2,",unselect=0)",sep="")
       return(Call1)
     }
     
     codeGraphInd<-function(){
-      hab="none"
+      hab='none'
       if (length(input$habiller)<=1 & input$habi==TRUE || input$habi==FALSE){
         hab=paste(Plot2()$HABILLAGE,sep="")
       }
-      
-      Call2=paste("plot.FAMD(res.FAMD,","axes=c(",input$nb1,",",input$nb2,"),choix='ind',select=",Plot2()$selecindivText,",habillage=",hab,",cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex,",lab.var=",input$labels,",lab.ind=",input$labels2,",title='",input$title1,"')",sep="")
+      if (hab=="none") Call2=paste("plot.FAMD(res.FAMD, axes=c(",input$nb1,",",input$nb2,"),choix='ind',select=",Plot2()$selecindivText,",cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex,",lab.var=",input$labels,",lab.ind=",input$labels2,",title='",input$title1,"')",sep="")
+	  elseCall2=paste("plot.FAMD(res.FAMD, axes=c(",input$nb1,",",input$nb2,"),choix='ind',select=",Plot2()$selecindivText,",habillage=",hab,",cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex,",lab.var=",input$labels,",lab.ind=",input$labels2,",title='",input$title1,"')",sep="")
       return(Call2)
     }
     
     ##### Fin de la fonction recuperation du code
     
-    
     output$out22=renderUI({
-      choix=list("Summary of FAMD"="ACP","Eigenvalues"="eig","Results of the variables"="resvar","Results of the individuals"="resind")
+#      choix=list("Summary of FAMD"="ACP","Eigenvalues"="eig","Results of the variables"="resvar","Results of the individuals"="resind")
+      choix=list(gettext("Summary of outputs"),gettext("Eigenvalues"),gettext("Results of the variables"),gettext("Results of the individuals"))
       if(!is.null(values()$choixsuple)){
-        choix=c(choix,"Results of the supplementary individuals"="supind")
+#        choix=c(choix,"Results of the supplementary individuals"="supind")
+        choix=c(choix,gettext("Results of the supplementary individuals"))
       }
       if(!is.null(values()$varsup)){
-        choix=c(choix,"Results of the supplementary variables"="varsup")
+#        choix=c(choix,"Results of the supplementary variables"="varsup")
+        choix=c(choix,gettext("Results of the supplementary variables"))
       }
-      radioButtons("out","Which outputs do you want ?",
-                   choices=choix,selected="ACP",inline=TRUE)
+      radioButtons("out",gettext("Which outputs do you want?"),
+                   choices=choix,inline=TRUE)
     })
     
     getactive=function(){
-      if(input$selecactive=="choix"){
+      if(input$selecactive==gettext("Choose")){
       sup=c()
       sup2=c()
       sup3=c()
@@ -348,29 +350,29 @@ shinyServer(
     
     output$NB1=renderUI({
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
-      if(input$selecactive=="Toutes" || length(getactive()$activevar)>5){
-        return(selectInput("nb1", label = h6("x axis"), 
+      if(input$selecactive==gettext("All") || length(getactive()$activevar)>5){
+        return(selectInput("nb1", label = h6(gettext("x axis")), 
                     choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe1,width='80%'))
       }
       else{
         baba=c(1:length(getactive()$activevar))
-        return(selectInput("nb1",label=h6("x axis"), choices=baba,selected=axe1,width='80%'))
+        return(selectInput("nb1",label=h6(gettext("x axis")), choices=baba,selected=axe1,width='80%'))
       }
     })
     
     output$NB2=renderUI({
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
-      if(input$selecactive=="Toutes" || length(getactive()$activevar)>5){
-        return(selectInput("nb2", label = h6("y axis"), 
+      if(input$selecactive==gettext("All") || length(getactive()$activevar)>5){
+        return(selectInput("nb2", label = h6(gettext("y axis")), 
                            choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe2,width='80%'))
       }
       else{
         baba=c(1:length(getactive()$activevar))
-        return(selectInput("nb2",label=h6("y axis"), choices=baba,selected=axe2,width='80%'))
+        return(selectInput("nb2",label=h6(gettext("y axis")), choices=baba,selected=axe2,width='80%'))
       }
     })
     
@@ -380,54 +382,54 @@ shinyServer(
     
     output$sorties12=renderTable({
         validate(
-          need((length(input$supquali)>0 || input$supquali==TRUE), "No categorical variables selected")
+          need((length(input$supquali)>0 || input$supquali==TRUE), gettext("No categorical variables selected"))
         )
         validate(
-          need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+          need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
         )
         return(as.data.frame(values()$res.FAMD$quali.sup$coord))
     })
     
     output$sorties13=renderTable({
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       validate(
-        need((length(input$supquali)>0 || input$supquali==TRUE), "No categorical variables selected")
+        need((length(input$supquali)>0 || input$supquali==TRUE), gettext("No categorical variables selected"))
       )
       return(as.data.frame(values()$res.FAMD$quali.sup$v.test))
     })
     
     output$sorties2=renderTable({
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       return(as.data.frame(values()$res.FAMD$var$coord))
     })
     
     output$sorties22=renderTable({
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       return(as.data.frame(values()$res.FAMD$ind$coord))
     })
     
     output$sorties23=renderTable({
       validate(
-        need(length(input$supvar)!=0, "No supplementary quantitative variables")
+        need(length(input$supvar)!=0, gettext("No supplementary quantitative variables"))
       )
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$var$coord.sup))
     })
     
     output$sorties32=renderTable({
       validate(
-        need(length(input$supvar)!=0, "No supplementary quantitative variables")
+        need(length(input$supvar)!=0, gettext("No supplementary quantitative variables"))
       )
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$var$cos2.sup))
     })
@@ -437,17 +439,17 @@ shinyServer(
         need(length(input$indsup)!=0, "No supplementary individuals")
       )
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$ind.sup$coord))
     })
     
     output$sorties37=renderTable({
       validate(
-        need(length(input$indsup)!=0, "No supplementary individuals")
+        need(length(input$indsup)!=0, gettext("No supplementary individuals"))
       )
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$ind.sup$cos2))
     })
@@ -455,42 +457,42 @@ shinyServer(
     
     output$sorties3=renderTable({
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$var$contrib))
     })
     
     output$sorties33=renderTable({
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$ind$contrib))
     })
     
     output$sorties4=renderTable({
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$var$cos2))
     })
     
     output$sorties44=renderTable({
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$ind$cos2))
     })
   
   output$sortieDimdesc3=renderTable({
     validate(
-      need(length(getactive()$activevar)>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[1]]$quanti))
   })
   
   output$sortieDimdesc4=renderTable({
     validate(
-      need(length(getactive()$activevar)>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[1]]$quali))
   })
@@ -499,14 +501,14 @@ shinyServer(
   
   output$sortieDimdesc33=renderTable({
     validate(
-      need(length(getactive()$activevar)>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[2]]$quanti))
   })
   
   output$sortieDimdesc44=renderTable({
     validate(
-      need(length(getactive()$activevar)>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[2]]$quali))
   })
@@ -515,14 +517,14 @@ shinyServer(
   
   output$sortieDimdesc333=renderTable({
     validate(
-      need(length(getactive()$activevar)>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[3]]$quanti))
   })
   
   output$sortieDimdesc444=renderTable({
     validate(
-      need(length(getactive()$activevar)>2 || input$selecactive=="Toutes","Please select more variable")
+      need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[3]]$quali))
   })
@@ -548,11 +550,12 @@ shinyServer(
     part2=""
     if(!is.null(input$supvar)||!is.null(input$supvar1)){
       choixsup=getactive()$sup
-      vect3=NULL
-      vect3<-paste(vect3,choixsup[1],sep="")
-      for(i in 2:length(choixsup)){
-        vect3<-paste(vect3,paste(choixsup[i],sep=""),sep=",")
-      }
+      vect3<-choixsup[1]
+      if (length(choixsup)>1){
+	    for(i in 2:length(choixsup)){
+          vect3<-paste(vect3,paste(choixsup[i],sep=""),sep=",")
+        }
+	  }
       part2=paste(",sup.var=c(",vect3,"),")
     }
     part3=""
@@ -585,7 +588,7 @@ shinyServer(
   # Attention, si le nombre d'individus passe en dessous de 10, bug
     output$summaryFAMD=renderPrint({
       validate(
-        need(input$nbele!=0, "Please select at least one element")
+        need(input$nbele!=0, gettext("Please select at least one element"))
       )
       a<-values()$res.FAMD
       a$call$call<-code()
@@ -603,45 +606,45 @@ shinyServer(
     
     output$slider3=renderUI({
       validate(
-        need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+        need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
-      if(input$selecactive=="Toutes"){
+      if(input$selecactive==gettext("All")){
         maxvar=length(all)
       }
-      if(input$selecactive=="choix"){
+      if(input$selecactive==gettext("Choose")){
         maxvar=length(getactive()$activevar)
       }
       if(selection3=="contrib"){
-        return(div(align="center",sliderInput("slider4",label="Number of the most contributive variables",
+        return(div(align="center",sliderInput("slider4",label=gettext("Number of the most contributive variables"),
                                               min=1,max=maxvar,value=selection4,step=1)))  
       }
       else{
-      return(div(align="center",sliderInput("slider4",label="Number of the most contributive variables",
+      return(div(align="center",sliderInput("slider4",label=gettext("Number of the most contributive variables"),
                   min=1,max=maxvar,value=maxvar,step=1)))}
     })
   
   output$slider5=renderUI({
     validate(
-      need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+      need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
     )
-    if(input$selecactive=="Toutes"){
+    if(input$selecactive==gettext("All")){
       maxvar=length(quanti)
     }
-    if(input$selecactive=="choix"){
+    if(input$selecactive==gettext("Choose")){
       maxvar=length(getactive()$quanti)
     }
     if(selection5=="contrib"){
-      return(div(align="center",sliderInput("slider6",label="Number of the most contributive variables",
+      return(div(align="center",sliderInput("slider6",label=gettext("Number of the most contributive variables"),
                                             min=1,max=maxvar,value=selection6,step=1)))  
     }
     else{
-      return(div(align="center",sliderInput("slider6",label="Number of the most contributive variables",
+      return(div(align="center",sliderInput("slider6",label=gettext("Number of the most contributive variables"),
                                             min=1,max=maxvar,value=maxvar,step=1)))}
   })
   
   output$slider7=renderUI({
     validate(
-      need(length(getactive()$activevar)>1 || input$selecactive=="Toutes","Please select at least one supplementary variables")
+      need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
     )
     if(is.null(input$indsup)){
       maxi=length(nom)
@@ -650,11 +653,11 @@ shinyServer(
       maxi=length(nom)-length(input$indsup)
     }
     if(selection=="contrib"){
-      return(div(align="center",sliderInput("slider0", label = "Number of the most contributive individuals",
+      return(div(align="center",sliderInput("slider0", label = gettext("Number of the most contributive individuals"),
                                      min = 1, max = maxi, value =as.numeric(selection2),step=1)))
     }
     else{
-      return(div(align="center",sliderInput("slider0", label = "Number of the most contributive individuals",
+      return(div(align="center",sliderInput("slider0", label = gettext("Number of the most contributive individuals"),
                                      min = 1, max = maxi, value =maxi,step=1))) 
     }
   })
@@ -662,7 +665,7 @@ shinyServer(
     
     output$habillage2=renderUI({
       if(length(QualiChoice)==0){
-        return(p("No categorical variable"))
+        return(p(gettext("No categorical variable")))
       }
       if(length(QualiChoice)>1){
         if(is.null(habillageind)){
