@@ -11,6 +11,7 @@ shinyServer(
       )
       data.selec=newdata[,c(getactive())]
     }
+
     if(length(QualiChoice)==0){
       choixquali=NULL
     }
@@ -45,7 +46,7 @@ shinyServer(
     }
     else {
       data.selec=cbind(data.selec,newdata[,input$supvar])
-      if(length(input$supvar)==1){
+	  if(length(input$supvar)==1){
         choixquanti=length(data.selec)
         colnames(data.selec)[choixquanti]<-input$supvar
       }
@@ -61,12 +62,13 @@ shinyServer(
       suple=NULL
     }
     else{
-      suple=c()
-      for (i in 1:length(nom)){
-        if(nom[i]%in%input$indsup){
-          suple=c(suple,i)
-        }
-      }
+      # suple=c()
+      # for (i in 1:length(nom)){
+        # if(nom[i]%in%input$indsup){
+          # suple=c(suple,i)
+        # }
+      # }
+	  suple=which(nom%in%input$indsup)
     }
     list(res.PCA=(PCA(data.selec,quali.sup=choixquali,quanti.sup=choixquanti,scale.unit=input$nor,graph=FALSE,ncp=5,ind.sup=suple,row.w=poids1,col.w=poids2)),DATA=(data.selec),choixquant=(choixquanti),choixqual=(choixquali),choixsuple=(suple))
     })
@@ -192,12 +194,12 @@ shinyServer(
           selecindivtext="NULL"
         }
         if(length(input$indiv)>1){
-          vec<-NULL
-          vec<-paste(vec,"'",selecindiv[1],"'",sep="")
-          
-          for (i in 2:(length(selecindiv))){
-            vec<-paste(vec,paste("'",selecindiv[i],"'",sep=""),sep=",")
-          }
+          # vec<-NULL
+          # vec<-paste(vec,"'",selecindiv[1],"'",sep="")
+          # for (i in 2:(length(selecindiv))){
+            # vec<-paste(vec,paste("'",selecindiv[i],"'",sep=""),sep=",")
+          # }
+		  vec<- paste("'",paste(selecindiv,collapse="','"),"'",sep="")
           selecindivtext<-paste("c(",vec,")",sep="")
         }
         else if (length(input$indiv)==1){
@@ -257,7 +259,7 @@ shinyServer(
       }
     })
     
-    ### Boutton pour quitter l'application
+    ### Bouton pour quitter l'application
     ### Recuperation parametres
     observe({
       if(input$Quit==0){
@@ -395,43 +397,48 @@ shinyServer(
       data1=newdata
       data2=Datasel
       test=identical(data1,data2)
-      vec<-NULL
-      for (i in 1:length(colnames(Datasel))){
-        vec<-c(vec,colnames(Datasel)[i])
-      }
-      vec2<-NULL
-      vec2<-paste(vec2,"'",vec[1],"'",sep="")
-      for (i in 2:(length(vec))){
-        vec2<-paste(vec2,paste("'",vec[i],"'",sep=""),sep=",")
-      }
+      # vec<-NULL
+      # for (i in 1:length(colnames(Datasel))){
+        # vec<-c(vec,colnames(Datasel)[i])
+      # }
+	  vec <-colnames(Datasel)
+      # vec2<-NULL
+      # vec2<-paste(vec2,"'",vec[1],"'",sep="")
+      # for (i in 2:(length(vec))){
+        # vec2<-paste(vec2,paste("'",vec[i],"'",sep=""),sep=",")
+      # }
+      vec2<-paste("'",paste(colnames(Datasel),collapse="','"),"'",sep="")
       if(test==FALSE){
       vecfinal<-paste(nomData,"[,c(",vec2,")","]",sep="")
       }else{
         vecfinal=nomData
       }
       
-      vec4<-NULL
-      vec4<-paste(vec4,vecquant[1],sep="")
-      for (i in 2:(length(vecquant))){
-        vec4<-paste(vec4,vecquant[i],sep=",")
-      }
+      # vec4<-NULL
+      # vec4<-paste(vec4,vecquant[1],sep="")
+      # for (i in 2:(length(vecquant))){
+        # vec4<-paste(vec4,vecquant[i],sep=",")
+      # }
+      vec4 <- paste(vecquant,collapse=",")
       vecquant1<-paste("c(",vec4,")",sep="")
       vecquant2<-vecquant
       
       vecqual<-choixqual
-      vec5<-NULL
-      vec5<-paste(vec5,vecqual[1],sep="")
-      for (i in 2:(length(vecqual))){
-        vec5<-paste(vec5,vecqual[i],sep=",")
-      }
+      # vec5<-NULL
+      # vec5<-paste(vec5,vecqual[1],sep="")
+      # for (i in 2:(length(vecqual))){
+        # vec5<-paste(vec5,vecqual[i],sep=",")
+      # }
+      vec5 <- paste(vecqual,collapse=",")
       vecqual1<-paste("c(",vec5,")",sep="")
       vecqual2<-vecqual
       
-      vecind<-NULL
-      vecind<-paste(vecind,indsupl[1],sep="")
-      for (i in 2:(length(indsupl))){
-        vecind<-paste(vecind,indsupl[i],sep=",")
-      }
+      # vecind<-NULL
+      # vecind<-paste(vecind,indsupl[1],sep="")
+      # for (i in 2:(length(indsupl))){
+        # vecind<-paste(vecind,indsupl[i],sep=",")
+      # }
+      vecind <- paste(indsupl,collapse=",")
       vecind1<-paste("c(",vecind,")",sep="")
       vecind2<-indsupl
       vec<-vecfinal
@@ -618,16 +625,18 @@ shinyServer(
     
     getactive=function(){
       if(input$selecactive==gettext("Choose")){
-      sup=c()
+      sup=NULL
       if(length(input$supvar)==0){
         activevar=VariableChoices
       }
       else{
-        for (i in 1:length(VariableChoices)){
-          if(VariableChoices[i]%in%input$supvar){
-            sup=c(sup,i)
-          }
-        }
+         # for (i in 1:length(VariableChoices)){
+          # if(VariableChoices[i]%in%input$supvar){
+            # sup=c(sup,i)
+          # }
+        # }
+	    sup=which(VariableChoices%in%input$supvar)
+	    if (length(sup)==0) sup=NULL
         activevar=VariableChoices[-sup]
       }
       return(activevar)

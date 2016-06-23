@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Factoshiny 1.0.3\n"
 "POT-Creation-Date: 2016-02-03 09:58+0100\n"
-"PO-Revision-Date: 2016-06-03 16:38+0200\n"
+"PO-Revision-Date: 2016-06-21 15:01+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -121,7 +121,7 @@ msgid "Graph of variables"
 msgstr "Graphe des variables"
 
 msgid "No selection"
-msgstr "Pas de sélection"
+msgstr "Pas de selection"
 
 msgid "Manual"
 msgstr "Manuelle"
@@ -686,3 +686,63 @@ msgstr "Couleur des colonnes supplémentaires"
 
 msgid "FAMD on the dataset"
 msgstr "AFDM sur le jeu de données"
+
+msgid "Principal Component Analysis"
+msgstr "Analyse en Composantes Principales"
+
+msgid "This dataset contains"
+msgstr "Ce jeu de données contient"
+
+msgid "individuals and"
+msgstr "individus et"
+
+msgid "Dataset"
+msgstr "Jeu de données"
+
+msgid "variable is quantitative and considered as illustrative"
+msgstr "variable est quantitative supplémentaire"
+
+msgid "variables are quantitative and considered as illustrative"
+msgstr "variables sont quantitatives supplémentaires"
+
+msgid "variable is qualitative and considered as illustrative"
+msgstr "variable est qualitative supplémentaire"
+
+msgid "variables are qualitative and considered as illustrative"
+msgstr "variables sont qualitatives supplémentaires"
+
+msgid "individual is considered as illustrative"
+msgstr "individu est supplémentaire"
+
+msgid "individuals are considered as illustrative"
+msgstr "individus sont supplémentaires"
+
+msgid "Study of the outliers"
+msgstr "Observation d'individus extrêmes"
+
+msgid "The analysis of the PCA graphs leads to detect an outlier that strongly influences the PCA results. "
+msgstr "L'analyse des graphes de l'ACP conduit à détecter un individu singulier qui influence très fortement les résultats de l'ACP. "
+
+msgid "First we will describe this outlier and then we will suppress it from the analysis. "
+msgstr "On soulignera dans un premier temps le caractère extrême de cet individu avant de le retirer pour procéder à la suite de l'analyse. "
+
+msgid "Looking at the graph, we can note that a particular individual strongly contributes to the construction of the plane. "
+msgstr "En observant le graphe, on peut noter qu'un individu est très particulier et contribue fortement à la construction du plan. "
+
+msgid "Its contribution to the construction of the plane equals"
+msgstr "Sa contribution à la construction du plan est de"
+
+msgid "The analysis of the PCA graphs leads to detect outliers that strongly influence the PCA results. "
+msgstr "L'analyse des graphes de l'ACP conduit à détecter des individus singuliers qui influencent très fortement les résultats de l'ACP. "
+
+msgid "First we will describe these outliers and then we will suppress them from the analysis. "
+msgstr "On soulignera dans un premier temps le caractère extrême de ces individus avant de les retirer pour procéder à la suite de l'analyse. "
+
+msgid "Looking at the graph, we can note that "
+msgstr "En observant le graphe, on peut noter que "
+
+msgid "particular individuals strongly contribute to the construction of the plane. "
+msgstr "individus sont particuliers et contribuent fortement à la construction du plan. "
+
+msgid "The cumulative contribution of these individuals to the construction of the plane equals"
+msgstr "La contribution cumulée de ces individus à la construction du plan est de"

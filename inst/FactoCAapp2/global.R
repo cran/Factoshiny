@@ -92,25 +92,30 @@ nums=c(1:length(noms))
 QualiChoice=quali
 IdChoice=c(1:length(VariableChoice))
 Idqualisup=c(1:length(QualiChoice))
-sup=c()
-for(i in IdChoice){
-  if(VariableChoice[i]%in%withna){
-    sup=c(sup,i)
-  }
-}
-sup2=c()
+# sup=c()
+# for(i in IdChoice){
+  # if(VariableChoice[i]%in%withna){
+    # sup=c(sup,i)
+  # }
+# }
+sup=which(VariableChoice%in%withna)
+if (length(sup)==0) sup=NULL
+ 
+#sup2=c()
 if(!(is.null(sup))){
   VariableChoices=VariableChoice[-sup]
 }
 if(is.null(sup)){
   VariableChoices=VariableChoice
 }
-IdChoices=c(1:length(VariableChoices))
-for(i in nums){
-  if(noms[i]%in%nomrow){
-    sup2=c(sup2,i)
-  }
-}
+IdChoices=1:length(VariableChoices)
+# for(i in nums){
+  # if(noms[i]%in%nomrow){
+    # sup2=c(sup2,i)
+  # }
+# }
+sup2=which(noms%in%nomrow)
+if (length(sup2)==0) sup2 <- NULL
 if(!(is.null(sup2))){
   nom=noms[-sup2]
 }

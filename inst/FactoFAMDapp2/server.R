@@ -16,12 +16,13 @@ shinyServer(
       suple=NULL
     }
     else{
-      suple=c()
-      for (i in 1:length(nom)){
-        if(nom[i]%in%input$indsup){
-          suple=c(suple,i)
-        }
-      }
+	  suple=which(nom%in%input$indsup)
+      # suple=c()
+      # for (i in 1:length(nom)){
+        # if(nom[i]%in%input$indsup){
+          # suple=c(suple,i)
+        # }
+      # }
     }
     list(res.FAMD=(FAMD(data.selec,sup.var=choixsup,ind.sup=suple,graph=FALSE,ncp=5)),DATA=(data.selec),choixsuple=(suple),varsup=(choixsup))
     })
@@ -157,8 +158,6 @@ shinyServer(
       p <- Plot4()$PLOT
     })
     
-    
-    
     ### Boutton pour quitter l'application
     ### Recuperation parametres
     observe({
@@ -289,60 +288,65 @@ shinyServer(
     
     getactive=function(){
       if(input$selecactive==gettext("Choose")){
-      sup=c()
-      sup2=c()
-      sup3=c()
+      sup<-sup2<-sup3<-NULL
       if(length(input$supvar)==0&&length(input$supvar1)==0){
-        activevar=all
-        supl=NULL
+        activevar<-all
+        supl<-NULL
       }
       else if(length(input$supvar1)==0&&length(input$supvar)!=0){
-        for (i in 1:length(all)){
-          if(all[i]%in%input$supvar){
-            sup=c(sup,i)
-          }
-        }
-        activevar=all[-sup]
-        supl=VariableChoices[sup]
-        quanti=VariableChoices[-sup]
+        # for (i in 1:length(all)){
+          # if(all[i]%in%input$supvar){
+            # sup=c(sup,i)
+          # }
+        # }
+	    sup<-which(all%in%input$supvar)
+        activevar<-all[-sup]
+        supl<-VariableChoices[sup]
+        quanti<-VariableChoices[-sup]
       }
       else if(length(input$supvar)==0&&length(input$supvar1)!=0){
-        for (i in 1:length(all)){
-          if(all[i]%in%input$supvar1){
-            sup=c(sup,i)
-          }
-        }
+        # for (i in 1:length(all)){
+          # if(all[i]%in%input$supvar1){
+            # sup=c(sup,i)
+          # }
+        # }
+	    sup=which(all%in%input$supvar1)
         activevar=all[-sup]
         supl=QualiChoice[sup]
         quali=QualiChoice[-sup]
       }
       else if(length(input$supvar)!=0&&length(input$supvar1)!=0){
-        for (i in 1:length(all)){
-          if(all[i]%in%input$supvar1 || all[i]%in%input$supvar){
-            sup=c(sup,i)
-          }
-        }
+        # for (i in 1:length(all)){
+          # if(all[i]%in%input$supvar1 || all[i]%in%input$supvar){
+            # sup=c(sup,i)
+          # }
+        # }
+	    sup=which(all%in%c(input$supvar,input$supvar1))
         activevar=all[-sup]
         supl=all[sup]
-        for (i in 1:length(QualiChoice)){
-          if(QualiChoice[i]%in%input$supvar1){
-            sup2=c(sup2,i)
-          }
-        }
-        for (i in 1:length(VariableChoices)){
-          if(VariableChoices[i]%in%input$supvar){
-            sup3=c(sup3,i)
-          }
-        }
-      quanti=QualiChoice[-sup2]
-      quali=VariableChoices[-sup3]
+        # for (i in 1:length(QualiChoice)){
+          # if(QualiChoice[i]%in%input$supvar1){
+            # sup2=c(sup2,i)
+          # }
+        # }
+	    sup2=which(QualiChoice%in%input$supvar1)
+        # for (i in 1:length(VariableChoices)){
+          # if(VariableChoices[i]%in%input$supvar){
+            # sup3=c(sup3,i)
+          # }
+        # }
+	    sup3=which(VariableChoices%in%input$supvar)
+      quali=QualiChoice[-sup2]
+      quanti=VariableChoices[-sup3]
       }
-      ind=NULL
-      if(!is.null(supl)){
-        for(i in 1:length(supl)){
-          ind=c(ind,which(all==supl[i]))
-        }
-      }
+      # ind=NULL
+	  # ind=which(all%in%supl)
+	  # if (length(ind)==0) ind=NULL
+      # if(!is.null(supl)){
+        # for(i in 1:length(supl)){
+          # ind=c(ind,which(all==supl[i]))
+        # }
+      # }
       return(list(activevar=activevar,supl=supl,quanti=quanti,quali=quali,sup=sup))
     }
   }
@@ -550,36 +554,38 @@ shinyServer(
     part2=""
     if(!is.null(input$supvar)||!is.null(input$supvar1)){
       choixsup=getactive()$sup
-      vect3<-choixsup[1]
-      if (length(choixsup)>1){
-	    for(i in 2:length(choixsup)){
-          vect3<-paste(vect3,paste(choixsup[i],sep=""),sep=",")
-        }
-	  }
-      part2=paste(",sup.var=c(",vect3,"),")
+      # vect3<-choixsup[1]
+      # if (length(choixsup)>1){
+	    # for(i in 2:length(choixsup)){
+          # vect3<-paste(vect3,paste(choixsup[i],sep=""),sep=",")
+        # }
+	  # }
+      vect3 <- paste(choixsup,collapse=",")
+      part2=paste(",sup.var=c(",vect3,")",sep="")
     }
     part3=""
     if(!is.null(input$indsup)){
-        suple=c()
-        for (i in 1:length(nom)){
-          if(nom[i]%in%input$indsup){
-            suple=c(suple,i)
-            
-          }
-        }
-        vect4=NULL
-        vect4<-paste(vect4,suple[1],sep="")
-        if(length(suple)>1){
-        for(i in 2:length(suple)){
-          vect4<-paste(vect4,paste(suple[i],sep=""),sep=",")
-        } 
-        }
+      # suple=c()
+      # for (i in 1:length(nom)){
+        # if(nom[i]%in%input$indsup){
+          # suple=c(suple,i)
+        # }
+      # }
+	    suple=which(nom%in%input$indsup)
+        # vect4=NULL
+        # vect4<-paste(vect4,suple[1],sep="")
+        # if(length(suple)>1){
+        # for(i in 2:length(suple)){
+          # vect4<-paste(vect4,paste(suple[i],sep=""),sep=",")
+        # }
+        # }
+		vect4 <- paste(suple,collapse=",")
       if(part2!=""){
-        part3=paste("ind.sup=c(",vect4,")")
+        part3=paste("ind.sup=c(",vect4,")",sep="")
       }
-      else{
-        part3=paste(",ind.sup=c(",vect4,")")
-      }
+       else{
+         part3=paste(",ind.sup=c(",vect4,")",sep="")
+       }
     }
     Call1=as.name(paste("res.FAMD<-FAMD(",vec,part2,part3,",graph=FALSE,ncp=5)",sep=""))
     return(Call1)

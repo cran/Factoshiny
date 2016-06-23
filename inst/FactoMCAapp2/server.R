@@ -71,11 +71,12 @@ shinyServer(
         indsuplem<-NULL
       }
       else {
-        vec<-NULL
-        for(i in 1:length(input$indsup)){
-          vec<-c(vec,which(rownames(newdata)==input$indsup[i]))
-        }
-        indsuplem<-vec
+        # vec<-NULL
+        # for(i in 1:length(input$indsup)){
+          # vec<-c(vec,which(rownames(newdata)==input$indsup[i]))
+        # }
+        # indsuplem<-vec
+	    indsuplem=which(rownames(newdata)%in%input$indsup)
       }
       list(res.MCA=(MCA(data.selec,quanti.sup=choixquanti,quali.sup=choixquali,ind.sup=indsuplem,graph=FALSE)),DATA=(data.selec),choixquant=(choixquanti),choixqual=(choixquali),indsup=(indsuplem))     
     })
@@ -138,22 +139,26 @@ shinyServer(
       indsup<-values()$indsup
       
       
-      vec<-NULL
-      for (i in 1:length(colnames(Datasel))){
-        vec<-c(vec,colnames(Datasel)[i])
-      }
+      # vec<-NULL
+      # for (i in 1:length(colnames(Datasel))){
+        # vec<-c(vec,colnames(Datasel)[i])
+      # }
+      vec <- colnames(Datasel)
       vec<-paste0("'",vec,"'")
-      vec<-createVec(vec)
+      vec <- paste("c(",paste(vec,collapse=","),")",sep="")
+#      vec<-createVec(vec)
       
-      vecquant1<-createVec(vecquant)
+#      vecquant1<-createVec(vecquant)
+      vecquant1 <- paste("c(",paste(vecquant,collapse=","),")",sep="")
       vecquant2<-vecquant
       
       vecqual<-choixqual
-      vecqual1<-createVec(vecqual)
+#      vecqual1<-createVec(vecqual)
+      vecqual1 <- paste("c(",paste(vecqual,collapse=","),")",sep="")
       vecqual2<-vecqual
-      
-      
-      indsup1<-createVec(indsup)
+            
+#      indsup1<-createVec(indsup)
+      indsup1 <- paste("c(",paste(indsup,collapse=","),")",sep="")
       indsup2<-indsup
       
       if(length(input$supvar)>1){
@@ -362,16 +367,17 @@ shinyServer(
     #Getactive
     getactive=function(){
       if(input$selecactive==gettext("Choose")){
-        sup=c()
+        sup=NULL
         if(length(input$supvar)==0){
           activevar=VariableChoices
         }
         else{
-          for (i in 1:length(VariableChoices)){
-            if(VariableChoices[i]%in%input$supvar){
-              sup=c(sup,i)
-            }
-          }
+         # for (i in 1:length(VariableChoices)){
+          # if(VariableChoices[i]%in%input$supvar){
+            # sup=c(sup,i)
+          # }
+        # }
+	      sup=which(VariableChoices%in%input$supvar)
           activevar=VariableChoices[-sup]
         }
         return(activevar)
@@ -380,14 +386,14 @@ shinyServer(
     
     output$choixindvar=renderUI({
       choix=list(gettext("Individuals"),gettext("Categories"))
-      selec=list(gettext("Individuals"),gettext("Categories"))
+#      selec=list(gettext("Individuals"),gettext("Categories"))
       if(!(is.null(input$indsup))){
         choix=c(choix,gettext("Supplementary individuals"))
-        selec=c(selec,gettext("Supplementary individuals"))
+#        selec=c(selec,gettext("Supplementary individuals"))
       }
       if(!(is.null(input$supvar))){
         choix=c(choix,gettext("Supplementary categories"))
-        selec=c(selec,gettext("Supplementary categories"))
+#        selec=c(selec,gettext("Supplementary categories"))
       }
       div(align="center",checkboxGroupInput("ind_var","", choices=choix,
                                                    selected = indvar))
@@ -397,23 +403,27 @@ shinyServer(
       validate(
         need(!is.null(input$ind_var),""))
       choix=list()
-      selec=c()
+#      selec=c()
       reponse=input$ind_var
-      if(gettext("Individuals")%in% reponse){
+#      if(gettext("Individuals")%in% reponse){ 
+      if(sum(gettext("Individuals")==reponse)==0){
         choix=c(choix,gettext("Individuals"))
-        selec=c(selec,gettext("Individuals"))
+#        selec=c(selec,gettext("Individuals"))
       }
-      if(gettext("Categories") %in% reponse){
+#      if(gettext("Categories") %in% reponse){
+      if(sum(gettext("Categories")==reponse)==0){
         choix=c(choix,gettext("Categories"))
-        selec=c(selec,gettext("Categories"))
+#        selec=c(selec,gettext("Categories"))
       }
-      if(gettext("Supplementary individuals") %in% reponse){
+#      if(gettext("Supplementary individuals") %in% reponse){
+      if(sum(gettext("Supplementary individuals")==reponse)==0){
         choix=c(choix,gettext("Supplementary individuals"))
-        selec=c(selec,gettext("Supplementary individuals"))
+#        selec=c(selec,gettext("Supplementary individuals"))
       }
-      if("Modsup"%in% reponse){
+#      if(gettext("Supplementary categories")%in% reponse){
+      if(sum(gettext("Supplementary categories")==reponse)==0){
         choix=c(choix,gettext("Supplementary categories"))
-        selec=c(selec,gettext("Supplementary categories"))
+#        selec=c(selec,gettext("Supplementary categories"))
       }
       div(align="center",checkboxGroupInput("indvarpoint","",choices=choix,selected=labvar))
     })
@@ -466,30 +476,33 @@ shinyServer(
       # if(!("Mod"%in%input$ind_var)){
         # inv<-c(inv,"var")
       # }
-      if(!(gettext("Individuals")%in%input$ind_var)){
+#      if(!(gettext("Individuals")%in%input$ind_var)){
+      if(sum(gettext("Individuals")==input$ind_var)==0){
         inv<-c(inv,"ind")
       }
       
-      if(!(gettext("Categories")%in%input$ind_var)){
+#      if(!(gettext("Categories")%in%input$ind_var)){
+      if(sum(gettext("Categories")==input$ind_var)==0){
         inv<-c(inv,"var")
       }
       if(!(is.null(values()$choixqual))){
-      if(!(gettext("Supplementary categories")%in%input$ind_var)){
+#      if(!(gettext("Supplementary categories")%in%input$ind_var)){
+      if(sum(gettext("Supplementary categories")==input$ind_var)==0){
         inv<-c(inv,"quali.sup")
       }
       }
       if(!(is.null(values()$indsup))){
-      if(!(gettext("Supplementary individuals")%in%input$ind_var)){
+#      if(!(gettext("Supplementary individuals")%in%input$ind_var)){
+      if(sum(gettext("Supplementary individuals")==input$ind_var)==0){
         inv<-c(inv,"ind.sup")
       }
       }
-      
-      vecinv<-NULL
-      vecinv<-paste("'",vecinv,inv[1],"'",sep="")
-      for (i in 2:(length(inv))){
-        vecinv<-paste(vecinv,paste("'",inv[i],"'",sep=""),sep=",")
-      }
-      
+      # vecinv<-NULL
+      # vecinv<-paste("'",vecinv,inv[1],"'",sep="")
+      # for (i in 2:(length(inv))){
+        # vecinv<-paste(vecinv,paste("'",inv[i],"'",sep=""),sep=",")
+      # }
+      vecinv <- paste("'",paste(inv,collapse="','"),"'",sep="")
       if(length(inv)>1){
         vecinv<-paste("c(",vecinv,")",sep="")
       }
@@ -505,23 +518,27 @@ shinyServer(
     
     getinv2=function(){
       inv<-c()
-      if(!(gettext("Supplementary qualitative variables")%in%input$var_sup)){
+      if(sum(gettext("Supplementary qualitative variables")==input$var_sup)==0){
+#      if(!(gettext("Supplementary qualitative variables")%in%input$var_sup)){
         inv<-c(inv,"quali.sup")
       }
       
-      if(!(gettext("Supplementary quantitative variables")%in%input$var_sup)){
+      if(sum(gettext("Supplementary quantitative variables")==input$var_sup)==0){
+#      if(!(gettext("Supplementary quantitative variables")%in%input$var_sup)){
         inv<-c(inv,"quanti.sup")
       }
       
-      if(!(gettext("Active qualitative variables")%in%input$var_sup)){
+      if(sum(gettext("Active qualitative variables")==input$var_sup)==0){
+#      if(!(gettext("Active qualitative variables")%in%input$var_sup)){
         inv<-c(inv,"var")
       }
       
-      vecinv<-NULL
-      vecinv<-paste("'",vecinv,inv[1],"'",sep="")
-      for (i in 2:(length(inv))){
-        vecinv<-paste(vecinv,paste("'",inv[i],"'",sep=""),sep=",")
-      }
+      # vecinv<-NULL
+      # vecinv<-paste("'",vecinv,inv[1],"'",sep="")
+      # for (i in 2:(length(inv))){
+        # vecinv<-paste(vecinv,paste("'",inv[i],"'",sep=""),sep=",")
+      # }
+      vecinv <- paste("'",paste(inv,collapse="','"),"'",sep="")
       
       if(length(inv)>1){
         vecinv<-paste("c(",vecinv,")",sep="")

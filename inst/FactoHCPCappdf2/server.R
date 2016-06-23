@@ -98,17 +98,18 @@ shinyServer(
     
     getactive=function(){
       if(input$quantisup==TRUE){
-        sup=c()
+        sup=NULL
         if(length(input$supvar)==0){
           activevar=VariableChoices
         }
         else{
-          for (i in 1:length(VariableChoices)){
-            if(VariableChoices[i]%in%input$supvar){
-              sup=c(sup,i)
-            }
-          }
-          activevar=VariableChoices[-sup]
+         # for (i in 1:length(VariableChoices)){
+          # if(VariableChoices[i]%in%input$supvar){
+            # sup=c(sup,i)
+          # }
+        # }
+	    sup=which(VariableChoices%in%input$supvar)
+        activevar=VariableChoices[-sup]
         }
         return(activevar)
       }

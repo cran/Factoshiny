@@ -5,7 +5,7 @@ if(is.data.frame(x)==TRUE){
   nomData=nomData
   axe1=1
   axe2=2
-  varsup=c(gettext(gettext("Active qualitative variables"),"Supplementary qualitative variables"),gettext("Supplementary quantitative variables"))
+  varsup=c(gettext("Active qualitative variables"),gettext("Supplementary qualitative variables"),gettext("Supplementary quantitative variables"))
 #  indvar=c("Ind","Mod","Modsup","Indsup")
   indvar=c(gettext("Individuals"),gettext("Categories"),gettext("Supplementary categories"),gettext("Supplementary individuals"))
   labvar=c()
@@ -22,7 +22,7 @@ if(is.data.frame(x)==TRUE){
 #  varsup=c(gettext("Active qualitative variables"))
   # indvar=c("Ind","Mod","Indsup","Modsup")
   # labvar=c("Ind","Mod","Indsup","Modsup")
-  indvar=c(gettext("Individuals"),gettext("Categories"),gettext("Supplementary individuals"),gettext("Supplementary categories"))
+  # indvar=c(gettext("Individuals"),gettext("Categories"),gettext("Supplementary individuals"),gettext("Supplementary categories"))
   labvar=c(gettext("Individuals"),gettext("Categories"),gettext("Supplementary individuals"),gettext("Supplementary categories"))
   indsupl=NULL
   title1=gettext("MCA factor map")

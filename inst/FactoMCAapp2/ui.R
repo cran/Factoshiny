@@ -133,14 +133,14 @@ shinyUI(fluidPage(
                 sliderInput("sliderContrib",label=gettext("Number of the most contributive individuals"),
                             min=1,max=length(nom),value=length(nom),step=1)
               }),
-            shinyjs::colourInput("colindact",gettext("Colour of actives individuals"),color1),
+            shinyjs::colourInput("colindact",gettext("Colour of active individuals"),color1),
             uiOutput("col1"),
 
 if(is.null(habillageind)){
-  checkboxInput("habi","Points colour depend on categorical variable",FALSE)
+  checkboxInput("habi",gettext("Points colour depend on categorical variable"),FALSE)
 }
 else{
-  checkboxInput("habi","Points colour depend on categorical variable",TRUE)
+  checkboxInput("habi",gettext("Points colour depend on categorical variable"),TRUE)
 },
             
             conditionalPanel(
@@ -174,7 +174,7 @@ else{
               condition="input.selectMod=='Contrib'",
               uiOutput("slider3")
             ),
-        checkboxInput("eachvar","Colour each variable with different colour",valdef),
+        checkboxInput("eachvar",gettext("Colour each variable with different colour"),valdef),
         shinyjs::colourInput("colvaract",gettext("Colour of active categories"),color3),
         uiOutput("col2")
           )),

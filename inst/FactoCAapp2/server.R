@@ -55,12 +55,14 @@ shinyServer(
         }
       }
       if(length(input$rowsupl)!=0){
-        indexes=c()
-        for (i in 1:length(nom)){
-          if(nom[i]%in%input$rowsupl){
-            indexes=c(indexes,i)
-          }
-        }
+        # indexes=c()
+        # for (i in 1:length(nom)){
+          # if(nom[i]%in%input$rowsupl){
+            # indexes=c(indexes,i)
+          # }
+        # }
+	  indexes=which(nom%in%input$rowsupl)
+	  if (length(indexes)==0) indexes=NULL
       }
       else{
         indexes=NULL
@@ -170,12 +172,11 @@ shinyServer(
       invisi=NULL
       if(length(input$invis)!=0){
         invisi=NULL
-		if (gettext("Rows")%in%input$invis) invisi<-c(invisi,"row")
-		if (gettext("Columns")%in%input$invis) invisi<-c(invisi,"col")
-		if (gettext("Supplementary rows")%in%input$invis) invisi<-c(invisi,"row.sup")
-		if (gettext("Supplementary columns")%in%input$invis) invisi<-c(invisi,"col.sup")
-		if (gettext("Supplementary qualitative variables")%in%input$invis) invisi<-c(invisi,"quali.sup")
-#		invisi=input$invis
+        if(sum(gettext("Rows")==input$invis)>0) invisi<-c(invisi,"row")
+        if(sum(gettext("Columns")==input$invis)>0) invisi<-c(invisi,"col")
+        if(sum(gettext("Supplementary rows")==input$invis)>0) invisi<-c(invisi,"row.sup")
+        if(sum(gettext("Supplementary columns")==input$invis)>0) invisi<-c(invisi,"col.sup")
+        if(sum(gettext("Supplementary qualitative variables")==input$invis)>0) invisi<-c(invisi,"quali.sup")
       }
       res$f=invisi
       res$type1=input$seleccol
@@ -199,10 +200,30 @@ shinyServer(
       res$code2=CodeGraph()
       res$title1=input$title1
       res$anafact=values()$res.CA
-      res$col1=input$colrow
-      res$col2=input$colcol
-      res$col3=input$colrowsup
-      res$col4=input$colcolsup
+      if(is.null(input$colrow)){
+        col1="blue"
+      }else{
+        col1=input$colrow
+      }
+      if(is.null(input$colcol)){
+        col2="red"
+      }else{
+        col2=input$colcol
+      }
+      if(is.null(input$colrowsup)){
+        col3="darkblue"
+      }else{
+        col3=input$colrowsup
+      }
+      if(is.null(input$colcolsup)){
+        col4="darkred"
+      }else{
+        col4=input$colcolsup
+      }
+      res$col1=col1
+      res$col2=col2
+      res$col3=col3
+      res$col4=col4
       res$ellip=input$ellip
       class(res) <- "CAshiny"
       return(res)
@@ -219,18 +240,7 @@ shinyServer(
         })
       }
     })
-    
-    
-    createVec=function(arg){
-      vec<-NULL
-      vec<-paste(vec,arg[1],sep="")
-      for (i in 2:(length(arg))){
-        vec<-paste(vec,arg[i],sep=",")
-      }
-      vec<-paste("c(",vec,")",sep="")
-      return(vec)
-    }
-    
+        
     
     Code=function(){
       
@@ -239,24 +249,16 @@ shinyServer(
       Datasel<-values()$DATA
       indexes<-values()$INDEXES
       
-      vec<-NULL
-      for (i in 1:length(colnames(Datasel))){
-        vec<-c(vec,colnames(Datasel)[i])
-      }
-      vec2<-NULL
-      vec2<-paste(vec2,"'",vec[1],"'",sep="")
-      for (i in 2:(length(vec))){
-        vec2<-paste(vec2,paste("'",vec[i],"'",sep=""),sep=",")
-      }
+	  vec2 <- paste("'",paste(colnames(Datasel),collapse="','"),"'",sep="")
       vecfinal<-paste(nomData,"[,c(",vec2,")","]",sep="")
       
-      vecquant1<-createVec(vecquant)
+      vecquant1 <- paste("c(",paste(vecquant,collapse=","),")",sep="")
       vecquant2<-vecquant
       
-      vecqual1<-createVec(vecqual)
+      vecqual1 <- paste("c(",paste(vecqual,collapse=","),")",sep="")
       vecqual2<-vecqual
       
-      indexes1<-createVec(indexes)
+      indexes1 <- paste("c(",paste(indexes,collapse=","),")",sep="")
       indexes2<-indexes
       
       if(length(vecqual)==0){
@@ -318,22 +320,22 @@ shinyServer(
       if(input$selecrow=="contrib"){
         sel2=paste("contrib ",input$contrib2)
       }
-      if(!is.null(input$colrow)){
+      if(is.null(input$colrow)){
         col1="blue"
       }else{
         col1=input$colrow
       }
-      if(!is.null(input$colcol)){
+      if(is.null(input$colcol)){
         col2="red"
       }else{
         col2=input$colcol
       }
-      if(!is.null(input$colrowsup)){
+      if(is.null(input$colrowsup)){
         col3="darkblue"
       }else{
         col3=input$colrowsup
       }
-      if(!is.null(input$colcolsup)){
+      if(is.null(input$colcolsup)){
         col4="darkred"
       }else{
         col4=input$colcolsup
@@ -368,12 +370,11 @@ shinyServer(
       }
       if(length(input$invis)!=0){
         invisi=NULL
-		if (gettext("Rows")%in%input$invis) invisi<-c(invisi,"row")
-		if (gettext("Columns")%in%input$invis) invisi<-c(invisi,"col")
-		if (gettext("Supplementary rows")%in%input$invis) invisi<-c(invisi,"row.sup")
-		if (gettext("Supplementary columns")%in%input$invis) invisi<-c(invisi,"col.sup")
-		if (gettext("Supplementary qualitative variables")%in%input$invis) invisi<-c(invisi,"quali.sup")
-#        invisi=input$invis
+        if(sum(gettext("Rows")==input$invis)>0) invisi<-c(invisi,"row")
+        if(sum(gettext("Columns")==input$invis)>0) invisi<-c(invisi,"col")
+        if(sum(gettext("Supplementary rows")==input$invis)>0) invisi<-c(invisi,"row.sup")
+        if(sum(gettext("Supplementary columns")==input$invis)>0) invisi<-c(invisi,"col.sup")
+        if(sum(gettext("Supplementary qualitative variables")==input$invis)>0) invisi<-c(invisi,"quali.sup")
         invisiText=invisi
         invisiText=paste("c(",paste(paste("'",invisi,"'",sep=""),collapse = ","),")",sep="")
       }
@@ -410,8 +411,18 @@ shinyServer(
           values2=c(values2,"row")
         }
       }
-      list(PLOT1=(plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,title=input$title1,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,unselect=0,invisible=invisi,col.row=input$colrow,col.col=input$colcol,col.row.sup=input$colrowsup,col.col.sup=input$colcolsup)),invisiText=(invisiText),
-           PLOT2=(ellipseCA(values()$res.CA,ellipse=values2,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,title=input$title1,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,unselect=0,invisible=invisi,col.row=input$colrow,col.col=input$colcol,col.row.sup=input$colrowsup,col.col.sup=input$colcolsup)))
+      if(is.null(input$colrowsup)){
+        colrowsup="darkblue"
+      }else{
+        colrowsup=input$colrowsup
+      }
+      if(is.null(input$colcolsup)){
+        colcolsup="darkred"
+      }else{
+        colcolsup=input$colcolsup
+      }
+      list(PLOT1=(plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,title=input$title1,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,unselect=0,invisible=invisi,col.row=input$colrow,col.col=input$colcol,col.row.sup=colrowsup,col.col.sup=colcolsup)),invisiText=(invisiText),
+           PLOT2=(ellipseCA(values()$res.CA,ellipse=values2,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,title=input$title1,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,unselect=0,invisible=invisi,col.row=input$colrow,col.col=input$colcol,col.row.sup=colrowsup,col.col.sup=colcolsup)))
     })
     
     output$map <- renderPlot({
@@ -425,16 +436,12 @@ shinyServer(
     
     getactive=function(){
       if(input$selecactive==gettext("Choose")){
-        sup=c()
+        sup=NULL
         if(length(input$supvar)==0){
           activevar=VariableChoices
         }
         else{
-          for (i in 1:length(VariableChoices)){
-            if(VariableChoices[i]%in%input$supvar){
-              sup=c(sup,i)
-            }
-          }
+	      sup=which(VariableChoices%in%input$supvar)
           activevar=VariableChoices[-sup]
         }
         return(activevar)
@@ -463,18 +470,14 @@ shinyServer(
     })
     
     output$out22=renderUI({
-#      choix=list("Summary of CA"="CA","Eigenvalues"="eig","Coordinates for the columns"="var","Coordinates of the rows"="ind")
       choix=list(gettext("Summary of outputs"),gettext("Eigenvalues"),gettext("Results for the columns"),gettext("Results for the rows"))
       if(!is.null(values()$INDEXES)){
-#        choix=c(choix,"Coordinates of the supplementary rows"="suprow")
         choix=c(choix,gettext("Results for the supplementary rows"))
       }
       if(!is.null(values()$CHOIXQUANTI)){
-#        choix=c(choix,"Coordinates of the supplementary columns"="supcol")
         choix=c(choix,gettext("Results for the supplementary columns"))
       }
       if(!is.null(values()$CHOIXQUALI)){
-#        choix=c(choix,"Coordinates of the categorical variables"="qualico")
         choix=c(choix,gettext("Results for the categorical variables"))
       }
       radioButtons("out",gettext("Which outputs do you want?"),
@@ -658,12 +661,11 @@ shinyServer(
       }
       if(length(input$invis)!=0){
         invisi=NULL
-		if (gettext("Rows")%in%input$invis) invisi<-c(invisi,"row")
-		if (gettext("Columns")%in%input$invis) invisi<-c(invisi,"col")
-		if (gettext("Supplementary rows")%in%input$invis) invisi<-c(invisi,"row.sup")
-		if (gettext("Supplementary columns")%in%input$invis) invisi<-c(invisi,"col.sup")
-		if (gettext("Supplementary qualitative variables")%in%input$invis) invisi<-c(invisi,"quali.sup")
-#        invisi=input$invis
+        if(sum(gettext("Rows")==input$invis)>0) invisi<-c(invisi,"row")
+        if(sum(gettext("Columns")==input$invis)>0) invisi<-c(invisi,"col")
+        if(sum(gettext("Supplementary rows")==input$invis)>0) invisi<-c(invisi,"row.sup")
+        if(sum(gettext("Supplementary columns")==input$invis)>0) invisi<-c(invisi,"col.sup")
+        if(sum(gettext("Supplementary qualitative variables")==input$invis)>0) invisi<-c(invisi,"quali.sup")
       }
       sel=NULL
       if(input$seleccol=="cos2"){
@@ -689,7 +691,17 @@ shinyServer(
       if(input$seleccol=="contrib"){
         sel2=paste("contrib ",input$contrib2)
       }
-      plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,title=input$title1,unselect=0,invisible=invisi,col.row=input$colrow,col.col=input$colcol,col.row.sup=input$colrowsup,col.col.sup=input$colcolsup)
+      if(is.null(input$colrowsup)){
+        colrowsup="darkblue"
+      }else{
+        colrowsup=input$colrowsup
+      }
+      if(is.null(input$colcolsup)){
+        colcolsup="darkred"
+      }else{
+        colcolsup=input$colcolsup
+      }
+      plot.CA(values()$res.CA,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),selectCol=sel,selectRow=sel2,cex=input$cex,cex.main=input$cex,cex.axis=input$cex,title=input$title1,unselect=0,invisible=invisi,col.row=input$colrow,col.col=input$colcol,col.row.sup=colrowsup,col.col.sup=colcolsup)
     }
     
   }
