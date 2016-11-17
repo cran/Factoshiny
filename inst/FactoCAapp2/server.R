@@ -108,22 +108,22 @@ shinyServer(
     
     output$col1=renderUI({
       if(!is.null(values()$res.CA$row)){
-        return(shinyjs::colourInput("colrow",gettext("Colour of row points"),col1))
+        return(colourpicker::colourInput("colrow",gettext("Colour of row points"),col1))
       }
     })
     output$col2=renderUI({
       if(!is.null(values()$res.CA$col)){
-        return(shinyjs::colourInput("colcol",gettext("Colour of column points"),col2))
+        return(colourpicker::colourInput("colcol",gettext("Colour of column points"),col2))
       }
     })
     output$col3=renderUI({
       if(!is.null(values()$res.CA$row.sup)){
-        return(shinyjs::colourInput("colrowsup",gettext("Colour of supplementary row points"),col3))
+        return(colourpicker::colourInput("colrowsup",gettext("Colour of supplementary row points"),col3))
       }
     })
     output$col4=renderUI({
       if(!is.null(values()$res.CA$col.sup)){
-        return(shinyjs::colourInput("colcolsup",gettext("Colour of supplementary column points"),col4))
+        return(colourpicker::colourInput("colcolsup",gettext("Colour of supplementary column points"),col4))
       }
     })
     
@@ -525,66 +525,66 @@ shinyServer(
     
     output$sorties=renderTable({
       return(as.data.frame(values()$res.CA$eig))
-    })
+    },rownames=TRUE)
     
     output$sorties1=renderTable({
       validate(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Not enough active columns"))
       )
       return(as.data.frame(values()$res.CA$col$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties2=renderTable({
       validate(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Not enough active columns"))
       )
       return(as.data.frame(values()$res.CA$col$cos2))
-    })
+    },rownames=TRUE)
     
     output$sorties3=renderTable({
       validate(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Not enough active columns"))
       )
       return(as.data.frame(values()$res.CA$col$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties4=renderTable({
       return(as.data.frame(values()$res.CA$row$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties5=renderTable({
       return(as.data.frame(values()$res.CA$row$cos2))
-    })
+    },rownames=TRUE)
     
     output$sorties6=renderTable({
       return(as.data.frame(values()$res.CA$row$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties7=renderTable({
       validate(
         need((length(input$rowsupl)>0), gettext("No supplementary rows selected"))
       )
       return(as.data.frame(values()$res.CA$row.sup$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties8=renderTable({
       return(as.data.frame(values()$res.CA$row.sup$cos2))
-    })
+    },rownames=TRUE)
     
     output$sorties9=renderTable({
       return(as.data.frame(values()$res.CA$col.sup$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties10=renderTable({
       return(as.data.frame(values()$res.CA$col.sup$cos2))
-    })
+    },rownames=TRUE)
     
     output$sorties11=renderTable({
       validate(
         need((length(input$supquali)>0 || input$supquali==TRUE), gettext("No categorical variables selected"))
       )
       return(as.data.frame(values()$res.CA$quali.sup))
-    })
+    },rownames=TRUE)
     
     
     

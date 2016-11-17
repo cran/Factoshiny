@@ -382,7 +382,7 @@ shinyServer(
     
     output$sorties=renderTable({
         return(as.data.frame(values()$res.FAMD$eig))
-    })
+    },rownames=TRUE)
     
     output$sorties12=renderTable({
         validate(
@@ -392,7 +392,7 @@ shinyServer(
           need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
         )
         return(as.data.frame(values()$res.FAMD$quali.sup$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties13=renderTable({
       validate(
@@ -402,21 +402,21 @@ shinyServer(
         need((length(input$supquali)>0 || input$supquali==TRUE), gettext("No categorical variables selected"))
       )
       return(as.data.frame(values()$res.FAMD$quali.sup$v.test))
-    })
+    },rownames=TRUE)
     
     output$sorties2=renderTable({
       validate(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       return(as.data.frame(values()$res.FAMD$var$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties22=renderTable({
       validate(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       return(as.data.frame(values()$res.FAMD$ind$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties23=renderTable({
       validate(
@@ -426,7 +426,7 @@ shinyServer(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$var$coord.sup))
-    })
+    },rownames=TRUE)
     
     output$sorties32=renderTable({
       validate(
@@ -436,7 +436,7 @@ shinyServer(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$var$cos2.sup))
-    })
+    },rownames=TRUE)
     
     output$sorties36=renderTable({
       validate(
@@ -446,7 +446,7 @@ shinyServer(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$ind.sup$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties37=renderTable({
       validate(
@@ -456,7 +456,7 @@ shinyServer(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$ind.sup$cos2))
-    })
+    },rownames=TRUE)
     
     
     output$sorties3=renderTable({
@@ -464,42 +464,42 @@ shinyServer(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$var$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties33=renderTable({
       validate(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$ind$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties4=renderTable({
       validate(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$var$cos2))
-    })
+    },rownames=TRUE)
     
     output$sorties44=renderTable({
       validate(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.FAMD$ind$cos2))
-    })
+    },rownames=TRUE)
   
   output$sortieDimdesc3=renderTable({
     validate(
       need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[1]]$quanti))
-  })
+  },rownames=TRUE)
   
   output$sortieDimdesc4=renderTable({
     validate(
       need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[1]]$quali))
-  })
+  },rownames=TRUE)
   
   #DIM2
   
@@ -508,14 +508,14 @@ shinyServer(
       need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[2]]$quanti))
-  })
+  },rownames=TRUE)
   
   output$sortieDimdesc44=renderTable({
     validate(
       need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[2]]$quali))
-  })
+  },rownames=TRUE)
   
   #DIM3
   
@@ -524,14 +524,14 @@ shinyServer(
       need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[3]]$quanti))
-  })
+  },rownames=TRUE)
   
   output$sortieDimdesc444=renderTable({
     validate(
       need(length(getactive()$activevar)>2 || input$selecactive==gettext("All"),gettext("Please select more variables"))
     )
     return(as.data.frame(dimdesc(values()$res.FAMD)[[3]]$quali))
-  })
+  },rownames=TRUE)
     
     
     output$map3=renderPlot({

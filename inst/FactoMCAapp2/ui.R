@@ -133,7 +133,7 @@ shinyUI(fluidPage(
                 sliderInput("sliderContrib",label=gettext("Number of the most contributive individuals"),
                             min=1,max=length(nom),value=length(nom),step=1)
               }),
-            shinyjs::colourInput("colindact",gettext("Colour of active individuals"),color1),
+            colourpicker::colourInput("colindact",gettext("Colour of active individuals"),color1),
             uiOutput("col1"),
 
 if(is.null(habillageind)){
@@ -175,7 +175,7 @@ else{
               uiOutput("slider3")
             ),
         checkboxInput("eachvar",gettext("Colour each variable with different colour"),valdef),
-        shinyjs::colourInput("colvaract",gettext("Colour of active categories"),color3),
+        colourpicker::colourInput("colvaract",gettext("Colour of active categories"),color3),
         uiOutput("col2")
           )),
           conditionalPanel(
@@ -185,7 +185,7 @@ else{
             sliderInput("cex2",h6(gettext("Size of labels")),min=0.5,max=2.5,value=1,step=0.05,ticks=FALSE),
 #          div(align="center",checkboxGroupInput("var_sup",h6(""),choices=list("Supplementary qualitative variables"="suplquali","Supplementary quantitative variables"="suplquanti","Active qualitative variables"="act"),selected=varsup))
           div(align="center",checkboxGroupInput("var_sup",h6(""),choices=list(gettext("Active qualitative variables"),gettext("Supplementary qualitative variables"),gettext("Supplementary quantitative variables")),selected=varsup)),
-          shinyjs::colourInput("colvaract1",gettext("Colour of active categories"),color5),
+          colourpicker::colourInput("colvaract1",gettext("Colour of active categories"),color5),
           uiOutput("col3"),
           uiOutput("colquantib")
         ),

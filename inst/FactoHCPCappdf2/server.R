@@ -161,7 +161,7 @@ shinyServer(
       if(input$out=="para"){
         return(as.data.frame(res.HCPC()$ind.desc))
       }
-    })
+    },rownames=TRUE)
     
 
     output$clusters=renderUI({
@@ -300,23 +300,24 @@ shinyServer(
       colnames(baba)=NULL
       b=which(baba[,1]=="format non affichable")
       file.remove(paste(getwd(),"essai.csv")) 
-      baba
+      baba[,-ncol(baba)]
     },
-    include.rownames=FALSE)
+    rownames=FALSE)
     
     ### Fonction permettant d'afficher les parangons des classes
     output$parangons=renderTable({
       bibi=list()
       for (i in 1:input$clust){
         bibi[[i]]=rbind(colnames(res.HCPC()$desc.ind$para[[i]]),res.HCPC()$desc.ind$para[[i]])
-      }
+        rownames(bibi[[i]])="Distance"
+}
       write.infile(X=bibi,file=paste(getwd(),"essai3.csv"),sep=";",nb.dec=8)
       baba=read.csv(paste(getwd(),"essai3.csv"),sep=";",header=FALSE)
       colnames(baba)=NULL
       file.remove(paste(getwd(),"essai3.csv"))
-      baba
+      baba[,-ncol(baba)]
     },
-    include.rownames=FALSE)
+    rownames=FALSE)
     
     ### Fonction permettant d'afficher la description des classes par les axes 
     output$axes=renderTable({
@@ -324,9 +325,9 @@ shinyServer(
       baba=read.csv(paste(getwd(),"essai2.csv"),sep=";",header=FALSE)
       colnames(baba)=NULL
       file.remove(paste(getwd(),"essai2.csv"))
-      baba
+      baba[,-ncol(baba)]
     },
-    include.rownames=FALSE)
+    rownames=FALSE)
     
     
   }

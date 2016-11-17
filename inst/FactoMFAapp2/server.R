@@ -286,7 +286,7 @@ shinyServer(
     
     output$sorties=renderTable({
       return(as.data.frame(code$eig))
-    })
+    },rownames=TRUE)
     
     output$map3=renderPlot({
       return(barplot(code$eig[,1],names.arg=rownames(code$eig),las=2))
@@ -575,59 +575,59 @@ shinyServer(
     
     output$sorties1=renderTable({
       return(as.data.frame(code$ind$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties2=renderTable({
       return(as.data.frame(code$ind$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties3=renderTable({
       return(as.data.frame(code$ind$cos2))
-    })
+    },rownames=TRUE)
     
     output$sorties4=renderTable({
       return(as.data.frame(code$ind$within.inertia))
-    })
+    },rownames=TRUE)
     
     output$sorties5=renderTable({
       return(as.data.frame(code$ind$coord.partiel))
-    })
+    },rownames=TRUE)
     
     output$sorties6=renderTable({
       return(as.data.frame(code$ind$within.partial.inertia))
-    })
+    },rownames=TRUE)
     
     output$sorties11=renderTable({
       return(as.data.frame(code$quanti.var$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties22=renderTable({
       return(as.data.frame(code$quanti.var$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties33=renderTable({
       return(as.data.frame(code$quanti.var$cos2))
-    })
+    },rownames=TRUE)
     
     output$sorties44=renderTable({
       return(as.data.frame(code$quanti.var$cor))
-    })
+    },rownames=TRUE)
     
     output$sorties12=renderTable({
       return(as.data.frame(code$partial.axes$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties23=renderTable({
       return(as.data.frame(code$partial.axes$cor))
-    })
+    },rownames=TRUE)
     
     output$sorties34=renderTable({
       return(as.data.frame(code$partial.axes$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties45=renderTable({
       return(as.data.frame(code$partial.axes$cor.between))
-    })    
+    },rownames=TRUE)    
     
     output$sortiegroup=renderTable({
       write.infile(X=code$group,file=paste(getwd(),"fichgroup.csv"),sep=";",nb.dec=5)
@@ -636,7 +636,7 @@ shinyServer(
       file.remove(paste(getwd(),"fichgroup.csv"))
       baba
     },
-    include.rownames=FALSE)
+    rownames=FALSE)
     
     
     

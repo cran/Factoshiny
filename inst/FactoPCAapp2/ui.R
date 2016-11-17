@@ -111,7 +111,7 @@ shinyUI(fluidPage(
                           choices=list(num=nom),multiple=TRUE)
             }),
           #colourInput("colour1","Colour of active points",value="blue"),
-          shinyjs::colourInput("coloract", h6(gettext("Choose colour for active individuals")), activeind),
+          colourpicker::colourInput("coloract", h6(gettext("Choose colour for active individuals")), activeind),
           uiOutput("colourn2"),
           uiOutput("colourn3"),
             if(is.null(habillageind)){
@@ -147,7 +147,7 @@ shinyUI(fluidPage(
             div(align="center",sliderInput("slider00", label = "cos2",
                                            min = 0, max = 1, value =0,step=0.05))}
           ),
-          shinyjs::colourInput("coloractvar", h6(gettext("Choose colour for active variables")), coloractvar),
+          colourpicker::colourInput("coloractvar", h6(gettext("Choose colour for active variables")), coloractvar),
           uiOutput("varsu")
         )
       )

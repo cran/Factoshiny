@@ -241,9 +241,9 @@ shinyServer(
       sup=values()$choixsuple
       if(!is.null(sup)){
         if(!is.null(supind)){
-        return(shinyjs::colourInput("colorsup", h6(gettext("Choose colour for supplementary individuals")), supind))
+        return(colourpicker::colourInput("colorsup", h6(gettext("Choose colour for supplementary individuals")), supind))
         }else{
-          return(shinyjs::colourInput("colorsup", h6(gettext("Choose colour for supplementary individuals")), "blue")) 
+          return(colourpicker::colourInput("colorsup", h6(gettext("Choose colour for supplementary individuals")), "blue")) 
         }
       }
     })
@@ -252,9 +252,9 @@ shinyServer(
       sup=values()$choixqual
       if(!is.null(sup)){
         if(!is.null(categ)){
-        return(shinyjs::colourInput("colorquali", h6(gettext("Choose colour for the categories")), categ))
+        return(colourpicker::colourInput("colorquali", h6(gettext("Choose colour for the categories")), categ))
         }else{
-          return(shinyjs::colourInput("colorquali", h6(gettext("Choose colour for the categories")), "magenta"))
+          return(colourpicker::colourInput("colorquali", h6(gettext("Choose colour for the categories")), "magenta"))
         }
       }
     })
@@ -674,7 +674,7 @@ shinyServer(
     
     output$sorties=renderTable({
         return(as.data.frame(values()$res.PCA$eig))
-    })
+    },rownames=TRUE)
     
     output$sorties12=renderTable({
         validate(
@@ -684,7 +684,7 @@ shinyServer(
           need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
         )
         return(as.data.frame(values()$res.PCA$quali.sup$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties13=renderTable({
       validate(
@@ -694,21 +694,21 @@ shinyServer(
         need((length(input$supquali)>0 || input$supquali==TRUE), gettext("No categorical variables selected"))
       )
       return(as.data.frame(values()$res.PCA$quali.sup$v.test))
-    })
+    },rownames=TRUE)
     
     output$sorties2=renderTable({
       validate(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$var$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties22=renderTable({
       validate(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$ind$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties23=renderTable({
       validate(
@@ -718,7 +718,7 @@ shinyServer(
         need(length(input$getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$quanti.sup$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties32=renderTable({
       validate(
@@ -728,7 +728,7 @@ shinyServer(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$quanti.sup$cor))
-    })
+    },rownames=TRUE)
     
     output$sorties36=renderTable({
       validate(
@@ -738,7 +738,7 @@ shinyServer(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       return(as.data.frame(values()$res.PCA$ind.sup$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties37=renderTable({
       validate(
@@ -748,7 +748,7 @@ shinyServer(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$ind.sup$cos2))
-    })
+    },rownames=TRUE)
     
     
     output$sorties3=renderTable({
@@ -756,28 +756,28 @@ shinyServer(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$var$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties33=renderTable({
       validate(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$ind$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties4=renderTable({
       validate(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$var$cos2))
-    })
+    },rownames=TRUE)
     
     output$sorties44=renderTable({
       validate(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       return(as.data.frame(values()$res.PCA$ind$cos2))
-    })
+    },rownames=TRUE)
   
   output$sortieDimdesc3=renderTable({
     validate(
@@ -785,7 +785,7 @@ shinyServer(
     )
     validate(need(length(dimdesc(values()$res.PCA))>0,gettext("No quantitative variable describes axis 1")))
     return(as.data.frame(dimdesc(values()$res.PCA)[[1]]$quanti))
-  })
+  },rownames=TRUE)
   
   output$sortieDimdesc4=renderTable({
     validate(
@@ -793,7 +793,7 @@ shinyServer(
     )
     validate(need(length(dimdesc(values()$res.PCA))>0,gettext("No categorical variable describes axis 1")))
     return(as.data.frame(dimdesc(values()$res.PCA)[[1]]$quali))
-  })
+  },rownames=TRUE)
   
   #DIM2
   
@@ -803,7 +803,7 @@ shinyServer(
     )
     validate(need(length(dimdesc(values()$res.PCA))>1,gettext("No quantitative variable describes axis 2")))
     return(as.data.frame(dimdesc(values()$res.PCA)[[2]]$quanti))
-  })
+  },rownames=TRUE)
   
   output$sortieDimdesc44=renderTable({
     validate(
@@ -811,7 +811,7 @@ shinyServer(
     )
     validate(need(length(dimdesc(values()$res.PCA))>1,gettext("No categorical variable describes axis 2")))
     return(as.data.frame(dimdesc(values()$res.PCA)[[2]]$quali))
-  })
+  },rownames=TRUE)
   
   #DIM3
   
@@ -821,7 +821,7 @@ shinyServer(
     )
     validate(need(length(dimdesc(values()$res.PCA))>2,gettext("No quantitative variable describes axis 3")))
     return(as.data.frame(dimdesc(values()$res.PCA)[[3]]$quanti))
-  })
+  },rownames=TRUE)
   
   output$sortieDimdesc444=renderTable({
     validate(
@@ -829,7 +829,7 @@ shinyServer(
     )
     validate(need(length(dimdesc(values()$res.PCA))>2,"No categorical variable describes axis 3"))
     return(as.data.frame(dimdesc(values()$res.PCA)[[3]]$quali))
-  })
+  },rownames=TRUE)
     
     
     output$map3=renderPlot({
@@ -913,9 +913,9 @@ shinyServer(
     test=values()$choixquant
     if(!is.null(test)){
       if(!is.null(colorsupvar)){
-        return(shinyjs::colourInput("colorsupvar", h6(gettext("Choose colour for supplementary variables")), colorsupvar))
+        return(colourpicker::colourInput("colorsupvar", h6(gettext("Choose colour for supplementary variables")), colorsupvar))
       }else{
-      return(shinyjs::colourInput("colorsupvar", h6(gettext("Choose colour for supplementary variables")), "blue"))
+      return(colourpicker::colourInput("colorsupvar", h6(gettext("Choose colour for supplementary variables")), "blue"))
       }
     }
   })

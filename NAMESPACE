@@ -2,7 +2,7 @@
 import(FactoMineR)
 importFrom(tcltk, tkfont.create, tkbutton, tkcanvas)
 importFrom(shiny,runApp)
-importFrom(shinyjs,colourInput)
+importFrom(colourpicker,colourInput)
 export(CAshiny,FAMDshiny,PCAshiny,MFAshiny,HCPCshiny,MCAshiny,print.CAshiny,print.FAMDshiny,print.PCAshiny,print.MCAshiny,print.HCPCshiny)
 
 S3method(print, CAshiny)

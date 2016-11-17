@@ -794,7 +794,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$eig))
-    })
+    },rownames=TRUE)
     
     output$map3=renderPlot({
       etat2=error()
@@ -1121,7 +1121,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$ind$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties3=renderTable({
       etat2=error()
@@ -1129,7 +1129,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$ind$cos2))
-    })
+    },rownames=TRUE)
     
     output$sorties4=renderTable({
       etat2=error()
@@ -1137,7 +1137,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$ind$within.inertia))
-    })
+    },rownames=TRUE)
     
     output$sorties5=renderTable({
       etat2=error()
@@ -1145,7 +1145,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$ind$coord.partiel))
-    })
+    },rownames=TRUE)
     
     output$sorties6=renderTable({
       etat2=error()
@@ -1153,7 +1153,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$ind$within.partial.inertia))
-    })
+    },rownames=TRUE)
     
     output$sorties11=renderTable({
       etat2=error()
@@ -1161,7 +1161,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$quanti.var$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties22=renderTable({
       etat2=error()
@@ -1169,7 +1169,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$quanti.var$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties33=renderTable({
       etat2=error()
@@ -1177,7 +1177,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$quanti.var$cos2))
-    })
+    },rownames=TRUE)
     
     output$sorties44=renderTable({
       etat2=error()
@@ -1185,7 +1185,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$quanti.var$cor))
-    })
+    },rownames=TRUE)
     
     output$sorties12=renderTable({
       etat2=error()
@@ -1193,7 +1193,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$partial.axes$coord))
-    })
+    },rownames=TRUE)
     
     output$sorties23=renderTable({
       etat2=error()
@@ -1201,7 +1201,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$partial.axes$cor))
-    })
+    },rownames=TRUE)
     
     output$sorties34=renderTable({
       etat2=error()
@@ -1209,7 +1209,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$partial.axes$contrib))
-    })
+    },rownames=TRUE)
     
     output$sorties45=renderTable({
       etat2=error()
@@ -1217,7 +1217,7 @@ shinyServer(
         need(etat2!="not",gettext("Please select at least 2 groups"))
       )
       return(as.data.frame(values()$res.MFA$partial.axes$cor.between))
-    })
+    },rownames=TRUE)
     
     
     
@@ -1232,7 +1232,7 @@ shinyServer(
       file.remove(paste(getwd(),"fichgroup.csv"))
       baba
     },
-    include.rownames=FALSE)
+    rownames=FALSE)
     
     
    ### Fonction permettant d'afficher la liste des variables disponibles, en fonction du type 
