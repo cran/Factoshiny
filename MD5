@@ -1,4 +1,4 @@
-01daa01d07838c40a3f574a4d4e10a34 *DESCRIPTION
+47f7da5b27acf447c29de4453f743dfe *DESCRIPTION
 311b710df5c4cb1dbb5a0ea66141ee20 *NAMESPACE
 d2f1a30cc86d60c1830e1256a114faf8 *R/CAshiny.R
 79bc50047f4734269d19e556c3080862 *R/FAMDshiny.R
@@ -12,14 +12,14 @@ d2f1a30cc86d60c1830e1256a114faf8 *R/CAshiny.R
 7e354cea938d06cc837abf2726f16390 *R/print.MCAshiny.R
 40f4fd969c41f99028a02c113a724ab1 *R/print.MFAshiny.R
 1b22c76e7a19dcc261dcc768c8a6ae94 *R/print.PCAshiny.R
-f58d204aee4e423731787fd9dc19902c *build/vignette.rds
+d6acc129439326b8619b1a392d8b41ea *build/vignette.rds
 0c47e9c1c5f90e00c52ec59d7fa14796 *inst/FactoCAapp2/global.R
 fa5b07774491fa5b838874f41a5c22a9 *inst/FactoCAapp2/server.R
 a5c14875ec9cc8abb46bd0c8231b7fa3 *inst/FactoCAapp2/ui.R
 543a15ebbccf4953dcd3d78989b3fd43 *inst/FactoFAMDapp2/global.R
 913f99787c372eb687d46b2ab56f7f44 *inst/FactoFAMDapp2/server.R
 5e53aedd6502f0b0bdb877db06d69f39 *inst/FactoFAMDapp2/ui.R
-3a6a4bc71eb2114efce30258754dc368 *inst/FactoHCPCapp2/global.R
+425b8c7e5c6255c85aebdd58e699b837 *inst/FactoHCPCapp2/global.R
 fb045b8a5df8f428ba42b7401c73888a *inst/FactoHCPCapp2/server.R
 7be68ca3111e70f9f9b355f51253a177 *inst/FactoHCPCapp2/ui.R
 d5c7e58f3828acce8716de3d7c0e453f *inst/FactoHCPCappdf2/global.R
@@ -39,7 +39,7 @@ d52ba21674c965154a347045abc1cb0d *inst/FactoPCAapp2/global.R
 f06115563320e4470aed019d1160a537 *inst/FactoPCAapp2/ui.R
 a64fd276cdbd4017f0b36c966474ec35 *inst/doc/Factoshiny.R
 06d880608207b0365c618a173bb13e2e *inst/doc/Factoshiny.Rnw
-45e22d51173123246dabfa7bd8a1aca1 *inst/doc/Factoshiny.pdf
+15245b418ead4c1774ab94e68447fc74 *inst/doc/Factoshiny.pdf
 93a56fc9037dabf1d4b2b00862c96db8 *inst/po/fr/LC_MESSAGES/R-Factoshiny.mo
 fd3e8652efdaf484a91bcac9d67d957c *man/CAshiny.Rd
 ee6ae6886e26691614f02b68022643b2 *man/FAMDshiny.Rd

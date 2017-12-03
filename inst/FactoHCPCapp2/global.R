@@ -3,7 +3,8 @@ if((inherits(x, "PCA") | inherits(x, "MCA") | inherits(x, "CA")| inherits(x, "MF
   results=x
   anafact=lignecode
   baba=HCPC(results,nb.clust=-1,graph=FALSE)$call$t$nb.clust
-  nbindiv=dim(results$ind$coord)[1]
+  if (inherits(x, "CA")) nbindiv=dim(results$row$coord)[1]
+  else nbindiv=dim(results$ind$coord)[1]
   nomData=nomData
   clustdf=baba
   consolidf=FALSE
@@ -39,11 +40,11 @@ title3=x$title3
 }
 
 if(inherits(x, "PCAshiny") | inherits(x, "CAshiny") | inherits(x, "MCAshiny")){
-  print("la")
   results=x$anafact
   anafact=x$code1
   baba=HCPC(results,nb.clust=-1,graph=FALSE)$call$t$nb.clust
-  nbindiv=dim(results$ind$coord)[1]
+  if (inherits(x, "CA")) nbindiv=dim(results$row$coord)[1]
+  else nbindiv=dim(results$ind$coord)[1]
   nomData=nomData
   clustdf=baba
   consolidf=FALSE
@@ -81,5 +82,6 @@ if(inherits(x, "HCPC")){
 }
 
 baba=HCPC(results,nb.clust=-1,graph=FALSE)$call$t$nb.clust
-nbindiv=dim(results$ind$coord)[1]
+if (inherits(x, "CA")) nbindiv=dim(results$row$coord)[1]
+else nbindiv=dim(results$ind$coord)[1]
 }
