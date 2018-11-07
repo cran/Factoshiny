@@ -359,7 +359,7 @@ shinyServer(
     {
       colnames(dataselec)[1]=input$variables1
     }
-    list(res.MFA=(MFA(base=dataselec,group=groupe,type=types,name.group=nom,ncp=5,num.group.sup=gsup,graph=FALSE)),DATA=(dataselec),GROUPE=(groupe),NB=(nbgroupe),TYPE=(types),NBFREQ=(nbfreq),NBQUALI=(nbquali),NBQUANTI=(nbquanti),SUP=(gsup),QUANTISUP=(quantisup),LISTQUALI=(listquali))
+    list(res.MFA=(MFA(base=dataselec,group=groupe,type=types,name.group=nom,ncp=max(5,as.numeric(input$nb1),as.numeric(input$nb2)),num.group.sup=gsup,graph=FALSE)),DATA=(dataselec),GROUPE=(groupe),NB=(nbgroupe),TYPE=(types),NBFREQ=(nbfreq),NBQUALI=(nbquali),NBQUANTI=(nbquanti),SUP=(gsup),QUANTISUP=(quantisup),LISTQUALI=(listquali))
     })
     
     error=function(){

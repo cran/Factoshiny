@@ -70,7 +70,7 @@ shinyServer(
       # }
 	  suple=which(nom%in%input$indsup)
     }
-    list(res.PCA=(PCA(data.selec,quali.sup=choixquali,quanti.sup=choixquanti,scale.unit=input$nor,graph=FALSE,ncp=5,ind.sup=suple,row.w=poids1,col.w=poids2)),DATA=(data.selec),choixquant=(choixquanti),choixqual=(choixquali),choixsuple=(suple))
+    list(res.PCA=(PCA(data.selec,quali.sup=choixquali,quanti.sup=choixquanti,scale.unit=input$nor,graph=FALSE,ncp=max(5,as.numeric(input$nb1),as.numeric(input$nb2)),ind.sup=suple,row.w=poids1,col.w=poids2)),DATA=(data.selec),choixquant=(choixquanti),choixqual=(choixquali),choixsuple=(suple))
     })
     
     Plot1 <- reactive({
@@ -497,13 +497,13 @@ shinyServer(
         pcol=paste(",col.w=c(",paste(poids2,collapse=","),")",sep="")
       }
       if(!is.null(poids1)&&!is.null(poids2)){
-        Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,prow,pcol,",scale.unit=",input$nor,",graph=FALSE,ncp=5)",sep="")) 
+        Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,prow,pcol,",scale.unit=",input$nor,",graph=FALSE,ncp=",max(5,as.numeric(input$nb1),as.numeric(input$nb2)),")",sep="")) 
       }else if (!is.null(poids1)&&is.null(poids2)){
-        Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,prow,",scale.unit=",input$nor,",graph=FALSE,ncp=5)",sep="")) 
+        Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,prow,",scale.unit=",input$nor,",graph=FALSE,ncp=",max(5,as.numeric(input$nb1),as.numeric(input$nb2)),")",sep="")) 
       }else if (is.null(poids1)&&!is.null(poids1)){
-        Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,pcol,",scale.unit=",input$nor,",graph=FALSE,ncp=5)",sep="")) 
+        Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,pcol,",scale.unit=",input$nor,",graph=FALSE,ncp=",max(5,as.numeric(input$nb1),as.numeric(input$nb2)),")",sep="")) 
       }else{
-      Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,",scale.unit=",input$nor,",graph=FALSE,ncp=5)",sep=""))
+      Call1=as.name(paste("res.PCA<-PCA(",vec,",quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsupl,",scale.unit=",input$nor,",graph=FALSE,ncp=",max(5,as.numeric(input$nb1),as.numeric(input$nb2)),")",sep=""))
       }
       return(Call1)
     }
@@ -649,8 +649,9 @@ shinyServer(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       if(input$selecactive==gettext("All") || length(getactive())>5){
-        return(selectInput("nb1", label = h6(gettext("x axis")), 
-                    choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe1,width='80%'))
+        # return(selectInput("nb1", label = h6(gettext("x axis")), 
+                            # choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5,"6"=6,"7"=7), selected = axe1,width='80%'))
+        return(textInput("nb1", label = h6(gettext("x axis")), axe1,width='50%'))
       }
       else{
         baba=c(1:length(getactive()))
@@ -663,8 +664,9 @@ shinyServer(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variable"))
       )
       if(input$selecactive==gettext("All") || length(getactive())>5){
-        return(selectInput("nb2", label = h6(gettext("y axis")), 
-                           choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe2,width='80%'))
+        # return(selectInput("nb2", label = h6(gettext("y axis")), 
+                           # choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5,"6"=6,"7"=7), selected = axe2,width='80%'))
+        return(textInput("nb2", label = h6(gettext("y axis")), axe2,width='50%'))
       }
       else{
         baba=c(1:length(getactive()))

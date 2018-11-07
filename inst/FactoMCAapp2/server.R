@@ -78,7 +78,7 @@ shinyServer(
         # indsuplem<-vec
 	    indsuplem=which(rownames(newdata)%in%input$indsup)
       }
-      list(res.MCA=(MCA(data.selec,quanti.sup=choixquanti,quali.sup=choixquali,ind.sup=indsuplem,graph=FALSE)),DATA=(data.selec),choixquant=(choixquanti),choixqual=(choixquali),indsup=(indsuplem))     
+      list(res.MCA=(MCA(data.selec,quanti.sup=choixquanti,quali.sup=choixquali,ind.sup=indsuplem,graph=FALSE,ncp=max(5,as.numeric(input$nb1),as.numeric(input$nb2)))),DATA=(data.selec),choixquant=(choixquanti),choixqual=(choixquali),indsup=(indsuplem))     
     })
     
     output$col1=renderUI({
@@ -205,7 +205,7 @@ shinyServer(
           vecquant<-"NULL"
         }  
       }
-      Call1=as.name(paste("res.MCA<-MCA(",nomData,"[,",vec,"],quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsuplem,",graph=FALSE)",sep=""))  
+      Call1=as.name(paste("res.MCA<-MCA(",nomData,"[,",vec,"],quali.sup=",vecqual,",","quanti.sup=",vecquant,",ind.sup=",indsuplem,",graph=FALSE, ncp=",max(5,as.numeric(input$nb1),as.numeric(input$nb2)),")",sep=""))  
       return(Call1)
     }
     
@@ -1053,7 +1053,7 @@ shinyServer(
         need(length(getactive())>2 || input$selecactive==gettext("All"),gettext("Please select more variable"))
       )
       return(as.data.frame(dimdesc(values()$res.MCA)[[1]]$quali))
-    })
+    },rownames=TRUE)
     output$sortieDimdesc3=renderTable({
       validate(
         need(length(getactive())>2 || input$selecactive==gettext("All"),gettext("Please select more variable"))
@@ -1206,7 +1206,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData3","Download as png"))
+        return(downloadButton("downloadData3",gettext("Download as png")))
       }
     })
     
@@ -1226,7 +1226,7 @@ shinyServer(
         return()
       }
       else{
-        return(downloadButton("downloadData4","Download as jpg"))
+        return(downloadButton("downloadData4",gettext("Download as jpg")))
       }
     })
     
@@ -1269,8 +1269,9 @@ shinyServer(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       if(input$selecactive==gettext("All") || length(getactive())>5){
-        return(selectInput("nb1", label = h6(gettext("x axis")), 
-                           choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected =axe1,width='80%'))
+        # return(selectInput("nb1", label = h6(gettext("x axis")), 
+                           # choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected =axe1,width='80%'))
+        return(textInput("nb1", label = h6(gettext("x axis")), axe1,width='50%'))
       }
       else{
         baba=c(1:length(getactive()))
@@ -1285,8 +1286,9 @@ shinyServer(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       if(input$selecactive==gettext("All") || length(getactive())>5){
-        return(selectInput("nb2", label = h6(gettext("y axis")), 
-                           choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe2,width='80%'))
+        # return(selectInput("nb2", label = h6(gettext("y axis")), 
+                           # choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe2,width='80%'))
+        return(textInput("nb2", label = h6(gettext("y axis")), axe2,width='50%'))
       }
       else{
         baba=c(1:length(getactive()))

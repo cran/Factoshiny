@@ -24,7 +24,7 @@ shinyServer(
         # }
       # }
     }
-    list(res.FAMD=(FAMD(data.selec,sup.var=choixsup,ind.sup=suple,graph=FALSE,ncp=5)),DATA=(data.selec),choixsuple=(suple),varsup=(choixsup))
+    list(res.FAMD=(FAMD(data.selec,sup.var=choixsup,ind.sup=suple,graph=FALSE,ncp=max(5,as.numeric(input$nb1),as.numeric(input$nb2)))),DATA=(data.selec),choixsuple=(suple),varsup=(choixsup))
     })
     
     Plot1 <- reactive({
@@ -265,7 +265,7 @@ shinyServer(
         hab=paste(Plot2()$HABILLAGE,sep="")
       }
       if (hab=="none") Call2=paste("plot.FAMD(res.FAMD, axes=c(",input$nb1,",",input$nb2,"),choix='ind',select=",Plot2()$selecindivText,",cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex,",lab.var=",input$labels,",lab.ind=",input$labels2,",title='",input$title1,"')",sep="")
-	  elseCall2=paste("plot.FAMD(res.FAMD, axes=c(",input$nb1,",",input$nb2,"),choix='ind',select=",Plot2()$selecindivText,",habillage=",hab,",cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex,",lab.var=",input$labels,",lab.ind=",input$labels2,",title='",input$title1,"')",sep="")
+	  else Call2=paste("plot.FAMD(res.FAMD, axes=c(",input$nb1,",",input$nb2,"),choix='ind',select=",Plot2()$selecindivText,",habillage=",hab,",cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex,",lab.var=",input$labels,",lab.ind=",input$labels2,",title='",input$title1,"')",sep="")
       return(Call2)
     }
     
@@ -357,8 +357,9 @@ shinyServer(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       if(input$selecactive==gettext("All") || length(getactive()$activevar)>5){
-        return(selectInput("nb1", label = h6(gettext("x axis")), 
-                    choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe1,width='80%'))
+        # return(selectInput("nb1", label = h6(gettext("x axis")), 
+                    # choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe1,width='80%'))
+        return(textInput("nb1", label = h6(gettext("x axis")), axe1,width='50%'))
       }
       else{
         baba=c(1:length(getactive()$activevar))
@@ -371,8 +372,9 @@ shinyServer(
         need(length(getactive()$activevar)>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary variables"))
       )
       if(input$selecactive==gettext("All") || length(getactive()$activevar)>5){
-        return(selectInput("nb2", label = h6(gettext("y axis")), 
-                           choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe2,width='80%'))
+        # return(selectInput("nb2", label = h6(gettext("y axis")), 
+                           # choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe2,width='80%'))
+        return(textInput("nb2", label = h6(gettext("y axis")), axe2,width='50%'))
       }
       else{
         baba=c(1:length(getactive()$activevar))
@@ -587,7 +589,7 @@ shinyServer(
          part3=paste(",ind.sup=c(",vect4,")",sep="")
        }
     }
-    Call1=as.name(paste("res.FAMD<-FAMD(",vec,part2,part3,",graph=FALSE,ncp=5)",sep=""))
+    Call1=as.name(paste("res.FAMD<-FAMD(",vec,part2,part3,",graph=FALSE,ncp=",max(5,as.numeric(input$nb1),as.numeric(input$nb2)),")",sep=""))
     return(Call1)
   }
   

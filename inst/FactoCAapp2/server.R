@@ -92,7 +92,7 @@ shinyServer(
       else{
         choixquanti2=choixquanti
       }
-      list(res.CA=(CA(data.selec,quali.sup=choixquali,col.sup=choixquanti2,row.sup=indexes,graph=FALSE,ncp=5)),DATA=(data.selec),CHOIXQUALI=(choixquali),CHOIXQUANTI=(choixquanti2),INDEXES=(indexes))
+      list(res.CA=(CA(data.selec,quali.sup=choixquali,col.sup=choixquanti2,row.sup=indexes,graph=FALSE,ncp=max(5,as.numeric(input$nb1),as.numeric(input$nb2)))),DATA=(data.selec),CHOIXQUALI=(choixquali),CHOIXQUANTI=(choixquanti2),INDEXES=(indexes))
     })
     
     ### Recuperation des parametres
@@ -291,7 +291,7 @@ shinyServer(
       else if(length(indexes)>1){
         indexes<-indexes1
       }
-      Call1=as.name(paste("res.CA=(CA(",vecfinal,",quali.sup=",vecqual,",col.sup=",vecquant,",row.sup=",indexes,",graph=FALSE,ncp=5))",sep=""))
+      Call1=as.name(paste("res.CA=CA(",vecfinal,",quali.sup=",vecqual,",col.sup=",vecquant,",row.sup=",indexes,",graph=FALSE,ncp=",max(5,as.numeric(input$nb1),as.numeric(input$nb2)),")",sep=""))
       return(Call1)
     }
     
@@ -499,8 +499,9 @@ shinyServer(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary column"))
       )
       if(input$selecactive==gettext("All") || length(getactive())>5){
-        return(selectInput("nb1", label = h6("x axis"), 
-                           choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe1,width='80%'))
+        # return(selectInput("nb1", label = h6("x axis"), 
+                           # choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe1,width='80%'))
+        return(textInput("nb1", label = h6(gettext("x axis")), axe1,width='50%'))
       }
       else{
         baba=c(1:length(getactive()))
@@ -513,8 +514,9 @@ shinyServer(
         need(length(getactive())>1 || input$selecactive==gettext("All"),gettext("Please select at least one supplementary column"))
       )
       if(input$selecactive==gettext("All") || length(getactive())>5){
-        return(selectInput("nb2", label = h6("y axis"), 
-                           choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe2,width='80%'))
+        # return(selectInput("nb2", label = h6("y axis"), 
+                           # choices = list("1" = 1, "2" = 2, "3" = 3,"4"= 4,"5" =5), selected = axe2,width='80%'))
+        return(textInput("nb2", label = h6(gettext("y axis")), axe2,width='50%'))
       }
       else{
         baba=c(1:length(getactive()))
