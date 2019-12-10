@@ -1,636 +1,665 @@
-# server2. AFM2
-
-shinyServer(
   function(input, output) {
     
-    ### fonctions graphiques
-    Plot1 <- function(){
-      validate(
-        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
-      )      
-      if(input$choixpartial==gettext("None")){
-        part=NULL
-      }
-      if(input$choixpartial==gettext("All")){
-        part="all"
-      }
-      if(input$choixpartial==gettext("Choose")){
-        part=input$indivpartiel
-      }
-      lapbar=TRUE
-      if(input$choixpartial!=gettext("None") && input$partind==FALSE){
-        lapbar=FALSE
-      }
-      habi="none"
-      if(!(is.null(input$drawind))){
-      if(input$choixpartial==gettext("None") && input$drawind==gettext("No selection")){
-        habi="none"
-      }
-      else if(input$choixpartial==gettext("None") && input$drawind==gettext("individual")){
-        habi="ind"
-      }
-      else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("individual")){
-        habi="ind"
-      }
-      else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("group")){
-        habi="group"
-      }
-      else if(input$drawind==gettext("categorical variable")){
-        habi=input$habiquali
-      }
-      }
-      invi="none"
-      if(input$meanind1==FALSE){
-        invi="ind" 
-      }
-      else if (input$qualind1==FALSE){
-        invi="quali"
-      }
-      if (input$qualind1==FALSE && input$meanind1==FALSE){
-        invi=c("ind","quali")
-      }
-      if(!(is.null(habi))){
-      plot.MFA(code,choix="ind",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),title=input$title2,partial=part,lab.ind=input$meanind, lab.par=lapbar,lab.var=input$qualind, habillage=habi,invisible=invi)
-      }
+  output$NB1 <- renderUI({
+    return(textInput("nb1", label = NULL, axe1,width='61px'))
+  })
+  
+  output$NB2=renderUI({
+    return(textInput("nb2", label = NULL, axe2,width='61px'))
+  })
+  
+  output$NbDimForClustering <- renderUI({
+    if(input$hcpcparam==TRUE){
+        return(tags$div( 
+            div(gettext("Number of dimensions kept for clustering",domain="R-Factoshiny"), style="display: inline-block; padding: 0px 0px 0px 0px"),
+		    div(numericInput(inputId = "nbDimClustering", label = NULL,value=if(is.null(nbdimclustMFAshiny)){5} else {nbdimclustMFAshiny},min=1), style="display: inline-block;width: 70px; padding: 0px 0px 0px 10px"))
+		)
     }
-    
-    output$map <- renderPlot({
-      p <- Plot1()
-    })
-    
-    Plot2=function(){
-      if(input$colorgroup==TRUE){
-        habi="group"
-      }
-      if(input$colorgroup==FALSE){
-        habi="none"
-      }
-      if(input$selection==gettext("No selection")){
-        selec=NULL
-      }
-      if(input$selection=="contrib"){
-        selec=paste("contrib ",input$slider2)
-      }
-      if(input$selection=="cos2"){
-        if(input$slider3!=1){
-          selec=paste("cos2 ",input$slider3)
-        }
-        else{
-          selec="cos2 0.999"
-        }
-      }
-#      invi="none"
-      #if (hide=="non") invi="none"
-      if(is.null(input$hides)){
-        invi="none"}else{
-	  if (input$hides==gettext("Nothing")) invi="none"
-	  if (input$hides==gettext("Active variables")) invi="quanti"
-	  if (input$hides==gettext("Supplementary variables")) invi="quanti.sup"
-        }
-      plot.MFA(code,choix="var",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),habillage=habi,title=input$title3,select=selec,invisible=invi)
-    }
-    
-    output$map2 <- renderPlot({
-      p=Plot2()
-    })
-    
-    output$map22=renderUI({
-      validate(
-        need(!(is.null(code$quanti.var)),gettext("No quantitative group"))
-      )
-      plotOutput("map2", width = 500, height=500)
-    })
-    
-    Plot5 <- function(){
-      validate(
-        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
-      )
-      plot.MFA(code,choix="group",title=input$title1,axes=c(as.numeric(input$nb1),as.numeric(input$nb2)))
-    }
-    
-    output$map5 <- renderPlot({
-      p <- Plot5()
-    })
-    
-    Plot4 <- function(){
-      validate(
-        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
-      )
-      if(input$coloraxe==TRUE){
-        habi="group"
-      }
-      else{
-        habi="none"
-      }
-      plot.MFA(code,choix="axes",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),habillage=habi,title=input$title4)
-    }
-    
-    output$map4 <- renderPlot({
-      p <- Plot4()
-    })
+  })
 
-    output$map6 <- renderPlot({
-      if(input$affichcol==TRUE){
-        col=TRUE
-      }
-      if(input$affichcol==FALSE){
-        col=FALSE
-      }
-      plot.MFA(code,choix="freq",axes=c(as.numeric(input$nb1),as.numeric(input$nb2)),lab.col=col,title=input$title5)
-    })
-    
-    output$map66=renderUI({
-      validate(
-        need(input$nb1 != input$nb2, gettext("Please select two different dimensions"))
-      )
-      if(is.null(code$freq)){
-        return(p(gettext("No groups of frequencies")))
-      }
-      else{
-        return(plotOutput("map6", width = 500, height=500))
-      }
-    })
+  output$choixindvar=renderUI({
+    choix=gettext("Individuals",domain="R-Factoshiny")
+    if(!(is.null(anafact[["quali.var"]]))) choix <- c(choix,gettext("Categories",domain="R-Factoshiny"))
+    if(!(is.null(anafact$ind.sup))) choix <- c(choix,gettext("Supplementary individuals",domain="R-Factoshiny"))
+    if(!(is.null(anafact$quali.var.sup))) choix <- c(choix,gettext("Supplementary categories",domain="R-Factoshiny"))
+    if (is.null(anafact$ind.sup) & is.null(anafact[["quali.var"]]) & is.null(anafact$quali.var.sup)) return(NULL)
+	else return(div(align="left",checkboxGroupInput("ind_var",gettext("Points to draw",domain="R-Factoshiny"), choices=choix, selected = indvarMFAshiny)))
+  })
 
+  output$choixgraphic=renderUI({
+    choix=gettext("Individuals",domain="R-Factoshiny")
+    if(!(is.null(anafact$quanti.var))) choix <- c(choix,gettext("Quantitative variables",domain="R-Factoshiny"))
+    choix <- c(choix,gettext("Groups",domain="R-Factoshiny"),gettext("Partial axes",domain="R-Factoshiny"))
+    if(!(is.null(anafact$freq))) choix <- c(choix,gettext("Frequencies",domain="R-Factoshiny"))
+    div(align="center",selectInput("choixgraph",gettext("Which graph would you like to modify?",domain="R-Factoshiny"), choices=choix,selected=gettext("Individuals",domain="R-Factoshiny")))
+})
     
-    output$drawindiv=renderUI({
-      if(input$choixpartial==gettext("None")){
-        return(radioButtons("drawind",h6(gettext("Drawing by")),choices=list(gettext("No selection"),gettext("individual"),gettext("categorical variable")),selected=drawing,inline=TRUE))
-      }
-      else{
-        return(radioButtons("drawind",h6(gettext("Drawing by")),choices=list(gettext("individual"),gettext("group"),gettext("categorical variable")),selected=drawing,inline=TRUE))
-      }
-    })
-    
-    output$habillagequali=renderUI({
-        if(!(is.null(code$quali.var))){
-          choix=quali
-          if(length(choix)==1){
-          return(selectInput("habiquali"," ",choices=choix))
-          }
-          else{
-          num=c(1:length(choix))
-          return(selectInput("habiquali"," ",choices=list(num=choix)))
-          }
-        }
-      else{
-        p(gettext("No groups of categorical variable"))
-      }
-    })
-    
-    ### Recuperation des parametres
-    observe({
-      if(input$Quit==0){
-      }
-      else{
-        isolate({
-          stopApp(returnValue=valeuretour())
-        })
-      }
-    })
-    
-    valeuretour=function(){
-      res=list()
-      res$ligne=ligne
-      res$code=code
-      res$axe1=input$nb1
-      res$axe2=input$nb2
-      res$ind1=input$meanind1
-      res$ind2=input$meanind
-      res$ind3=input$qualind1
-      res$ind4=input$qualind
-      res$drawing=input$drawind
-      res$drawing2=input$habiquali
-      res$partial=input$choixpartial
-      res$partial2=input$indivpartiel
-      res$partial3=input$partind
-      res$selectvar=input$selection
-      sel=NULL
-      if(input$selection=="contrib"){
-        sel=input$slider2
-      }
-      if(input$selection=="cos2"){
-       sel=input$slider3
-      }
-      res$selectvar2=sel
-      res$hide=input$hides
-      res$colorvar=input$colorgroup
-      res$freq1=input$affichind
-      res$freq2=input$affichcol
-      res$partaxe=input$coloraxe
-      res$nom=nomData
-      res$code1=codeGraph1()
-      res$code2=codeGraph2()
-      res$code3=codeGraph3()
-      res$code4=codeGraph4()
-      res$code5=codeGraph5()
-      res$title1=input$title1
-      res$title2=input$title2
-      res$title3=input$title3
-      res$title4=input$title4
-      res$title5=input$title5
-      class(res)="MFAshiny"
-      return(res)
+  output$drawindiv=renderUI({
+    if(input$choixpartial==gettext("None",domain="R-Factoshiny")){
+      if (is.null(anafact$quali.var) & is.null(anafact$quali.var.sup)) return(radioButtons("drawind",gettext("Drawing by",domain="R-Factoshiny"),choices=list(gettext("No selection",domain="R-Factoshiny"),gettext("individual",domain="R-Factoshiny")),selected=gettext("No selection",domain="R-Factoshiny"),inline=TRUE))
+      else return(radioButtons("drawind",gettext("Drawing by",domain="R-Factoshiny"),choices=list(gettext("No selection",domain="R-Factoshiny"),gettext("individual",domain="R-Factoshiny"),gettext("categorical variable",domain="R-Factoshiny")),selected=gettext("No selection",domain="R-Factoshiny"),inline=TRUE))
+    } else{
+      if (is.null(anafact$quali.var) & is.null(anafact$quali.var.sup)) return(radioButtons("drawind",gettext("Drawing by",domain="R-Factoshiny"),choices=list(gettext("group",domain="R-Factoshiny"),gettext("individual",domain="R-Factoshiny")),selected=drawing,inline=TRUE))
+      else return(radioButtons("drawind",gettext("Drawing by",domain="R-Factoshiny"),choices=list(gettext("group",domain="R-Factoshiny"),gettext("individual",domain="R-Factoshiny"),gettext("categorical variable",domain="R-Factoshiny")),selected=drawing,inline=TRUE))
     }
+  })
+    
+  output$habillagequali=renderUI({
+      if(!(is.null(anafact$quali.var))){
+        return(selectInput("habiquali"," ",choices=quali))
+      } else{
+      p(gettext("No groups of categorical variable",domain="R-Factoshiny"))
+    }
+  })
     
     output$indivpartiel2=renderUI({
       if(is.null(partial2)){
-        return(selectInput("indivpartiel",label=h6(gettext("Select individuals")),
-                           choices=list(num=nom),multiple=TRUE))
+        return(selectInput("indivpartiel",label=gettext("Select individuals",domain="R-Factoshiny"),
+                           choices=rownames(data),multiple=TRUE))
       }
       else{
-        return(selectInput("indivpartiel",label=h6(gettext("Select individuals")),
-                           choices=list(num=nom),multiple=TRUE,selected=partial2))
+        return(selectInput("indivpartiel",label=gettext("Select individuals",domain="R-Factoshiny"),
+                           choices=rownames(data),multiple=TRUE,selected=partial2))
       }
     })
     
     output$slider1=renderUI({
       if(inherits(x,"MFA")){
-      maxlength=dim(code$quanti.var$coord)[1]
-      if(input$selection=="contrib"){
-        return(sliderInput("slider2",h6(gettext("Number of the most contributive variables")),min=1, max=maxlength, value=maxlength, step=1))
-      }
-      if(input$selection=="cos2"){
-        return(sliderInput("slider3",h6(gettext("Number of variables with highest cos2")),min=0, max=1, value=1, step=0.01))
-      }
+        maxlength=dim(anafact$quanti.var$coord)[1]
+        if(input$selection=="contrib"){
+          return(sliderInput("slider2",gettext("Number of the most contributive variables",domain="R-Factoshiny"),min=1, max=maxlength, value=maxlength, step=1))
+        }
+        if(input$selection=="cos2"){
+          return(sliderInput("slider3",gettext("Variables with cos2 highest than",domain="R-Factoshiny"),min=0, max=1, value=0, step=0.01))
+        }
       }
       if(inherits(x,"MFAshiny")){
-        maxlength=dim(code$quanti.var$coord)[1]
+        maxlength=dim(anafact$quanti.var$coord)[1]
         if(input$selection=="contrib"){
-          if(selectvar=="contrib"){
-          return(sliderInput("slider2",h6(gettext("Number of the most contributive variables")),min=1, max=maxlength, value=selectvar2, step=1))
-          }
-          else{
-            return(sliderInput("slider2",h6(gettext("Number of the most contributive variables")),min=1, max=maxlength, value=maxlength, step=1))  
-          }
-          }
+            return(sliderInput("slider2",gettext("Number of the most contributive variables",domain="R-Factoshiny"),min=1, max=maxlength, value=if (is.null(selectvar2)){maxlength} else {selectvar2}, step=1))  
+        }
         if(input$selection=="cos2"){
-          if(selectvar=="cos2"){
-          return(sliderInput("slider3",h6(gettext("Number of variables with highest cos2")),min=0, max=1, value=selectvar2, step=0.01))
-          }
-          else{
-            return(sliderInput("slider3",h6(gettext("Number of variables with highest cos2")),min=0, max=1, value=1, step=0.01))  
-          }
-          }  
+            return(sliderInput("slider3",gettext("Variables with cos2 highest than",domain="R-Factoshiny"),min=0, max=1, value=if (is.null(selectvar2)){0} else {selectvar2}, step=0.01))  
+        }  
       }
     })
     
     output$hide2=renderUI({
-      if(!(is.null(code$quanti.var.sup))){
+      if(!(is.null(anafact$quanti.var.sup))){
         if(!is.null(hide)){
-        return(radioButtons("hides",h6(gettext("Hide:")),choices=list(gettext("Nothing"),gettext("Active variables"),gettext("Supplementary variables")),selected=hide))
-        }else{
-          return(radioButtons("hides",h6(gettext("Hide:")),choices=list(gettext("Nothing"),gettext("Active variables"),gettext("Supplementary variables")),selected=gettext("Nothing")))
+          return(radioButtons("hides",gettext("Hide:",domain="R-Factoshiny"),choices=list(gettext("Nothing",domain="R-Factoshiny"),gettext("Active variables",domain="R-Factoshiny"),gettext("Supplementary variables",domain="R-Factoshiny")),selected=hide))
+        } else{
+          return(radioButtons("hides",gettext("Hide:",domain="R-Factoshiny"),choices=list(gettext("Nothing",domain="R-Factoshiny"),gettext("Active variables",domain="R-Factoshiny"),gettext("Supplementary variables",domain="R-Factoshiny")),selected=gettext("Nothing",domain="R-Factoshiny")))
         }
       }
     })
     
-    output$sorties=renderTable({
-      return(as.data.frame(code$eig))
+    CodeGraphInd <- function(){
+      validate(
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions",domain="R-Factoshiny")),
+        need(input$nb1 <= ncol(anafact$ind$coord), paste(gettext("The number of dimensions must be less than",domain="R-Factoshiny"),ncol(anafact$ind$coord))),
+        need(input$nb2 <= ncol(anafact$ind$coord), paste(gettext("The number of dimensions must be less than",domain="R-Factoshiny"),ncol(anafact$ind$coord)))
+      )      
+    if(input$select=="cos2"){
+      if(input$sliderind1!=1){
+        selecindiv <- paste("cos2 ",input$sliderind1)
+      }
+      else{
+        selecindiv <- "cos2 0.999999"
+      }
+      selecindivtext <- paste0("'",selecindiv,"'")
+    }
+    if(input$select==gettext("No selection",domain="R-Factoshiny")){
+      selecindiv <- NULL
+      selecindivtext <- "NULL"
+    }
+    if(input$select=="contrib"){
+      selecindiv <- paste("contrib ",input$sliderind0)
+      selecindivtext <- paste0("'",selecindiv,"'")
+    }
+
+    if(input$select==gettext("Manual",domain="R-Factoshiny")){
+      selecindiv <- c(input$indiv)
+      if(length(input$indiv)==0) selecindivtext <- "NULL"
+      if(length(input$indiv)>1){
+        vec<- paste("'",paste(selecindiv,collapse="','"),"'",sep="")
+        selecindivtext<-paste("c(",vec,")",sep="")
+      }
+      else if (length(input$indiv)==1){
+        selecindivtext <- paste0("'",c(input$indiv),"'")
+      }
+    }
+
+      part=NULL
+      if(input$choixpartial==gettext("All",domain="R-Factoshiny")) part="'all'"
+      if(input$choixpartial==gettext("Choose",domain="R-Factoshiny") & !is.null(input$indivpartiel)) part=paste0("c('",paste0(input$indivpartiel,collapse="','"),"')")
+      lapbar=TRUE
+      if(input$choixpartial!=gettext("None",domain="R-Factoshiny") && input$partind==FALSE) lapbar=FALSE
+      habi="none"
+      if(!(is.null(input$drawind))){
+        if(input$drawind==gettext("individual",domain="R-Factoshiny")) habi="ind"
+        if((input$choixpartial==gettext("All",domain="R-Factoshiny") || input$choixpartial==gettext("Choose",domain="R-Factoshiny")) && input$drawind==gettext("group",domain="R-Factoshiny")) habi="group"
+        if(input$drawind==gettext("categorical variable",domain="R-Factoshiny")) habi=input$habiquali
+      }
+	  inv <- c()
+      if(sum(gettext("Individuals",domain="R-Factoshiny")==input$ind_var)==0)  inv<-c(inv,"'ind'")
+      if(!(is.null(anafact[["quali.var"]])) & sum(gettext("Categories",domain="R-Factoshiny")==input$ind_var)==0) inv<-c(inv,"'quali'")
+      if(!(is.null(anafact$quali.var.sup)) & sum(gettext("Supplementary categories",domain="R-Factoshiny")==input$ind_var)==0) inv<-c(inv,"'quali.sup'")
+      if(!(is.null(anafact$ind.sup)) & sum(gettext("Supplementary individuals",domain="R-Factoshiny")==input$ind_var)==0) inv<-c(inv,"'ind.sup'")
+      if(length(inv)>1) vecinv<-paste0("c(",paste0(inv,collapse=","),")")
+      if(length(inv)==1) vecinv <- inv
+      if(length(inv)==0 | length(input$ind_var)==0) vecinv<-"NULL"
+      Code <- paste0('plot.MFA(',nomObjectMFA,', choix="ind"',if (input$nb1!=1 | input$nb2!=2) paste0(",axes=c(",input$nb1,",",input$nb2,")"),if(!is.null(part)) paste0(",partial=",part),if(!is.null(input$partind)) {if (input$partind==TRUE) ",lab.par=TRUE"},if (vecinv!="NULL") paste(",invisible=",vecinv), if(selecindivtext!="NULL"){paste0(",select=",selecindivtext)}, if (habi!="none" & habi!="''"){paste0(",habillage='",habi,"'")},if(input$titleInd!="MFA graph of individuals")paste0(',title="',input$titleInd,'"'),if(input$cexInd!=1)paste0(",cex=",input$cexInd,",cex.main=",input$cexInd,",cex.axis=",input$cexInd),")")
+      Plot <- eval(parse(text=Code))
+	  return(list(Code=Code,Plot=Plot))      
+    }
+    
+    output$map <- renderPlot({
+      p <- print(CodeGraphInd()$Plot)
+    })
+    
+    CodeGraphVar=function(){
+      if (is.null(anafact$quanti.var) & is.null(anafact$quanti.sup)) return(NULL)
+	  habi <- NULL
+	  if(input$colorgroup==TRUE) habi="'group'"
+      if(input$selection==gettext("No selection",domain="R-Factoshiny")) selec=NULL
+      if(input$selection=="contrib") selec=paste0("'contrib ",input$slider2,"'")
+      if(input$selection=="cos2"){
+        if (is.null(input$slider3)) {
+          selec <- "'cos2 0'"
+		} else {
+		  if (input$slider3==1) selec <- "'cos2 0.999'"
+          if(input$slider3!=1) selec=paste0("'cos2 ",input$slider3,"'")
+		}
+      }
+
+      if(is.null(input$hides)){
+        invi="none"
+	  }else{
+	    if (input$hides==gettext("Nothing",domain="R-Factoshiny")) invi="none"
+	    if (input$hides==gettext("Active variables",domain="R-Factoshiny")) invi="quanti"
+	    if (input$hides==gettext("Supplementary variables",domain="R-Factoshiny")) invi="quanti.sup"
+      }
+      Code <- paste0('plot.MFA(',nomObjectMFA,', choix="var"',if (input$nb1!=1 | input$nb2!=2) paste0(",axes=c(",input$nb1,",",input$nb2,")"),if (!is.null(selec)) paste0(",select=",selec),if(invi!="none"){paste0(",invisible=c(",paste0("'",paste(invi,collapse="','"),"'"),")")}, if (!is.null(habi)){paste0(",habillage=",habi)},if(input$titleVar!="Graph of quantitative variables")paste0(',title="',input$titleVar,'"'),if(input$cexVar!=1)paste0(",cex=",input$cexVar,",cex.main=",input$cexVar,",cex.axis=",input$cexVar),")")
+      Plot <- eval(parse(text=Code))
+	  return(list(Code=Code,Plot=Plot))      
+    }
+    
+    output$map2 <- renderPlot({
+      p=print(CodeGraphVar()$Plot)
+    })
+    
+    output$map22=renderUI({
+      validate(
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions",domain="R-Factoshiny"))
+      )
+      
+      if(is.null(anafact$quanti.var)){
+        return(p())
+      } else{
+        column(width = 6,shinyjqui::jqui_resizable(plotOutput("map2", height="500")),
+           br(),
+           p(gettext("Download as"),downloadButton("downloadData4",gettext("jpg",domain="R-Factoshiny")),downloadButton("downloadData3",gettext("png",domain="R-Factoshiny")),downloadButton("downloadData5",gettext("pdf",domain="R-Factoshiny")),align="center")
+		)
+	  }
+    })
+    
+    CodeGraphGroup <- function(){
+      validate(
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions",domain="R-Factoshiny"))
+      )
+      Code <- paste0('plot.MFA(',nomObjectMFA,', choix="group"',if (input$nb1!=1 | input$nb2!=2) paste0(",axes=c(",input$nb1,",",input$nb2,")"), if(input$titleGroup!="Groups representation")paste0(',title="',input$titleGroup,'"'),if(input$cexGroup!=1)paste0(",cex=",input$cexGroup,",cex.main=",input$cexGroup,",cex.axis=",input$cexGroup),")")
+      Plot <- eval(parse(text=Code))
+	  return(list(Code=Code,Plot=Plot))      
+    }
+    
+    output$map5 <- renderPlot({
+      p <- print(CodeGraphGroup()$Plot)
+    })
+    
+    CodeGraphPartial <- function(){
+      validate(
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions",domain="R-Factoshiny"))
+      )
+      habi="'group'"
+      Code <- paste0('plot.MFA(',nomObjectMFA,', choix="axes"',if (input$nb1!=1 | input$nb2!=2) paste0(",axes=c(",input$nb1,",",input$nb2,")"), if(input$titlePartial!="Graph of the partial axes")paste0(',title="',input$titlePartial,'"'),if (!is.null(input$nbDimPartialAxes)){if (input$nbDimPartialAxes!=2) paste0(",ncp=",input$nbDimPartialAxes)},if (!is.null(habi)){paste0(",habillage=",habi)},if(input$cexPartial!=1)paste0(",cex=",input$cexPartial,",cex.main=",input$cexPartial,",cex.axis=",input$cexPartial),")")
+      Plot <- eval(parse(text=Code))
+	  return(list(Code=Code,Plot=Plot))      
+    }
+    
+    output$map4 <- renderPlot({
+      p <- print(CodeGraphPartial()$Plot)
+    })
+
+  output$choixindvarfreq=renderUI({
+    choix <- indvarMFAshinyfreq
+      if(is.null(anafact$ind)) choix <- setdiff(choix,gettext("Individuals",domain="R-Factoshiny"))
+      if(is.null(anafact$ind.sup)) choix <- setdiff(choix,gettext("Supplementary individuals",domain="R-Factoshiny"))
+      if(is.null(anafact[["quali.var"]])) choix <- setdiff(choix,gettext("Categories",domain="R-Factoshiny"))
+      if(is.null(anafact$quali.var.sup)) choix <- setdiff(choix,gettext("Supplementary categories",domain="R-Factoshiny"))
+      if(is.null(anafact[["freq"]])) choix <- setdiff(choix,gettext("Frequencies",domain="R-Factoshiny"))
+      if(is.null(anafact$freq.sup)) choix <- setdiff(choix,gettext("Supplementary frequencies",domain="R-Factoshiny"))
+    if (is.null(anafact$ind.sup) & is.null(anafact[["quali.var"]]) & is.null(anafact$quali.var.sup) & is.null(anafact[["freq"]]) & is.null(anafact$freq.sup)) return(NULL)
+	else return(div(align="left",checkboxGroupInput("ind_varfreq",gettext("Points to draw",domain="R-Factoshiny"), choices=choix, selected = indvarMFAshinyfreq)))
+  })
+
+    CodeGraphFreq <- function(){
+      validate(
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions",domain="R-Factoshiny"))
+      )
+	  if (is.null(anafact$freq)) return(NULL)
+	  habi="'group'"
+# invisible = row, row.sup, col ou col.sup
+
+	  inv <- c()
+      if(sum(gettext("Individuals")==input$ind_varfreq)==0)  inv<-c(inv,"'row'")
+      if(length(QualiChoice)>0 & sum(gettext("Categories",domain="R-Factoshiny")==input$ind_varfreq)==0) inv<-c(inv,"'quali'")
+      if(length(input$indsup)>0 & sum(gettext("Supplementary individuals",domain="R-Factoshiny")==input$ind_varfreq)==0) inv<-c(inv,"'row.sup'")
+      if(length(QualiChoice)>0 & sum(gettext("Supplementary categories",domain="R-Factoshiny")==input$ind_varfreq)==0) inv<-c(inv,"'quali.sup'")
+      if(sum(gettext("Frequencies",domain="R-Factoshiny")==input$ind_varfreq)==0) inv<-c(inv,"'col'")
+      if(sum(gettext("Supplementary frequencies",domain="R-Factoshiny")==input$ind_varfreq)==0) inv<-c(inv,"'col.sup'")
+      if(length(inv)>1) vecinv<-paste0("c(",paste0(inv,collapse=","),")")
+      if(length(inv)==1) vecinv <- inv
+      if(length(inv)==0 | length(input$ind_varfreq)==0) vecinv<-"NULL"
+
+      Code <- paste0('plot.MFA(',nomObjectMFA,', choix="freq"',if (input$nb1!=1 | input$nb2!=2) paste0(",axes=c(",input$nb1,",",input$nb2,")"),if (!is.null(habi)){paste0(",habillage=",habi)},if (vecinv!="NULL") paste(",invisible=",vecinv), if (length(input$affichcol)>0){ if (input$affichcol==FALSE) ",lab.col=FALSE"},if (length(input$affichind)>0){if (input$affichind==FALSE) paste0(",lab.ind=FALSE")}, if(input$titleFreq!="Graph of the frequencies")paste0(',title="',input$titleFreq,'"'),if(input$cexFreq!=1)paste0(",cex=",input$cexFreq,",cex.main=",input$cexFreq,",cex.axis=",input$cexFreq),")")
+      # Code <- paste0('plot.MFA(',nomObjectMFA,', choix="freq"',if (input$nb1!=1 | input$nb2!=2) paste0(",axes=c(",input$nb1,",",input$nb2,")"),if (!is.null(habi)){paste0(",habillage=",habi)}, if (col==TRUE) ",lab.col=col",if(input$titleFreq!="Graph of the frequencies")paste0(',title="',input$titleFreq,'"'),if(input$cexFreq!=1)paste0(",cex=",input$cexFreq,",cex.main=",input$cexFreq,",cex.axis=",input$cexFreq),")")
+      Plot <- eval(parse(text=Code))
+	  return(list(Code=Code,Plot=Plot))
+    }
+    
+    output$map6 <- renderPlot({
+      p <- print(CodeGraphFreq()$Plot)
+    })
+    
+    output$map66=renderUI({
+      validate(
+        need(input$nb1 != input$nb2, gettext("Please select two different dimensions",domain="R-Factoshiny"))
+      )
+      if(is.null(anafact$freq)){
+        return(p())
+      } else{
+        column(width = 6,shinyjqui::jqui_resizable(plotOutput("map6", height="500")),
+           br(),
+           p(gettext("Download as",domain="R-Factoshiny"),downloadButton("downloadData19",gettext("jpg",domain="R-Factoshiny")),downloadButton("downloadData20",gettext("png",domain="R-Factoshiny")),downloadButton("downloadData21",gettext("pdf",domain="R-Factoshiny")),align="center")
+		)
+	  }
+    })
+
+    
+
+  output$sorties=renderTable({
+      return(as.data.frame(anafact$eig))
     },rownames=TRUE)
     
     output$map3=renderPlot({
-      return(barplot(code$eig[,1],names.arg=rownames(code$eig),las=2))
+      print(ggplot2::ggplot(cbind.data.frame(x=1:nrow(anafact$eig),y=anafact$eig[,2])) + ggplot2::aes(x=x, y=y)+ ggplot2::geom_col(fill="blue") + ggplot2::xlab("Dimension") + ggplot2::ylab(gettext("Percentage of variance",domain="R-Factoshiny")) + ggplot2::ggtitle(gettext("Decomposition of the total inertia",domain="R-Factoshiny")) + ggplot2::theme_light() + ggplot2::theme(plot.title = ggplot2::element_text(hjust =0.5))  + ggplot2::scale_x_continuous(breaks=1:nrow(anafact$eig)))
+      # return(barplot(anafact$eig[,1],names.arg=rownames(anafact$eig),las=2))
     })
-    output$JDD=renderDataTable({
-      tab=cbind(Names=rownames(code$global.pca$call$X),code$global.pca$call$X)
+    output$JDD=DT::renderDataTable({
+      tab=cbind(Names=rownames(anafact$global.pca$call$X),anafact$global.pca$call$X)
       quanti=names(which(sapply(tab,is.numeric)))
       tab[quanti]=round(tab[quanti],5)
       tab
       },
-      options = list(    "orderClasses" = TRUE,
-                         "responsive" = TRUE,
-                         "pageLength" = 10))
+      options = list( "orderClasses" = TRUE, "responsive" = TRUE, "pageLength" = 10), rownames=FALSE)
     
     output$summary=renderPrint({
-      summary(code$global.pca$call$X)
+      summary(anafact$global.pca$call$X)
     })
     
     output$summaryMFA=renderPrint({
-      summary.MFA(code)
+      validate(
+        need(input$nbele!=0, gettext("Please select at least one element"))
+      )
+      summary.MFA(anafact,nbelements=input$nbele)
     })  
     
       
-    output$histo=renderPlot({
-      par(mfrow=c(1,2))
-      boxplot(x[,input$bam])
-      plot(density(x[,input$bam]),main="",xlab="")
-    })
+    # output$histo=renderPlot({
+      # par(mfrow=c(1,2))
+      # boxplot(x[,input$bam])
+      # plot(density(x[,input$bam]),main="",xlab="")
+    # })
     
     
     output$downloadData = downloadHandler(
       filename = function() { 
-        paste('graph1','.png', sep='') 
+        paste('GraphInd','.png', sep='') 
       },
       content = function(file) {
-        png(file)
-        Plot1()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphInd()$Plot))
       },
       contentType='image/png')
     
     output$downloadData3 = downloadHandler(
       filename = function() { 
-        paste('graph2','.png', sep='') 
+        paste('GraphVar','.png', sep='') 
       },
       content = function(file) {
-        png(file)
-        Plot2()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphVar()$Plot))
       },
       contentType='image/png')
     
     output$download3=renderUI({
-      if(is.null(code$quanti.var)){
+      if(is.null(anafact$quanti.var)){
         return()
       }
       else{
-        return(downloadButton("downloadData3",gettext("Download as png")))
+        return(downloadButton("downloadData3",gettext("Download as png",domain="R-Factoshiny")))
       }
     })
     
     output$downloadData11 = downloadHandler(
       filename = function() { 
-        paste('graph3','.png', sep='') 
+        paste('GraphGroup','.jpg', sep='') 
       },
       content = function(file) {
-        png(file)
-        Plot5()
-        dev.off()
-      },
-      contentType='image/png')
-    
-    output$downloadData12 = downloadHandler(
-      filename = function() { 
-        paste('graph3','.jpg', sep='') 
-      },
-      content = function(file) {
-        jpeg(file)
-        Plot5()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphGroup()$Plot))
       },
       contentType='image/jpg')
     
-    output$downloadData13 = downloadHandler(
+    output$downloadData12 = downloadHandler(
       filename = function() { 
-        paste('graph3','.pdf', sep='') 
+        paste('GraphGroup','.png', sep='') 
       },
       content = function(file) {
-        pdf(file)
-        Plot5()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphGroup()$Plot))
+      },
+      contentType='image/png')
+    
+    output$downloadData13 = downloadHandler(
+      filename = function() { 
+        paste('GraphGroup','.pdf', sep='') 
+      },
+      content = function(file) {
+        ggplot2::ggsave(file,print(CodeGraphGroup()$Plot))
       },
       contentType=NA)
     
     
     output$downloadData15 = downloadHandler(
       filename = function() { 
-        paste('graph4','.png', sep='') 
+        paste('GraphPartial','.jpg', sep='') 
       },
       content = function(file) {
-        png(file)
-        Plot4()
-        dev.off()
-      },
-      contentType='image/png')
-    
-    output$downloadData16 = downloadHandler(
-      filename = function() { 
-        paste('graph4','.jpg', sep='') 
-      },
-      content = function(file) {
-        jpeg(file)
-        Plot4()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphPartial()$Plot))
       },
       contentType='image/jpg')
     
-    output$downloadData17 = downloadHandler(
+    output$downloadData16 = downloadHandler(
       filename = function() { 
-        paste('graph4','.pdf', sep='') 
+        paste('GraphPartial','.png', sep='') 
       },
       content = function(file) {
-        pdf(file)
-        Plot4()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphPartial()$Plot))
+      },
+      contentType='image/png')
+    
+    output$downloadData17 = downloadHandler(
+      filename = function() { 
+        paste('GraphPartial','.pdf', sep='') 
+      },
+      content = function(file) {
+        ggplot2::ggsave(file,print(CodeGraphPartial()$Plot))
       },
       contentType=NA)
     
     
     output$downloadData19 = downloadHandler(
       filename = function() { 
-        paste('graph5','.png', sep='') 
+        paste('GraphFreq','.jpg', sep='') 
       },
       content = function(file) {
-        png(file)
-        Plot6()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphFreq()$Plot))
       },
-      contentType='image/png')
+      contentType='image/jpg')
     
     output$download19=renderUI({
-      if(is.null(code$freq)){
+      if(is.null(anafact$freq)){
         return()
       }
       else{
-        return(downloadButton("downloadData19",gettext("Download as png")))
+        return(downloadButton("downloadData19",gettext("Download as jpg",domain="R-Factoshiny")))
       }
     })
     
     output$downloadData20 = downloadHandler(
       filename = function() { 
-        paste('graph5','.jpg', sep='') 
+        paste('GraphFreq','.png', sep='') 
       },
       content = function(file) {
-        jpeg(file)
-        Plot6()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphFreq()$Plot))
       },
-      contentType='image/jpg')
+      contentType='image/png')
     
     output$download20=renderUI({
-      if(is.null(code$freq)){
+      if(is.null(anafact$freq)){
         return()
       }
       else{
-        return(downloadButton("downloadData20",gettext("Download as jpg")))
+        return(downloadButton("downloadData20",gettext("Download as png",domain="R-Factoshiny")))
       }
     })
     
     output$downloadData21 = downloadHandler(
       filename = function() { 
-        paste('graph5','.pdf', sep='') 
+        paste('GraphFreq','.pdf', sep='') 
       },
       content = function(file) {
-        pdf(file)
-        Plot6()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphFreq()$Plot))
       },
       contentType=NA)
     
     output$download21=renderUI({
-      if(is.null(code$freq)){
+      if(is.null(anafact$freq)){
         return()
       }
       else{
-        return(downloadButton("downloadData21",gettext("Download as pdf")))
+        return(downloadButton("downloadData21",gettext("Download as pdf",domain="R-Factoshiny")))
       }
     })
     
-    output$downloadData22 = downloadHandler(
-      filename = function() { 
-        paste('graph5','.emf', sep='') 
-      },
-      content = function(file) {
-        emf(file)
-        Plot6()
-        dev.off()
-      },
-      contentType=NA)
+    # output$downloadData22 = downloadHandler(
+      # filename = function() { 
+        # paste('GraphFreq','.emf', sep='') 
+      # },
+      # content = function(file) {
+        # ggplot2::ggsave(file,print(CodeGraphFreq()$Plot))
+      # },
+      # contentType=NA)
     
     output$downloadData1 = downloadHandler(
       filename = function() { 
-        paste('graph1','.jpg', sep='') 
+        paste('GraphInd','.jpg', sep='') 
       },
       content = function(file) {
-        jpeg(file)
-        Plot1()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphInd()$Plot))
       },
       contentType='image/jpg')
     
     output$downloadData2 = downloadHandler(
       filename = function() { 
-        paste('graph1','.pdf', sep='') 
+        paste('GraphInd','.pdf', sep='') 
       },
       content = function(file) {
-        pdf(file)
-        Plot1()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphInd()$Plot))
       },
       contentType=NA)
     
     output$downloadData4 = downloadHandler(
       filename = function() { 
-        paste('graph2','.jpg', sep='') 
+        paste('GraphVar','.jpg', sep='') 
       },
       content = function(file) {
-        jpeg(file)
-        Plot2()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphVar()$Plot))
       },
       contentType='image/jpg')
     
     output$download4=renderUI({
-      if(is.null(code$quanti.var)){
+      if(is.null(anafact$quanti.var)){
         return()
       }
       else{
-        return(downloadButton("downloadData4",gettext("Download as jpg")))
+        return(downloadButton("downloadData4",gettext("Download as jpg",domain="R-Factoshiny")))
       }
     })
     
     output$downloadData5 = downloadHandler(
       filename = function() { 
-        paste('graph2','.pdf', sep='') 
+        paste('GraphVar','.pdf', sep='') 
       },
       content = function(file) {
-        pdf(file)
-        Plot2()
-        dev.off()
+        ggplot2::ggsave(file,print(CodeGraphVar()$Plot))
       },
       contentType=NA)
     
     output$download5=renderUI({
-      if(is.null(code$quanti.var)){
+      if(is.null(anafact$quanti.var)){
         return()
       }
       else{
-        return(downloadButton("downloadData5",gettext("Download as pdf")))
+        return(downloadButton("downloadData5",gettext("Download as pdf",domain="R-Factoshiny")))
       }
     })
-    
-    output$downloadData6 = downloadHandler(
-      filename = function() { 
-        paste('graph2','.emf', sep='') 
-      },
-      content = function(file) {
-        emf(file)
-        Plot2()
-        dev.off()
-      },
-      contentType=NA)
-    
-    output$downloadData7 = downloadHandler(
-      filename = function() { 
-        paste('graph1','.emf', sep='') 
-      },
-      content = function(file) {
-        emf(file)
-        Plot1()
-        dev.off()
-      },
-      contentType=NA)
-    
-    ### Sorties
-    
+        
     output$sorties1=renderTable({
-      return(as.data.frame(code$ind$coord))
+      return(as.data.frame(anafact$ind$coord))
     },rownames=TRUE)
     
     output$sorties2=renderTable({
-      return(as.data.frame(code$ind$contrib))
+      return(as.data.frame(anafact$ind$contrib))
     },rownames=TRUE)
     
     output$sorties3=renderTable({
-      return(as.data.frame(code$ind$cos2))
+      return(as.data.frame(anafact$ind$cos2))
     },rownames=TRUE)
     
     output$sorties4=renderTable({
-      return(as.data.frame(code$ind$within.inertia))
+      return(as.data.frame(anafact$ind$within.inertia))
     },rownames=TRUE)
     
     output$sorties5=renderTable({
-      return(as.data.frame(code$ind$coord.partiel))
+      return(as.data.frame(anafact$ind$coord.partiel))
     },rownames=TRUE)
     
     output$sorties6=renderTable({
-      return(as.data.frame(code$ind$within.partial.inertia))
+      return(as.data.frame(anafact$ind$within.partial.inertia))
     },rownames=TRUE)
     
     output$sorties11=renderTable({
-      return(as.data.frame(code$quanti.var$coord))
+      return(as.data.frame(anafact$quanti.var$coord))
     },rownames=TRUE)
     
     output$sorties22=renderTable({
-      return(as.data.frame(code$quanti.var$contrib))
+      return(as.data.frame(anafact$quanti.var$contrib))
     },rownames=TRUE)
     
     output$sorties33=renderTable({
-      return(as.data.frame(code$quanti.var$cos2))
+      return(as.data.frame(anafact$quanti.var$cos2))
     },rownames=TRUE)
     
     output$sorties44=renderTable({
-      return(as.data.frame(code$quanti.var$cor))
+      return(as.data.frame(anafact$quanti.var$cor))
     },rownames=TRUE)
     
     output$sorties12=renderTable({
-      return(as.data.frame(code$partial.axes$coord))
+      return(as.data.frame(anafact$partial.axes$coord))
     },rownames=TRUE)
     
     output$sorties23=renderTable({
-      return(as.data.frame(code$partial.axes$cor))
+      return(as.data.frame(anafact$partial.axes$cor))
     },rownames=TRUE)
     
     output$sorties34=renderTable({
-      return(as.data.frame(code$partial.axes$contrib))
+      return(as.data.frame(anafact$partial.axes$contrib))
     },rownames=TRUE)
     
     output$sorties45=renderTable({
-      return(as.data.frame(code$partial.axes$cor.between))
+      return(as.data.frame(anafact$partial.axes$cor.between))
     },rownames=TRUE)    
     
+    output$sortiegroupRV=renderTable({
+      validate(
+        need(error()!="not",gettext("Please select at least 2 groups",domain="R-Factoshiny"))
+      )
+      return(as.data.frame(anafact$group$RV))
+    },rownames=TRUE)
+
+    output$sortiegroupLg=renderTable({
+      validate(
+        need(error()!="not",gettext("Please select at least 2 groups",domain="R-Factoshiny"))
+      )
+      return(as.data.frame(anafact$group$Lg))
+    },rownames=TRUE)
+
+    output$sortiegroupcoord=renderTable({
+      validate(
+        need(error()!="not",gettext("Please select at least 2 groups",domain="R-Factoshiny"))
+      )
+      return(as.data.frame(anafact$group$coord))
+    },rownames=TRUE)
+
+    output$sortiegroupcontrib=renderTable({
+      validate(
+        need(error()!="not",gettext("Please select at least 2 groups",domain="R-Factoshiny"))
+      )
+      return(as.data.frame(anafact$group$contrib))
+    },rownames=TRUE)
+
+    output$sortiegroupcos2=renderTable({
+      validate(
+        need(error()!="not",gettext("Please select at least 2 groups",domain="R-Factoshiny"))
+      )
+      return(as.data.frame(anafact$group$cos2))
+    },rownames=TRUE)
+
+    output$sortiegroupdist2=renderTable({
+      validate(
+        need(error()!="not",gettext("Please select at least 2 groups",domain="R-Factoshiny"))
+      )
+      return(as.data.frame(anafact$group$dist2))
+    },rownames=TRUE)
+
+    output$sortiegroupcorrelation=renderTable({
+      validate(
+        need(error()!="not",gettext("Please select at least 2 groups",domain="R-Factoshiny"))
+      )
+      return(as.data.frame(anafact$group$correlation))
+    },rownames=TRUE)
+
+    output$sortiegroupcoordsup=renderTable({
+      validate(
+        need(error()!="not",gettext("Please select at least 2 groups",domain="R-Factoshiny"))
+      )
+      return(as.data.frame(anafact$group$coord.sup))
+    },rownames=TRUE)
+
+    output$sortiegroupcos2sup=renderTable({
+      validate(
+        need(error()!="not",gettext("Please select at least 2 groups",domain="R-Factoshiny"))
+      )
+      return(as.data.frame(anafact$group$cos2.sup))
+    },rownames=TRUE)
+
+    output$sortiegroupdist2sup=renderTable({
+      validate(
+        need(error()!="not",gettext("Please select at least 2 groups",domain="R-Factoshiny"))
+      )
+      return(as.data.frame(anafact$group$dist2.sup))
+    },rownames=TRUE)
+
+     output$sortiegroupOther=renderTable({
+      write.infile(X=anafact$group[-c(1:6)],file=paste(getwd(),"fichgroup.csv"),sep=";",nb.dec=5)
+      baba=read.csv(paste(getwd(),"fichgroup.csv"),sep=";",header=FALSE)
+      colnames(baba)=NULL
+      file.remove(paste(getwd(),"fichgroup.csv"))
+      baba
+    },
+    rownames=FALSE)
+
     output$sortiegroup=renderTable({
-      write.infile(X=code$group,file=paste(getwd(),"fichgroup.csv"),sep=";",nb.dec=5)
+      write.infile(X=anafact$group,file=paste(getwd(),"fichgroup.csv"),sep=";",nb.dec=5)
       baba=read.csv(paste(getwd(),"fichgroup.csv"),sep=";",header=FALSE)
       colnames(baba)=NULL
       file.remove(paste(getwd(),"fichgroup.csv"))
@@ -638,143 +667,107 @@ shinyServer(
     },
     rownames=FALSE)
     
-    
-    
-    ###Recup codes
-    observe({
-      if(input$HCPCcode==0){
-      }
-      else {
-        isolate({
-          print(ligne)
-          cat(codeGraph1(),sep="\n")
-          cat(codeGraph2(),sep="\n")
-          cat(codeGraph3(),sep="\n")
-          cat(codeGraph4(),sep="\n")
-          if(!is.null(code$freq)){
-            cat(codeGraph5(),sep="\n")
-          }
-        })
-      }
+    output$CodePrinted <- renderPrint({
+       if (input$MFAcode!=0){
+          cat(ligne,sep="\n")
+          cat(CodeGraphInd()$Code,sep="\n")
+          if(!is.null(anafact$quanti.var)) cat(CodeGraphVar()$Code,sep="\n")
+          cat(CodeGraphGroup()$Code,sep="\n")
+          cat(CodeGraphPartial()$Code,sep="\n")
+          if(!is.null(anafact$freq)) cat(CodeGraphFreq()$Code,sep="\n")
+       }
     })
-    
-    codeGraph1<-function(){
-      if(input$choixpartial==gettext("None")){
-        part="NULL"
-      }
-      if(input$choixpartial==gettext("All")){
-        part="all"
-      }
-      if(input$choixpartial==gettext("Choose")){
-        part1=input$indivpartiel
-        if(length(input$indivpartiel)==gettext("None")){
-          part=paste("'",part1,"'")
-        }
-        if(length(input$indivpartiel)>1){
-          vec4=NULL
-          vec4<-paste(vec4,"'",input$indivpartiel[1],"'",sep="")
-          for (i in 2:(length(input$indivpartiel))){
-            vec4<-paste(vec4,paste("'",input$indivpartiel[i],"'",sep=""),sep=",")
-          }
-          part=paste("c(",vec4,")",sep="")
-        }
-      }
-      lapbar=TRUE
-      if(input$choixpartial!=gettext("None") && input$partind==FALSE){
-        lapbar=FALSE
-      }
-      habi="none"
-      if(!(is.null(input$drawind))){
-        if(input$choixpartial==gettext("None") && input$drawind==gettext("No selection")){
-          habi="group"
-        }
-        else if(input$choixpartial==gettext("None") && input$drawind==gettext("individual")){
-          habi="ind"
-        }
-        else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("individual")){
-          habi="ind"
-        }
-        else if((input$choixpartial==gettext("All") || input$choixpartial==gettext("Choose")) && input$drawind==gettext("group")){
-          habi="group"
-        }
-        else if(input$drawind==gettext("categorical variable")){
-          habi=input$habiquali
-        }
-      }
-      invi="none"
-      if(input$meanind1==FALSE){
-        invi="ind" 
-      }
-      else if (input$qualind1==FALSE){
-        invi="quali"
-      }
-      if (input$qualind1==FALSE && input$meanind1==FALSE){
-        invi=c("ind","quali")
-      }
-        Call1=as.name(paste("plot.MFA(res,choix='ind',axes=c(",input$nb1,",",input$nb2,"),partial=",part,",title='",input$title2,"',lab.ind=",input$meanind,",lab.par=",lapbar,",lab.var=",input$qualind, ",habillage='",habi,"',invisible='",invi,"')",sep=""))
-      return(Call1)
-    }
-    
-    codeGraph2<-function(){
-      if(input$colorgroup==TRUE){
-        habi="group"
-      }
-      if(input$colorgroup==FALSE){
-        habi="none"
-      }
-      if(input$selection==gettext("No selection")){
-        selec="NULL"
-      }
-      if(input$selection=="contrib"){
-        selec=paste("contrib ",input$slider2)
-      }
-      if(input$selection=="cos2"){
-        if(input$slider3!=1){
-          selec=paste("cos2 ",input$slider3)
-        }
-        else{
-          selec="cos2 0.999"
-        }
-      }
-#      invi="none"
-      #if (hide==gettext("Nothing")) invi="none"
-      if(is.null(input$hides)){
-        invi="none"
-      }else{
-	  if (input$hides==gettext("Nothing")) invi="none"
-	  if (input$hides==gettext("Active variables")) invi="quanti"
-	  if (input$hides==gettext("Supplementary variables")) invi="quanti.sup"
-      }
-      Call2=paste("plot.MFA(res,choix='var',axes=c(",input$nb1,",",input$nb2,"),habillage='",habi,"',select=",selec,",title='",input$title3,"',invisible='",invi,"')",sep="")
-      return(Call2)
-    }
-    
-    codeGraph3<-function(){
-      Call3=paste("plot.MFA(res,choix='group',title='",input$title1,"',axes=c(",input$nb1,",",input$nb2,"))",sep="")
-      return(Call3)
-    }
-    
-    codeGraph4<-function(){
-      if(input$coloraxe==TRUE){
-        habi="group"
-      }
-      else{
-        habi="none"
-      }
-      Call4=paste("plot.MFA(res,choix='axes',title='",input$title4,"',axes=c(",input$nb1,",",input$nb2,"),habillage='",habi,"')",sep="")
-      return(Call4)
-    }
 
-    codeGraph5<-function(){
-      if(input$affichcol==TRUE){
-        col=TRUE
+    output$CodePrintedDimdesc <- renderPrint({
+       if (input$MFAcode!=0){
+        cat(codeMFA()$Code,sep="\n")
+        cat("dimdesc(res.MFA)",sep="\n")
+       }
+    })
+
+    output$CodePrintedSummary <- renderPrint({
+       if (input$MFAcode!=0){
+        cat(codeMFA()$Code,sep="\n")
+        cat("summary(res.MFA)",sep="\n")
+       }
+    })
+
+    # observe({
+      # if(input$MFAcode!=0){
+        # isolate({
+          # print(ligne)
+          # cat(CodeGraphInd()$Code,sep="\n")
+          # if(!is.null(anafact$quanti.var)) cat(CodeGraphVar()$Code,sep="\n")
+          # cat(CodeGraphGroup()$Code,sep="\n")
+          # cat(CodeGraphPartial()$Code,sep="\n")
+          # if(!is.null(anafact$freq)) cat(CodeGraphFreq()$Code,sep="\n")
+        # })
+      # }
+    # })
+    
+  observe({
+   if(input$Quit!=0){
+     isolate({
+      res=list()
+      # res$codeMFA=ligne
+      res$nomObjectMFA <- nomObjectMFA
+	  res$codeMFA <- paste(nomObjectMFA,"<-",as.character(as.expression(ligne)))
+      res$anafact=anafact
+      res$data=newdataMFAshiny
+      res$axe1=input$nb1
+      res$axe2=input$nb2
+      res$ind1=input$meanind1
+      res$ind2=input$meanind
+      res$ind3=input$qualind1
+      res$ind4=input$qualind
+      res$sizeInd <- input$cexInd
+      res$sizeVar <- input$cexVar
+      res$sizeGroup <- input$cexGroup
+      res$sizePartial <- input$cexPartial
+      res$sizeFreq <- input$cexFreq
+      res$drawing=input$drawind
+      res$drawing2=input$habiquali
+      res$partial=input$choixpartial
+      res$partial2=input$indivpartiel
+      res$partial3=input$partind
+      res$selectionMFAshiny <- input$select
+      sel=NULL
+      if (length(input$selection)>0){
+	    if(input$selection=="contrib") sel=input$slider2
+        if(input$selection=="cos2") sel=input$slider3
       }
-      if(input$affichcol==FALSE){
-        col=FALSE
+	  if (length(input$select)>0){
+	    if(input$select=="cos2") res$selection2MFAshiny <- input$sliderind1
+        if(input$select==gettext("No selection",domain="R-Factoshiny")) res$selection2MFAshiny <- NULL
+        if(input$select=="contrib") res$selection2MFAshiny <- input$sliderind0
+        if(input$select==gettext("Manual",domain="R-Factoshiny")) res$selection2MFAshiny <- input$indiv
       }
-      Call5=paste("plot.MFA(res,choix='freq',title='",input$title5,"',axes=c(",input$nb1,",",input$nb2,"),lab.col=",col,")",sep="")
-      return(Call5)
+	  res$selectvar2=sel
+      res$hide=input$hides
+      res$colorvar=input$colorgroup
+      res$freq1=input$affichind
+      res$freq2=input$affichcol
+      res$partaxe=input$coloraxe
+      res$nomData=nomData
+      res$CodeGraphInd=CodeGraphInd()$Code
+      res$CodeGraphVar=CodeGraphVar()$Code
+      res$CodeGraphPartial=CodeGraphPartial()$Code
+      res$CodeGraphGroup=CodeGraphGroup()$Code
+      res$CodeGraphFreq=CodeGraphFreq()$Code
+      res$titleInd=input$titleInd
+      res$titleVar=input$titleVar
+      res$titleGroup=input$titleGroup
+      res$titleFreq=input$titleFreq
+      res$titlePartial=input$titlePartial
+      res$hcpcparam <- input$hcpcparam
+      res$nbdimclustMFAshiny <- input$nbDimClustering
+	  res$nbDimPartialAxes=nbDimPartialAxes
+	  res$ind_var <- input$ind_var
+	  res$ind_varfreq <- input$ind_varfreq
+      class(res)="MFAshiny"
+      stopApp(returnValue=res)
+     })
+    }
+ })
+
 }
-
-  }
-)

@@ -1,21 +1,18 @@
 print.MFAshiny<-
   function(x,...){
-    res.shinymfa=x
-    if(!inherits(res.shinymfa,"MFAshiny"))
-      stop("non convenient data")
-    cat("Results for the MFA with Factoshiny\n")
-    cat("You can use it to fine your app the way you left it\n")
+    if(!inherits(x,"MFAshiny"))
+      stop(gettext("non convenient data"))
+  cat(paste0(gettext("To fine your app the way you left it, use:"),"\n"))
+  cat(paste0("MFAshiny(",sys.calls()[[1]][2],")\n"))
+  cat("\n")
+  cat(paste0(gettext("Or use the corresponding script:"),"\n"))
+  cat("\n")
+    cat(x$codeMFA)
     cat("\n")
-    cat("Corresponding script : \n")
-    print(res.shinymfa$ligne)
-    cat("\n")
-    cat(res.shinymfa$code1,"\n")
-    cat(res.shinymfa$code2,"\n")
-    if(!is.null(res.shinymfa$code3)){
-      cat(res.shinymfa$code3,"\n")
-    }
-    cat(res.shinymfa$code4,"\n")
-    if(!is.null(res.shinymfa$code5)){
-      cat(res.shinymfa$code5,"\n")
-    }
+    cat(x$CodeGraphInd,"\n")
+    cat(x$CodeGraphGroup,"\n")
+    if(!is.null(x$CodeGraphVar)) cat(x$CodeGraphVar,"\n")
+    cat(x$CodeGraphPartial,"\n")
+    if(!is.null(x$CodeGraphFreq)) cat(x$CodeGraphFreq,"\n")
   }
+  

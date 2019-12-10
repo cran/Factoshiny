@@ -1,16 +1,15 @@
 print.HCPCshiny<-
   function(x,...){
-    res.shinyhcpc=x
-    if(!inherits(res.shinyhcpc,"HCPCshiny"))
+    if(!inherits(x,"HCPCshiny"))
       stop("non convenient data")
-    cat("Results for the HCPC with Factoshiny\n")
-    cat("You can use it to fine your app the way you left it\n")
+  cat(paste0(gettext("To fine your app the way you left it, use:"),"\n"))
+  cat(paste0("HCPCshiny(",sys.calls()[[1]][2],")\n"))
+  cat("\n")
+  cat(paste0(gettext("Or use the corresponding script:"),"\n"))
+    cat(x$anafact)
+    cat(x$Code,"\n")
     cat("\n")
-    cat("Corresponding script : \n")
-    print(res.shinyhcpc$anafact)
-    cat(res.shinyhcpc$code1,"\n")
-    cat("\n")
-    cat(res.shinyhcpc$code2,"\n")
-    cat(res.shinyhcpc$code3,"\n")
-    cat(res.shinyhcpc$code4,"\n")
+    cat(x$CodeTree,"\n")
+    cat(x$Code2Dmap,"\n")
+    cat(x$Code3D,"\n")
   }

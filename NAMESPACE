@@ -1,9 +1,18 @@
 ### Modify 01.05.2016
 import(FactoMineR)
+import(FactoInvestigate)
+importFrom(ggplot2,aes,aes_string,annotate,arrow,coord_fixed,element_rect,element_text,geom_hline,geom_line,geom_path,geom_point,geom_segment,geom_text,geom_vline,ggplot,ggtitle,labs,margin,unit,scale_color_gradient,scale_color_manual,theme,theme_light,xlab,xlim,ylab,ylim)
 importFrom(tcltk, tkfont.create, tkbutton, tkcanvas)
 importFrom(shiny,runApp)
+importFrom(missMDA,estim_ncpPCA,imputePCA)
 importFrom(colourpicker,colourInput)
-export(CAshiny,FAMDshiny,PCAshiny,MFAshiny,HCPCshiny,MCAshiny,print.CAshiny,print.FAMDshiny,print.PCAshiny,print.MCAshiny,print.HCPCshiny)
+importFrom(shinydashboard,tabItem,dashboardPage,dashboardHeader,dashboardSidebar,dashboardBody,sidebarMenu,menuItem)
+importFrom(DT,formatStyle,datatable,styleInterval,dataTableOutput,renderDataTable)
+importFrom(grDevices,colorRampPalette)
+importFrom(ggrepel,geom_text_repel)
+importFrom(shinyjqui,jqui_resizable)
+
+export(catdesshiny,condesshiny,CAshiny,FAMDshiny,Factoshiny,PCAshiny,MFAshiny,HCPCshiny,MCAshiny,print.CAshiny,print.FAMDshiny,print.PCAshiny,print.MCAshiny,print.HCPCshiny)
 
 S3method(print, CAshiny)
 S3method(print, FAMDshiny)

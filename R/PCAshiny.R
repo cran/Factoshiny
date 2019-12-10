@@ -1,25 +1,25 @@
-PCAshiny <-
-function(X){
-#   gassign("x", X)
-   G <- .GlobalEnv
-   assign("x", X, envir=G)
-  nom=sys.calls()[[1]]
-  nameJDD=nom[2]
-#  gassign("nomData",nameJDD)
-  assign("nomData",nameJDD, envir=G)
-  if (!(inherits(X, "PCAshiny") | inherits(X, "data.frame") | inherits(X, "PCA"))){
-    stop(gettext('df is not a dataframe, the results of the PCAshiny function or a PCA result'))
+utils::globalVariables(c("objPCAshiny","quantiPCAshiny","myListOfThingsPCAshiny"))
+PCAshiny <- function(X){
+  G <- .GlobalEnv
+  assign("objPCAshiny",ls(all.names=TRUE, envir=G),envir=G)
+  if (is.matrix(X)==TRUE) 	X <- as.data.frame(X)
+  assign("x",X, envir=G)
+  assign("nomDataPCAshiny",sys.calls()[[1]][2], envir=G)
+  if (!(inherits(X, "PCAshiny") | inherits(X, "data.frame") | inherits(X, "matrix") | inherits(X, "PCA"))){
+    stop(gettext('X is not a dataframe, a matrix, the results of the PCAshiny function or a PCA result'))
   }
   if(is.data.frame(X)==TRUE){
-    quanti=names(which(sapply(X,is.numeric)))
-    quali=names(which(!(sapply(X,is.numeric))))
-    if(length(quanti)<=2)
+    assign("quantiPCAshiny",names(which(sapply(X,is.numeric))),envir=G)
+    if(length(quantiPCAshiny)<=2)
       stop(gettext('not enough quantitative variables in your dataset'))
   }
-  a=shiny::runApp(system.file("FactoPCAapp2", package="Factoshiny"),launch.browser = TRUE)
-  #a=shiny::runApp('C:/Users/Ordinateur/Dropbox/Factoshiny/Factoshiny/inst/FactoPCAapp2')
-  return(invisible(a))
+  assign("pathsavePCAshiny",getwd(),envir=G)
+  outShiny <- shiny::runApp(system.file("FactoPCAapp2", package="Factoshiny"),launch.browser = TRUE)
+#  outShiny <- shiny::runApp('/home/husson/Site_Git/Factoshiny/inst/FactoPCAapp2')
+#  outShiny <- shiny::runApp('C:/Users/husson/AOBox/Travail/huss/Divers/Site_Github/Factoshiny/inst/FactoPCAapp2')
+  assign("myListOfThingsPCAshiny",setdiff(ls(all.names=TRUE,envir=G),c("outShiny",objPCAshiny)),envir=G)  ## on met "a" pour ne pas le supprimer
+  rm(list=myListOfThingsPCAshiny, envir=G)
+  rm(list=c("myListOfThingsPCAshiny"),envir=G)
+  if (outShiny$hcpcparam==TRUE) resHCPC <- HCPCshiny(outShiny)
+  return(invisible(outShiny))
 }
-
-
-

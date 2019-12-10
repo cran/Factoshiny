@@ -1,15 +1,14 @@
 print.FAMDshiny<-
   function(x,...){
-    res.shinyfamd=x
-    if(!inherits(res.shinyfamd,"FAMDshiny"))
-      stop("non convenient data")
-    cat("Results for the FAMD with Factoshiny\n")
-    cat("You can use it to fine your app the way you left it\n")
+    if(!inherits(x,"FAMDshiny")) stop(gettext("non convenient data"))
+  cat(paste0(gettext("To fine your app the way you left it, use:"),"\n"))
+  cat(paste0("FAMDshiny(",sys.calls()[[1]][2],")\n"))
+  cat("\n")
+  cat(paste0(gettext("Or use the corresponding script:"),"\n"))
+  cat("\n")
+    cat(x$codeFAMD,"\n")
     cat("\n")
-    cat("Corresponding script : \n")
-    cat(res.shinyfamd$code1,"\n")
-    cat("\n")
-    cat(res.shinyfamd$code2,"\n")
-    cat(res.shinyfamd$code3,"\n")
-    cat(res.shinyfamd$code4,"\n")
+    cat(x$codeGraphInd,"\n")
+    cat(x$codeGraphVar,"\n")
+    cat(x$codeGraphQuanti,"\n")
   }

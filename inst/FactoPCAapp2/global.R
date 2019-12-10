@@ -1,101 +1,125 @@
 #global script for PCA2
 if(inherits(x, "data.frame")){
-  nomData=nomData
-  newdata=x
-  quantisup=NULL
-  qualisup=NULL
-  indsupl=NULL
-  axe1=1
-  axe2=2
-  habillageind=NULL
-  selection=gettext("No selection")
-  selection2=NULL
-  selection3=gettext("No selection")
-  selection4=NULL
-  size=1
-  size2=1
-  titre1=gettext("Individuals factor map (PCA)")
-  titre2=gettext("Variables factor map (PCA)")
-  ellipses=FALSE
-  activeind="black"
-  supind="blue"
-  categ="magenta"
-  coloractvar="black"
-  colorsupvar="blue"
-  norme=TRUE
-  poids1=NULL
-  poids2=NULL
+  newdataPCAshiny <- x
+  quantisupPCAshiny <- NULL
+  qualisupPCAshiny <- NULL
+  indsuplPCAshiny <- NULL
+  labmodPCAshiny <- c(gettext("Individuals",domain="R-Factoshiny"),gettext("Supplementary individuals",domain="R-Factoshiny"),gettext("Supplementary categories",domain="R-Factoshiny"))
+  indmodPCAshiny <- c(gettext("Individuals",domain="R-Factoshiny"),gettext("Supplementary individuals",domain="R-Factoshiny"),gettext("Supplementary categories",domain="R-Factoshiny"))
+  axe1PCAshiny <- 1
+  axe2PCAshiny <- 2
+  nbdimclustPCAshiny <- 5
+  hcpcparaPCAshiny <- FALSE
+  habillageindPCAshiny2 <- habillageindPCAshiny <- NULL
+  selectionPCAshiny <- gettext("No selection",domain="R-Factoshiny")
+  selection2PCAshiny <- NULL
+  selection3PCAshiny <- gettext("No selection",domain="R-Factoshiny")
+  selection4PCAshiny <- NULL
+  sizePCAshiny <- 1
+  size2PCAshiny <- 1
+  color_pointInit <- gettext("active/supplementary",domain="R-Factoshiny")
+  color_arrowInit <- gettext("active/supplementary",domain="R-Factoshiny")
+  titre1PCAshiny <- gettext("PCA graph of individuals",domain="R-Factoshiny")
+  titre2PCAshiny <- gettext("PCA graph of variables",domain="R-Factoshiny")
+  ellipsesPCAshiny <- FALSE
+  activeindPCAshiny <- "black"
+  supindPCAshiny <- "blue"
+  categPCAshiny <- "magenta"
+  coloractvarPCAshiny <- "black"
+  colorsupvarPCAshiny <- "blue"
+  imputeInit <- gettext("Impute by the mean (fast but not recommended)",domain="R-Factoshiny")
+  normePCAshiny <- TRUE
+  poids1PCAshiny <- NULL
+  poids2PCAshiny <- NULL
+  pvalueDimdescInit <- 0.05
 }
 
 if(inherits(x, "PCAshiny")){
-  nomData=x$nomData
-  newdata=x$data
-  quantisup=x$c
-  qualisup=x$b
-  indsupl=x$d
-  axe1=x$e
-  axe2=x$f
-  habillageind=x$g
-  selection=x$h
-  selection2=x$i
-  selection3=x$j
-  selection4=x$k
-  size=x$l
-  size2=x$m
-  titre1=x$title1
-  titre2=x$title2
-  ellipses=x$ellipses
-  activeind=x$activeind
-  supind=x$supin
-  categ=x$categ
-  coloractvar=x$coloractvar
-  colorsupvar=x$colorsupvar
-  norme=x$norme
-  poids1=x$poids1
-  poids2=x$poids2
+  nomDataPCAshiny <- x$nomDataPCAshiny
+  newdataPCAshiny <- x$newdataPCAshiny
+  quantisupPCAshiny <- x$c
+  qualisupPCAshiny <- x$b
+  indsuplPCAshiny <- x$d
+  indmodPCAshiny <- x$y
+  axe1PCAshiny <- x$nb1
+  axe2PCAshiny <- x$nb2
+  habillageindPCAshiny <- x$habiller
+  habillageindPCAshiny2 <- x$habiller2
+  selectionPCAshiny <- x$selectionPCAshiny
+  selection2PCAshiny <- x$selection2PCAshiny
+  selection3PCAshiny <- x$j
+  selection4PCAshiny <- x$k
+  sizePCAshiny <- x$l
+  size2PCAshiny <- x$m
+  titre1PCAshiny <- x$title1
+  titre2PCAshiny <- x$title2
+  color_pointInit <- x$color_point
+  color_arrowInit <- x$color_arrow
+  ellipsesPCAshiny <- x$ellipsesPCAshiny
+  activeindPCAshiny <- if (!is.null(x$activeindPCAshiny)) {x$activeindPCAshiny} else {"black"}
+  supindPCAshiny <- if (!is.null(x$supin)) {x$supin} else {"blue"}
+  categPCAshiny <- if (!is.null(x$categPCAshiny)) {x$categPCAshiny} else {"magenta"}
+  coloractvarPCAshiny <- if (!is.null(x$coloractvarPCAshiny)) {x$coloractvarPCAshiny} else {"black"}
+  colorsupvarPCAshiny <- if (!is.null(x$colorsupvarPCAshiny)) {x$colorsupvarPCAshiny} else {"blue"}
+  normePCAshiny <- x$normePCAshiny
+  poids1PCAshiny <- x$poids1PCAshiny
+  poids2PCAshiny <- x$poids2PCAshiny
+  hcpcparaPCAshiny <- x$hcpcparam
+  nbdimclustPCAshiny <- x$nbdimclustPCAshiny
+  if (!is.null(x$impute)) imputeInit <- x$imputeInit
+  else imputeInit <- gettext("Impute by the mean (fast but not recommended)",domain="R-Factoshiny")
+  pvalueDimdescInit <- x$pvalueDimdescInit
+  labmodPCAshiny <- c(gettext("Individuals",domain="R-Factoshiny"),gettext("Supplementary individuals",domain="R-Factoshiny"),gettext("Supplementary categories",domain="R-Factoshiny"))
 }
 if(inherits(x, "PCA")){
-  nomData=as.character(x$call$call[2])
-  #nomData=gsub( " .*", "", nomData )
-#  nomData=unlist(strsplit(nomData, split='[', fixed=TRUE))[1]
-  newdata=x$call$X
-  quantisup=colnames(x$call$quanti.sup)
-  qualisup=colnames(x$call$quali.sup$quali.sup)
-  indsupl=rownames(x$ind.sup$coord)
-  axe1=1
-  axe2=2
-  habillageind=NULL
-  selection=gettext("No selection")
-  selection2=NULL
-  selection3=gettext("No selection")
-  selection4=NULL
-  size=1
-  size2=1
-  titre1=gettext("Individuals factor map (PCA)")
-  titre2=gettext("Variables factor map (PCA)")
-  ellipses=FALSE
-  activeind="black"
-  supind="blue"
-  categ="magenta"
-  coloractvar="black"
-  colorsupvar="blue"
-  norme=x$call$scale.unit
-  poids1=x$call$row.w.init
-  if(!is.null(poids1)&&all(poids1)==poids1[1]){
-    poids1=NULL
-  }
-  poids2=x$call$col.w.init
-  if(!is.null(poids2)&&all(poids2)==poids2[1]){
-    poids2=NULL
-  }
+  nomDataPCAshiny <- as.character(x$call$call[2])
+  newdataPCAshiny <- x$call$X
+  quantisupPCAshiny <- colnames(x$call$quanti.sup)
+  qualisupPCAshiny <- colnames(x$call$quali.sup$quali.sup)
+  indsuplPCAshiny <- rownames(x$ind.sup$coord)
+  labmodPCAshiny <- c(gettext("Individuals",domain="R-Factoshiny"),gettext("Supplementary individuals",domain="R-Factoshiny"),gettext("Supplementary categories",domain="R-Factoshiny"))
+  indmodPCAshiny <- c(gettext("Individuals",domain="R-Factoshiny"),gettext("Supplementary individuals",domain="R-Factoshiny"),gettext("Supplementary categories",domain="R-Factoshiny"))
+  axe1PCAshiny <- 1
+  axe2PCAshiny <- 2
+  nbdimclustPCAshiny <- 5
+  hcpcparaPCAshiny <- FALSE
+  habillageindPCAshiny2 <- habillageindPCAshiny <- NULL
+  selectionPCAshiny <- gettext("No selection",domain="R-Factoshiny")
+  selection2PCAshiny <- NULL
+  selection3PCAshiny <- gettext("No selection",domain="R-Factoshiny")
+  selection4PCAshiny <- NULL
+  sizePCAshiny <- 1
+  size2PCAshiny <- 1
+  color_arrowInit <- gettext("active/supplementary",domain="R-Factoshiny")
+  color_pointInit <- gettext("active/supplementary",domain="R-Factoshiny")
+  titre1PCAshiny <- gettext("PCA graph of individuals",domain="R-Factoshiny")
+  titre2PCAshiny <- gettext("PCA graph of variables",domain="R-Factoshiny")
+  ellipsesPCAshiny <- FALSE
+  activeindPCAshiny <- "black"
+  supindPCAshiny <- "blue"
+  categPCAshiny <- "magenta"
+  coloractvarPCAshiny <- "black"
+  colorsupvarPCAshiny <- "blue"
+  normePCAshiny <- x$call$scale.unit
+  poids1PCAshiny <- x$call$row.w.init
+  imputeInit <- gettext("Impute by the mean (fast but not recommended)",domain="R-Factoshiny")
+  pvalueDimdescInit <- 0.05
+  if(!is.null(poids1PCAshiny)){
+    if(sum(poids1PCAshiny!=rep(1,length(poids1PCAshiny)))==0){
+      poids1PCAshiny <- NULL
+    }}
+  poids2PCAshiny <- x$call$col.w
+  if(!is.null(poids2PCAshiny)){
+    if(sum(poids2PCAshiny!=rep(1,length(poids2PCAshiny)))==0){
+      poids2PCAshiny <- NULL
+    }}
 }  
 
-quanti=names(which(sapply(newdata,is.numeric)))
-quali=names(which(!(sapply(newdata,is.numeric))))
-VariableChoices=quanti
-nom=rownames(newdata)
-num=c(1:length(nom))
-QualiChoice=quali
-IdChoices=c(1:length(VariableChoices))
-Idqualisup=c(1:length(QualiChoice))
-nomData=unlist(strsplit(as.character(nomData),"\\["))[1]
+nomPCAshiny <- rownames(newdataPCAshiny)
+numPCAshiny <- c(1:length(nomPCAshiny))
+quantiPCAshiny <- names(which(sapply(newdataPCAshiny,is.numeric)))
+qualiPCAshiny <- names(which(!(sapply(newdataPCAshiny,is.numeric))))
+VariableChoicesPCAshiny <- quantiPCAshiny
+QualiChoicePCAshiny <- qualiPCAshiny
+nomDataPCAshinycourt <- unlist(strsplit(as.character(nomDataPCAshiny),"\\["))[1]
+if(inherits(x, "data.frame")) qualisupPCAshiny <- QualiChoicePCAshiny

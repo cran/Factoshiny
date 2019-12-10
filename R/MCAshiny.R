@@ -1,27 +1,31 @@
+utils::globalVariables(c("objMCAshiny","myListOfThingsMCAshiny"))
 MCAshiny <-
   function(X){
-#    gassign("x", X)
     G <- .GlobalEnv
+    assign("objMCAshiny",ls(all.names=TRUE, envir=G),envir=G)
     assign("x", X, envir=G)
-    nom=sys.calls()[[1]]
-    nameJDD=nom[2]
-#    gassign("nomData", nameJDD)
-    assign("nomData", nameJDD, envir=G)
+    # assign("nomDataMCAshiny",sys.calls()[[1]][2], envir=G)	
+    assign("nomDataMCAshiny",as.character(sys.calls()[[1]][2]), envir=G)	
+
+    if (!(inherits(X, "MCAshiny") | inherits(X, "data.frame") | inherits(X, "matrix") | inherits(X, "MCA"))){
+        stop(gettext('X is not a dataframe, a matrix, the results of the MCAshiny function or a MCA result',domain="R-Factoshiny"))
+    }
     
-    if((is.data.frame(X)==FALSE)&&(class(X)!="MCAshiny")&&!(inherits(X, "MCA")))
-      stop(gettext('X is not a dataframe or a result from a MCA analysis'))
-    
-   
-    
-    if((class(X)=="MCAshiny")||(is.data.frame(X)==TRUE)||(inherits(X, "MCA"))){
-      ###
+      if (is.matrix(X)==TRUE) 	X <- as.data.frame(X)
       if(is.data.frame(X)==TRUE){
-        quali=names(which(!(sapply(X,is.numeric))))
-      if(length(quali)<=2)
-        stop(gettext('not enough qualitative variables in your dataset'))
+        qualiMCAshiny=names(which(!(sapply(X,is.numeric))))
+      if(length(qualiMCAshiny)<=2)
+        stop(gettext('not enough qualitative variables in your dataset',domain="R-Factoshiny"))
       }
       ###
-      a=shiny::runApp(system.file("FactoMCAapp2",package="Factoshiny"),launch.browser = TRUE)
-      return(invisible(a))
-    }
-  }
+
+  assign("pathsaveMCAshiny",getwd(),envir=G)
+  outShiny=shiny::runApp(system.file("FactoMCAapp2", package="Factoshiny"),launch.browser = TRUE)
+#  outShiny=shiny::runApp('/home/husson/Site_Git/Factoshiny/inst/FactoMCAapp2')
+#  outShiny <- shiny::runApp('C:/Users/husson/AOBox/Travail/huss/Divers/Site_Github/Factoshiny/inst/FactoMCAapp2')
+  assign("myListOfThingsMCAshiny",setdiff(ls(all.names=TRUE,envir=G),c("outShiny",objMCAshiny)),envir=G)  ## on met "outShiny" pour ne pas le supprimer
+  rm(list=myListOfThingsMCAshiny, envir=G)
+  rm(list=c("myListOfThingsMCAshiny"),envir=G)
+  if (outShiny$hcpcparam==TRUE) resHCPC <- HCPCshiny(outShiny)
+  return(invisible(outShiny))
+}

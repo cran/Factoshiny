@@ -1,126 +1,78 @@
 # global script for CA2
-if(inherits(x, "data.frame")){
-  nomData=nomData
-  newdata=x
-  colonnesup=NULL
-  lignesup=NULL
-  catsup=NULL
-  axe1=1
-  axe2=2
-  Invisible=NULL
-  selec1=gettext("No selection")
-  selec2=gettext("No selection")
-  valueselec1=NULL
-  valueselec2=NULL
-  size=1
-  title1=gettext("CA factor map")
-  col1="blue"
-  col2="red"
-  col3="darkblue"
-  col4="darkred"
-  ellipses=NULL
-}
+if(inherits(x, "data.frame") | inherits(x, "CA")){
+  if(inherits(x, "data.frame")){
+    newdataCAshiny <- x
+    colonnesupCAshiny <- NULL
+    quantisupCAshiny <- NULL
+    lignesupCAshiny <- NULL
+    catsupCAshiny <- NULL
+  } else {
+    nomDataCAshiny <- as.character(x$call$call[2])
+    newdataCAshiny <- x$call$Xtot
+    colonnesupCAshiny <- rownames(x$col.sup$coord)
+    quantisupCAshiny <- rownames(x$quanti.sup$coord)
+    lignesupCAshiny <- rownames(x$row.sup$coord)
+    catsupCAshiny <- if (!is.null(x$quali.sup$coord)) {rownames(x$quali.sup$coord)} else{NULL}
+  }
+  axe1CAshiny <- 1
+  axe2CAshiny <- 2
+  InvisibleCAshiny <- NULL
+  selec1CAshiny <- gettext("No selection",domain="R-Factoshiny")
+  selec2CAshiny <- gettext("No selection",domain="R-Factoshiny")
+  valueselec1CAshiny <- NULL
+  valueselec2CAshiny <- NULL
+  sizeCAshiny <- 1
+  title1CAshiny <- gettext("CA factor map",domain="R-Factoshiny")
+  title2CAshiny <- gettext("Quantitative supplementary variables",domain="R-Factoshiny")
+  color_pointInit <- gettext("row/column",domain="R-Factoshiny")
+  col1CAshiny <- "blue"
+  col2CAshiny <- "red"
+  col3CAshiny <- "#0C2B94"
+  col4CAshiny <- "darkred"
+  col5CAshiny  <- "magenta"
+  ellipsesCAshiny <- NULL
+  nbdimclustCAshiny <- 5
+  hcpcparaCAshiny <- FALSE
+ }
 
 if(inherits(x, "CAshiny")){
-nomData=x$nomData
-newdata=x$data
-colonnesup=x$a
-lignesup=x$b
-catsup=x$c
-axe1=x$d
-axe2=x$e
-Invisible=x$f
-selec1=x$type1
-selec2=x$type2
-valueselec1=x$selec1
-valueselec2=x$selec2
-size=x$taille
-title1=x$title1
-col1=x$col1
-col2=x$col2
-col3=x$col3
-col4=x$col4
-ellipses=x$ellip
+nomDataCAshiny <- x$nomDataCAshiny
+newdataCAshiny <- x$data
+colonnesupCAshiny <- x$supvar
+quantisupCAshiny <- x$quantisupvar
+lignesupCAshiny <- x$rowsupl
+catsupCAshiny <- x$supquali
+axe1CAshiny <- x$nb1
+axe2CAshiny <- x$nb2
+color_pointInit <- x$color_point
+
+InvisibleCAshiny <- x$invisi
+selec1CAshiny <- x$seleccol
+selec2CAshiny <- x$selecrow
+valueselec1CAshiny <- x$selec1CAshiny
+valueselec2CAshiny <- x$selec2CAshiny
+sizeCAshiny <- x$taille
+title1CAshiny <- x$title1CAshiny
+title2CAshiny <- x$title2CAshiny
+col1CAshiny <- x$col1CAshiny
+col2CAshiny <- x$col2CAshiny
+col3CAshiny <- x$col3CAshiny
+col4CAshiny <- x$col4CAshiny
+col5CAshiny  <- x$col5CAshiny
+ellipsesCAshiny <- x$ellip
+hcpcparaCAshiny <- x$hcpcparam
+nbdimclustCAshiny <- x$nbdimclustCAshiny
 }
 
-if(inherits(x, "CA")){
-  nomData=as.character(x$call$call[2])
-#  nomData=unlist(strsplit(nomData, split='[', fixed=TRUE))[1]
-  newdata=x$call$Xtot
-  colonnesup=rownames(x$col.sup$coord)
-  lignesup=rownames(x$row.sup$coord)
-  catsup=NULL
-  axe1=1
-  axe2=2
-  Invisible=NULL
-  selec1=gettext("No selection")
-  selec2=gettext("No selection")
-  valueselec1=NULL
-  valueselec2=NULL
-  size=1
-  title1=gettext("CA factor map")
-  col1="blue"
-  col2="red"
-  col3="darkblue"
-  col4="darkred"
-  ellipses=NULL
-}
 
-withna=c()
-rowna=c()
-nomrow=c()
-for (i in 1:dim(newdata)[2]){
-  if(any(is.na(newdata[,i])==TRUE)){
-    if(is.numeric(newdata[,i])==TRUE){
-      withna=c(withna,colnames(newdata)[i])
-    }
-  }
+VariableChoicesCAshiny <- names(which(sapply(newdataCAshiny,is.numeric)))
+QualiChoiceCAshiny <- names(which(!(sapply(newdataCAshiny,is.numeric))))
+if (length(QualiChoiceCAshiny)==0){
+  listeChoixColourPoint<- list(gettext("row/column",domain="R-Factoshiny"),"cos2"="cos2","contribution"="contribution")
+} else {
+  listeChoixColourPoint <- list(gettext("row/column",domain="R-Factoshiny"),"cos2"="cos2","contribution"="contribution",gettext("qualitative variable",domain="R-Factoshiny"))
 }
+nomCAshiny <- rownames(newdataCAshiny)
 
-for (i in 1:dim(newdata)[1]){
-  if(any(is.na(newdata[i,])==TRUE)){
-      rowna=c(rowna,i)
-      nomrow=c(nomrow,rownames(newdata)[i])
-  }
-}
-
-quanti=names(which(sapply(newdata,is.numeric)))
-quali=names(which(!(sapply(newdata,is.numeric))))
-VariableChoice=quanti
-noms=rownames(newdata)
-nums=c(1:length(noms))
-QualiChoice=quali
-IdChoice=c(1:length(VariableChoice))
-Idqualisup=c(1:length(QualiChoice))
-# sup=c()
-# for(i in IdChoice){
-  # if(VariableChoice[i]%in%withna){
-    # sup=c(sup,i)
-  # }
-# }
-sup=which(VariableChoice%in%withna)
-if (length(sup)==0) sup=NULL
- 
-#sup2=c()
-if(!(is.null(sup))){
-  VariableChoices=VariableChoice[-sup]
-}
-if(is.null(sup)){
-  VariableChoices=VariableChoice
-}
-IdChoices=1:length(VariableChoices)
-# for(i in nums){
-  # if(noms[i]%in%nomrow){
-    # sup2=c(sup2,i)
-  # }
-# }
-sup2=which(noms%in%nomrow)
-if (length(sup2)==0) sup2 <- NULL
-if(!(is.null(sup2))){
-  nom=noms[-sup2]
-}
-if(is.null(sup2)){
-  nom=noms
-}
-num=c(1:length(nom))
-nomData=unlist(strsplit(as.character(nomData),"\\["))[1]
+nomDataCAshinycourt <- unlist(strsplit(as.character(nomDataCAshiny),"\\["))[1]
+if(inherits(x, "data.frame")) catsupCAshiny <- QualiChoiceCAshiny

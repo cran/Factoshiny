@@ -1,17 +1,15 @@
 print.MCAshiny<-
   function(x,...){
-    res.shinymca=x
-    if(!inherits(res.shinymca,"MCAshiny"))
-      stop("non convenient data")
-    cat("Results for the MCA with Factoshiny\n")
-    cat("You can use it to fine your app the way you left it\n")
+    if(!inherits(x,"MCAshiny"))
+      stop(gettext("non convenient data"))
+  cat(paste0(gettext("To fine your app the way you left it, use:"),"\n"))
+  cat(paste0("MCAshiny(",sys.calls()[[1]][2],")\n"))
+  cat("\n")
+  cat(paste0(gettext("Or use the corresponding script:"),"\n"))
+  cat("\n")
+    cat(x$codeMCA,"\n")
     cat("\n")
-    cat("Corresponding script : \n")
-    cat(res.shinymca$code1,"\n")
-    cat("\n")
-    cat(res.shinymca$code2,"\n")
-    cat(res.shinymca$code3,"\n")
-    if(!is.null(res.shinymca$code4)){
-      cat(res.shinymca$code4,"\n")
-    }
+    cat(x$codeGraphInd,"\n")
+    cat(x$codeGraphVar,"\n")
+    if(!is.null(x$codeGraphQuanti)) cat(x$codeGraphQuanti,"\n")
   }

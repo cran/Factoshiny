@@ -1,87 +1,105 @@
 #global script for HCPC2
-if((inherits(x, "PCA") | inherits(x, "MCA") | inherits(x, "CA")| inherits(x, "MFA"))){
-  results=x
-  anafact=lignecode
-  baba=HCPC(results,nb.clust=-1,graph=FALSE)$call$t$nb.clust
-  if (inherits(x, "CA")) nbindiv=dim(results$row$coord)[1]
-  else nbindiv=dim(results$ind$coord)[1]
-  nomData=nomData
-  clustdf=baba
-  consolidf=FALSE
-  metricdf=gettext("Euclidean")
-  drawdf=FALSE
-  df=FALSE
-  centerdf=FALSE
-  numdf=60
-  nb1df=1
-  nb2df=2
-  title1=gettext("Hierarchical tree on the factor map")
-  title2=gettext("Factor map")
-  title3=gettext("Hierarchical tree")
-}
 
-if(!((inherits(x, "PCA") | inherits(x, "MCA") | inherits(x, "CA")| inherits(x, "MFA")))){
+if((inherits(x, "PCA") | inherits(x, "MCA") | inherits(x, "CA")| inherits(x, "FAMD")| inherits(x, "MFA"))){
+  resultsHCPCshiny <- x
+  anafact <- lignecodeHCPCshiny
+  resClusHCPCshiny <- HCPC(resultsHCPCshiny,nb.clust=-1,graph=FALSE)$call$t$nb.clust
+  if (inherits(x, "CA")){
+    nbindivHCPCshiny <- nrow(resultsHCPCshiny$row$coord)
+    nbcolHCPCshiny <- ncol(resultsHCPCshiny$row$coord)
+    clusterOnCA <- gettext("Rows",domain="R-Factoshiny")
+  } else {
+    nbindivHCPCshiny <- nrow(resultsHCPCshiny$ind$coord)
+    nbcolHCPCshiny <- ncol(resultsHCPCshiny$ind$coord)
+    clusterOnCA <- NULL
+  }
+  clustdfHCPCshiny <- resClusHCPCshiny
+  consolidfHCPCshiny <- FALSE
+  metricdfHCPCshiny <- gettext("Euclidean",domain="R-Factoshiny")
+  drawdfHCPCshiny <- FALSE
+  dfHCPCshiny <- FALSE
+  centerdfHCPCshiny <- FALSE
+  numdfHCPCshiny <- 60
+  nb1dfHCPCshiny <- 1
+  nb2dfHCPCshiny <- 2
+  title1HCPCshiny <- gettext("Hierarchical tree on the factor map",domain="R-Factoshiny")
+  title2HCPCshiny <- gettext("Factor map",domain="R-Factoshiny")
+  title3HCPCshiny <- gettext("Hierarchical tree",domain="R-Factoshiny")
+} else {
 if(inherits(x, "HCPCshiny")){
-anafact=x$anafact
-nomData=x$nomData
-clustdf=x$clust
-consolidf=x$consoli
-metricdf=x$metric
-drawdf=x$drawtree
-df=x$nom3D
-centerdf=x$center
-numdf=x$num
-nb1df=x$nb1
-nb2df=x$nb2
-results=x$data
-title1=x$title1
-title2=x$title2
-title3=x$title3
+resultsHCPCshiny <- x$resultsHCPCshiny$call$t$res
+anafact <- x$anafact
+nomDataHCPCshiny <- x$nomDataHCPCshiny
+clustdfHCPCshiny <- x$clust
+consolidfHCPCshiny <- x$consoli
+metricdfHCPCshiny <- x$metric
+drawdfHCPCshiny <- x$drawtree
+dfHCPCshiny <- x$nom3D
+resClusHCPCshiny <- x$resClusHCPCshiny
+centerdfHCPCshiny <- x$center
+numdfHCPCshiny <- x$num
+nb1dfHCPCshiny <- x$nb1
+nb2dfHCPCshiny <- x$nb2
+title1HCPCshiny <- x$title1HCPCshiny
+title2HCPCshiny <- x$title2HCPCshiny
+title3HCPCshiny <- x$title3HCPCshiny
+clusterOnCA <- x$clusterOnCA
 }
 
-if(inherits(x, "PCAshiny") | inherits(x, "CAshiny") | inherits(x, "MCAshiny")){
-  results=x$anafact
-  anafact=x$code1
-  baba=HCPC(results,nb.clust=-1,graph=FALSE)$call$t$nb.clust
-  if (inherits(x, "CA")) nbindiv=dim(results$row$coord)[1]
-  else nbindiv=dim(results$ind$coord)[1]
-  nomData=nomData
-  clustdf=baba
-  consolidf=FALSE
-  metricdf=gettext("Euclidean")
-  drawdf=FALSE
-  df=FALSE
-  centerdf=FALSE
-  numdf=60
-  nb1df=1
-  nb2df=2
-  title1=gettext("Hierarchical tree on the factor map")
-  title2=gettext("Factor map")
-  title3=gettext("Hierarchical tree")
+if(inherits(x, "PCAshiny") | inherits(x, "CAshiny") | inherits(x, "MCAshiny") | inherits(x, "FAMDshiny")| inherits(x, "MFAshiny")){
+  resultsHCPCshiny=x$anafact
+  if (inherits(x, "CAshiny")) {
+    nbindivHCPCshiny=nrow(resultsHCPCshiny$row$coord)
+    nbcolHCPCshiny <- ncol(resultsHCPCshiny$row$coord)
+    clusterOnCA <- gettext("Rows",domain="R-Factoshiny")
+  } else {
+    nbindivHCPCshiny=nrow(resultsHCPCshiny$ind$coord)
+    nbcolHCPCshiny <- ncol(resultsHCPCshiny$ind$coord)
+    clusterOnCA <- NULL
+  }
+  resClusHCPCshiny=HCPC(resultsHCPCshiny,nb.clust=-1,graph=FALSE)$call$t$nb.clust
+  clustdfHCPCshiny=resClusHCPCshiny
+  consolidfHCPCshiny=FALSE
+  metricdfHCPCshiny=gettext("Euclidean",domain="R-Factoshiny")
+  drawdfHCPCshiny=FALSE
+  dfHCPCshiny=FALSE
+  centerdfHCPCshiny=FALSE
+  numdfHCPCshiny=60
+  nb1dfHCPCshiny=1
+  nb2dfHCPCshiny=2
+  title1HCPCshiny=gettext("Hierarchical tree on the factor map",domain="R-Factoshiny")
+  title2HCPCshiny=gettext("Factor map",domain="R-Factoshiny")
+  title3HCPCshiny=gettext("Hierarchical tree",domain="R-Factoshiny")
 }
 
 if(inherits(x, "HCPC")){
-  nomData=x$call$call[2]
-  clustdf=x$call$t$nb.clust
-  consolidf=FALSE
+  resClusHCPCshiny <- x$call$t$nb.clust
+  anafact <- x$call$t$res
+  resultsHCPCshiny <- anafact
+  nomDataHCPCshiny <- x$call$call[2]
+  clustdfHCPCshiny <- x$call$t$nb.clust
+  clusterOnCA <- x$clusterOnCA
+  consolidfHCPCshiny <-FALSE
   if(x$call$t$tree["dist.method"]=="euclidean"){
-    metricdf=gettext("Euclidean")
+    metricdfHCPCshiny=gettext("Euclidean",domain="R-Factoshiny")
   }
   if(x$call$t$tree["dist.method"]=="manhattan"){
-    metricdf="Manhattan"
+    metricdfHCPCshiny="Manhattan"
   }
-  drawdf=FALSE
-  df=FALSE
-  centerdf=FALSE
-  numdf=60
-  nb1df=1
-  nb2df=2
-  title1=gettext("Hierarchical tree on the factor map")
-  title2=gettext("Factor map")
-  title3=gettext("Hierarchical tree")
+  drawdfHCPCshiny <- FALSE
+  dfHCPCshiny <- FALSE
+  centerdfHCPCshiny <- FALSE
+  numdfHCPCshiny <- 60
+  nb1dfHCPCshiny <- 1
+  nb2dfHCPCshiny <- 2
+  title1HCPCshiny <- gettext("Hierarchical tree on the factor map",domain="R-Factoshiny")
+  title2HCPCshiny <- gettext("Factor map",domain="R-Factoshiny")
+  title3HCPCshiny <- gettext("Hierarchical tree",domain="R-Factoshiny")
 }
 
-baba=HCPC(results,nb.clust=-1,graph=FALSE)$call$t$nb.clust
-if (inherits(x, "CA")) nbindiv=dim(results$row$coord)[1]
-else nbindiv=dim(results$ind$coord)[1]
+# if(!(inherits(x, "HCPC") | inherits(x, "HCPCshiny"))) resClusHCPCshiny <- HCPC(resultsHCPCshiny,nb.clust=-1,graph=FALSE)$call$t$nb.clust
+# if (inherits(x, "CA")) nbindivHCPCshiny=nrow(resultsHCPCshiny$row$coord)
+# else nbindivHCPCshiny=nrow(resultsHCPCshiny$ind$coord)
+# if (inherits(x, "CA")) nbcolHCPCshiny <- ncol(resultsHCPCshiny$row$coord)
+# else nbcolHCPCshiny <- ncol(resultsHCPCshiny$ind$coord)
 }
