@@ -2,8 +2,8 @@ Package: Factoshiny
 Type: Package
 Title: Perform Factorial Analysis from 'FactoMineR' with a Shiny
         Application
-Version: 2.1
-Date: 2020-01-16
+Version: 2.2
+Date: 2020-02-05
 Author: Pauline Vaissie, Astrid Monge, Francois Husson
 Maintainer: Francois Husson <husson@agrocampus-ouest.fr>
 Depends: FactoMineR (>= 2.0),shiny,FactoInvestigate (>= 1.5),ggplot2
@@ -14,6 +14,6 @@ URL: http://factominer.free.fr/graphs/factoshiny.html
 License: GPL (>= 2)
 Encoding: latin1
 NeedsCompilation: no
-Packaged: 2020-01-17 16:06:20 UTC; husson
+Packaged: 2020-02-05 13:07:47 UTC; husson
 Repository: CRAN
-Date/Publication: 2020-01-17 16:50:02 UTC
+Date/Publication: 2020-02-05 15:20:08 UTC
