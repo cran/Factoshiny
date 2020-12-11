@@ -45,12 +45,13 @@ fluidPage(
                 uiOutput("col4CAshiny"),
                 uiOutput("col5CAshiny")
 		    ),
+        uiOutput("habillage2"),
         selectInput("selecrow",gettext("Labels for rows selected by:",domain="R-Factoshiny"), choices=list(gettext("No selection",domain="R-Factoshiny"),"Cos2"="cos2","Contribution"="contrib"),selected=selec2CAshiny),
         conditionalPanel(
           condition="input.selecrow=='cos2'",
-          if(selec2CAshiny=="cos2"){sliderInput("slider4",label=gettext("Labels for cos2 greater than:",domain="R-Factoshiny"),
+          if(selec2CAshiny=="cos2"){sliderInput("slider4",label=gettext("Labels for cos2 greater than",domain="R-Factoshiny"),
                                          min=0,max=1,value=valueselec2CAshiny,step=0.05)}
-          else{sliderInput("slider4",label=gettext("Labels for cos2 greater than:",domain="R-Factoshiny"),
+          else{sliderInput("slider4",label=gettext("Labels for cos2 greater than",domain="R-Factoshiny"),
                            min=0,max=1,value=0,step=0.05)}),
         conditionalPanel(
           condition="input.selecrow=='contrib'",
@@ -59,11 +60,11 @@ fluidPage(
           conditionalPanel(
             condition="input.seleccol=='cos2'",
             if(selec1CAshiny=="cos2"){
-              sliderInput("slider3",label=gettext("Labels for cos2 greater than:",domain="R-Factoshiny"),
+              sliderInput("slider3",label=gettext("Labels for cos2 greater than",domain="R-Factoshiny"),
                           min=0,max=1,value=valueselec1CAshiny,step=0.05)
             }
             else{
-              sliderInput("slider3",label=gettext("Labels for cos2 greater than:",domain="R-Factoshiny"),
+              sliderInput("slider3",label=gettext("Labels for cos2 greater than",domain="R-Factoshiny"),
                           min=0,max=1,value=0,step=0.05) 
           }),
         conditionalPanel(

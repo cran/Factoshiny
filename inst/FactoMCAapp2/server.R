@@ -78,10 +78,10 @@
 
 	boolImpute <- FALSE
     if(length(input$impute>0)){
-      validate(
-        need(length(input$supvar)==0 | input$impute==gettext("Consider NA as new category",domain="R-Factoshiny"),gettext("No supplementary variables are allowed with imputation methods",domain="R-Factoshiny")),
-		need(length(input$supquanti)==0 | input$impute==gettext("Consider NA as new category",domain="R-Factoshiny"), gettext("No supplementary variables are allowed with imputation methods",domain="R-Factoshiny"))
-      )
+      # validate(
+        # need(length(input$supvar)==0 | input$impute==gettext("Consider NA as new category",domain="R-Factoshiny"),gettext("No supplementary variables are allowed with imputation methods",domain="R-Factoshiny")),
+		# need(length(input$supquanti)==0 | input$impute==gettext("Consider NA as new category",domain="R-Factoshiny"), gettext("No supplementary variables are allowed with imputation methods",domain="R-Factoshiny"))
+      # )
 	 if (input$impute!=gettext("Consider NA as new category",domain="R-Factoshiny")){
 	  boolImpute <- TRUE
 	  if (input$impute==gettext("Impute with k-dimensional MCA-model (estime k, time consuming)",domain="R-Factoshiny")){
@@ -226,8 +226,8 @@
 	  if(length(inv)>1) vecinv<-paste0("c(",paste0(inv,collapse=","),")")
       if(length(inv)==1) vecinv <- inv
       if(length(inv)==0) vecinv<-"NULL"
-      if(input$select==gettext("Manual",domain="R-Factoshiny")) selecindivText <- paste0("c(",paste0(input$indiv,collapse=","),")")
       selecindivText="NULL"
+      if(input$select==gettext("Manual",domain="R-Factoshiny")) selecindivText <- paste0("c('",paste0(input$indiv,collapse="','"),"')")
       if(input$select=="cos2"){
         if(input$slider1!=1){
           selecindivText=paste0("'cos2 ",input$slider1,"'")
@@ -280,7 +280,7 @@
 		}
 	  }
 	  if(!is.null(input$drawconf)&&input$drawconf==TRUE&& (length(input$habiller)>0 & !(input$color_point == gettext("active/supplementary",domain="R-Factoshiny") || input$color_point == "cos2" || input$color_point == "contribution"))){
-		Code <- paste0(paste0("plotellipses(res.MCA,keepvar=",hab),if (input$nb1!=1 | input$nb2!=2) paste0(",axes=c(",input$nb1,",",input$nb2,")"),if (selecindivText!="NULL") paste(",select=",selecindivText),if(input$colindact!="#000000") paste0(",col.ind='",input$colindact,"'"), if(!is.null(input$colindsup)) {if(input$colindsup!="blue") paste0(",col.ind.sup='",input$colindsup,"'")},if(input$title1MCAshiny!="MCA factor map") paste0(',title="',input$title1MCAshiny,'"'),if (input$cex!=1) paste0(",cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex),if (keepn==FALSE) paste0(",keepnames=FALSE"),")")
+		Code <- paste0(paste0("plotellipses(res.MCA,keepvar=",hab),if (input$nb1!=1 | input$nb2!=2) paste0(",axes=c(",input$nb1,",",input$nb2,")"),if (selecindivText!="NULL") paste(",select=",selecindivText),if(input$colindact!="#000000") paste0(",col.ind='",input$colindact,"'"), if(!is.null(input$colindsup)) {if(input$colindsup!="blue") paste0(",col.ind.sup='",input$colindsup,"'")},if(input$title1MCAshiny!="MCA factor map") paste0(',title="',input$title1MCAshiny,'"'),if (input$cex!=1) paste0(",cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex),if (keepn==FALSE) paste0(",label ='quali'"),")")
       } else {
 		Code <- paste0("plot.MCA(res.MCA",if (input$nb1!=1 | input$nb2!=2) paste0(",axes=c(",input$nb1,",",input$nb2,")"),if (vecinv!="NULL") paste(",invisible=",vecinv),if (selecindivText!="NULL") paste(",select=",selecindivText),if (selecModText!="NULL") paste(",selectMod=",selecModText),if (hab != "none" & length(hab)!=0) paste0(",habillage=",hab),if(input$colindact!="#000000") paste0(",col.ind='",input$colindact,"'"),if(input$eachvar==TRUE & hab!="'cos2'" & hab!="'contrib'") paste0(",col.var=",colouract2),if(input$eachvar==TRUE & hab!="'cos2'" & hab!="'contrib'" & !is.null(values()$res.MCA$call$quali.sup)) paste0(",col.quali.sup=",coloursup2), if(input$colvaract1!="#FF0000" & input$eachvar==FALSE) paste0(",col.var='",input$colvaract1,"'"), if(!is.null(input$colindsup)) {if(input$colindsup!="blue") paste0(",col.ind.sup='",input$colindsup,"'")},if(!is.null(input$colvarsup1)& input$eachvar!=TRUE) {if(input$colvarsup1!="darkgreen") paste0(",col.quali.sup='",input$colvarsup1,"'")},if(input$title1MCAshiny!="MCA factor map") paste0(',title="',input$title1MCAshiny,'"'),if (input$cex!=1) paste0(",cex=",input$cex,",cex.main=",input$cex,",cex.axis=",input$cex),if (!is.null(label)) paste0(",label =",label),")")
 	  }
