@@ -4,7 +4,7 @@
 \usepackage[pdftex,
 bookmarks,
 bookmarksopen,
-pdfauthor={Mathieu Emily},
+pdfauthor={Francois Husson},
 pdftitle={Factoshiny}]
 {hyperref}
 

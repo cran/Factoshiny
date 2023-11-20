@@ -461,7 +461,7 @@ function(input, output,session) {
   output$sortieDimdesc44 <- renderTable({
     validate(
       need((length(VariableChoicesPCAshiny)-length(input$supvar))>1 ,gettext("Please select at least two active variables",domain="R-Factoshiny")),
-      need(length(CalculDimdesc()[[2]]$quali)>1,gettext("No categorical variable describes axis 2",domain="R-Factoshiny")),
+      need(length(CalculDimdesc()[[2]]$quali)>0,gettext("No categorical variable describes axis 2",domain="R-Factoshiny")),
       need(input$pvalueDimdesc>0,gettext("P-value should be strictly greater than 0",domain="R-Factoshiny"))
 	)
     return(as.data.frame(CalculDimdesc()[[2]]$quali))
@@ -472,7 +472,7 @@ function(input, output,session) {
   output$sortieDimdesc333 <- renderTable({
     validate(
       need((length(VariableChoicesPCAshiny)-length(input$supvar))>2 ,gettext("There are not three dimensions",domain="R-Factoshiny")),
-      need(length(CalculDimdesc()[[3]]$quanti)>2,gettext("No quantitative variable describes axis 3",domain="R-Factoshiny")),
+      need(length(CalculDimdesc()[[3]]$quanti)>0,gettext("No quantitative variable describes axis 3",domain="R-Factoshiny")),
       need(input$pvalueDimdesc>0,gettext("P-value should be strictly greater than 0",domain="R-Factoshiny"))
 	)
     return(as.data.frame(CalculDimdesc()[[3]]$quanti))
@@ -481,7 +481,7 @@ function(input, output,session) {
   output$sortieDimdesc444 <- renderTable({
     validate(
       need((length(VariableChoicesPCAshiny)-length(input$supvar))>2 ,gettext("There are not three dimensions",domain="R-Factoshiny")),
-      need(length(CalculDimdesc()[[3]]$quali)>2,gettext("No categorical variable describes axis 3",domain="R-Factoshiny")),
+      need(length(CalculDimdesc()[[3]]$quali)>0,gettext("No categorical variable describes axis 3",domain="R-Factoshiny")),
       need(input$pvalueDimdesc>0,gettext("P-value should be strictly greater than 0",domain="R-Factoshiny"))
 	)
     return(as.data.frame(CalculDimdesc()[[3]]$quali))
@@ -667,7 +667,7 @@ function(input, output,session) {
           if(input$select=="contrib") res$selection2PCAshiny <- input$slider0
           if(input$select==gettext("Manual",domain="R-Factoshiny")) res$selection2PCAshiny <- input$indiv
         }
-        selecindiv2 <- NULL
+        selecindiv2 <- 0
         if (length(input$select0)>0){
 		  if(input$select0=="cos2") selecindiv2 <- input$slider00
           if(input$select0=="contrib") selecindiv2 <- input$slider4
