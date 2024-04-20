@@ -1,4 +1,4 @@
-4d0e303e80ec494655213e8d7103b465 *DESCRIPTION
+cbd48e06685339d1a2a58a15c11d0134 *DESCRIPTION
 88910f075fb33f63da8d278dabc2c678 *NAMESPACE
 521d16764c09608f37e17c5044080c2e *R/CAshiny.R
 099481395a98c37db9acfba1cdb85f25 *R/FAMDshiny.R
@@ -16,7 +16,6 @@ e41fe6b695947afb7dc1b71d9e714622 *R/print.HCPCshiny.R
 4287d5d9c42a18eb5aff1fad7f86b631 *R/print.MFAshiny.R
 7b092f01fe8533e04b0616d0e62f9b4b *R/print.PCAshiny.R
 825913eb6d8337939d96f78d73c7e3d2 *README.md
-2fd94488a276390d88c9a2b0ba23384a *build/vignette.rds
 ec60503b8fc2b1d4730a9c242eb05a0e *inst/FactoApp/server.R
 e5a9ce38e5c32fe564c8788ceead0336 *inst/FactoApp/ui.R
 07943c0d9e2b2742fad3c67f123568c6 *inst/FactoCAapp2/global.R
@@ -38,7 +37,7 @@ cfa5d6bcb84ea8a138a85096b056ee51 *inst/FactoMFAapp2/global.R
 3ac1ec611ed7701cfa3656f3ef248208 *inst/FactoMFAapp2/server.R
 f915d19c26cd7496308d7b2b1b68b03b *inst/FactoMFAapp2/ui.R
 ffbc51c9a109774db6e53d07543b01c1 *inst/FactoPCAapp2/global.R
-8894a276981968b73f18930b402ac3e4 *inst/FactoPCAapp2/server.R
+4817f68a10f909790236ef7be7579dc0 *inst/FactoPCAapp2/server.R
 0051d9831b17b99b1ebc3dfcc1d33bd7 *inst/FactoPCAapp2/ui.R
 690ff16935e03b763c116bbbca48ca94 *inst/Factocatdesapp/global.R
 60807ef3a805fe8ee493c5cb27194bfa *inst/Factocatdesapp/server.R
@@ -46,9 +45,8 @@ e6e60bc58f2ddd526e40d2db2503675f *inst/Factocatdesapp/ui.R
 3d9f6774f6682068665c2019929d9a00 *inst/Factocondesapp/global.R
 3805642c2b4b0d5fb53427af04897a18 *inst/Factocondesapp/server.R
 caf7fc4431442ca7ae1d38b412b85f7b *inst/Factocondesapp/ui.R
-5439e23754478a462058a0650e3c1bd1 *inst/doc/Factoshiny.R
-9ce64e252d1530df4652a2b7acc51adf *inst/doc/Factoshiny.Rnw
-9e499d3b62959550d5397b1704f19e78 *inst/doc/Factoshiny.pdf
+02b0f23280276f667cf155ae8134a289 *inst/doc/vignettes/Factoshiny.Rmd
+453e85ba9ed6586fac756ba2ccc90c1e *inst/doc/vignettes/Factoshiny.html
 21fc88c715adde66431762432cc42c79 *inst/po/fr/LC_MESSAGES/R-Factoshiny.mo
 954818f2da5ca9e6c88afa69665a6956 *man/CAshiny.Rd
 a5fc77b5f2b7ecec9262ff122fe76df9 *man/FAMDshiny.Rd
@@ -68,5 +66,3 @@ c3846c28f469cb31b5a2bf2bca687179 *man/print.PCAshiny.Rd
 dbfa7b7a8a6c5afe1d6776b6a1215cb8 *po/R-Factoshiny.pot
 a2e66a3ee9a3ef0339bc7dc92a5a88b3 *po/R-Fr.mo
 6cdcd395758d9332b5e79b69c9fb2ac3 *po/R-Fr.po
-9ce64e252d1530df4652a2b7acc51adf *vignettes/Factoshiny.Rnw
-6ab7b4875a4a69af82462567d6cac941 *vignettes/fig5_3.jpg
